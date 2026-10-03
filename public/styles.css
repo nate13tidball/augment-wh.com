@@ -6,3 +6,19 @@
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}}
 @media(max-width:640px){.team h2 br:nth-child(2){display:initial}.header nav a{white-space:nowrap}}
 @media(max-width:360px){.header .wordmark{font-size:21px}.header nav{gap:12px;font-size:11px}}
+.contact-grid{align-items:flex-start;display:grid;grid-template-columns:1fr 1fr;gap:60px}
+.contact .text-link{border-color:#c2cec6;margin-top:26px}
+#inquiry-form{min-width:0;position:relative}
+#inquiry-form label{display:block;font-size:14px;font-weight:700;margin-bottom:18px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+#inquiry-form input,#inquiry-form select,#inquiry-form textarea{display:block;width:100%;min-width:0;margin-top:8px;border:1px solid #829489;border-radius:2px;background:#fff;color:var(--ink);padding:12px;font:inherit;font-weight:400;line-height:1.5}
+#inquiry-form textarea{resize:vertical;min-height:140px}
+#inquiry-form :is(input,select,textarea,button):focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+#inquiry-form button{border:0;cursor:pointer;font-family:inherit}
+#inquiry-form button:disabled{opacity:.65;cursor:wait}
+#inquiry-form .optional{font-weight:400;color:#c2cec6}
+#inquiry-form .form-note{font-size:12px;color:#c2cec6;line-height:1.6}
+#form-status{min-height:48px;font-size:14px;margin-top:16px;overflow-wrap:anywhere}
+.form-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+@media(max-width:800px){.contact-grid{grid-template-columns:1fr;gap:35px}}
+@media(max-width:400px){.form-row{grid-template-columns:1fr;gap:0}}

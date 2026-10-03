@@ -11,6 +11,7 @@
   <title>Augment Wh | Battery capacity. Better planned.</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
+  <script src="contact.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -81,7 +82,20 @@
       <details><summary>What if our data is incomplete?</summary><p>The first discussion is about available records and the decision you need to make. Data gaps, assumptions, and uncertainty help define the scope before a pilot begins.</p></details>
     </section>
 
-    <section class="contact section" id="contact"><div class="wrap contact-grid"><div><p class="eyebrow">LET'S TALK CAPACITY</p><h2>What's next for<br>your battery asset?</h2><p>Bring a capacity question, an augmentation decision,<br class="desktop-break"> or a challenge in your current planning process.</p></div><a class="button" href="https://linkedin.com/in/nathantidball">Connect with Nathan <span aria-hidden="true">&#8599;</span></a></div></section>
+    <section class="contact section" id="contact"><div class="wrap contact-grid">
+      <div><p class="eyebrow">LET'S TALK CAPACITY</p><h2>What's next for<br>your battery asset?</h2><p>Tell us about your project or request a quote.<br class="desktop-break"> We'll follow up using the email you provide.</p><a class="text-link" href="https://linkedin.com/in/nathantidball">Connect on LinkedIn <span aria-hidden="true">&#8599;</span></a></div>
+      <form id="inquiry-form" action="/api/inquiry" method="post">
+        <div class="form-row"><label>Name<input name="name" autocomplete="name" maxlength="120" required></label><label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label></div>
+        <label>Company <span class="optional">(optional)</span><input name="company" autocomplete="organization" maxlength="180"></label>
+        <label>How can we help?<select name="kind"><option>General inquiry</option><option>Request a quote</option><option>Discuss a pilot</option></select></label>
+        <label>Project details<textarea name="message" rows="5" minlength="10" maxlength="5000" placeholder="Your project, the decision you're facing, and your timeline." required></textarea></label>
+        <div class="form-trap" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <p class="form-note">We'll use these details to respond to your request. Please don't include confidential site data.</p>
+        <button class="button" type="submit">Send inquiry <span aria-hidden="true">&#8599;</span></button>
+        <p id="form-status" role="status" aria-live="polite"></p>
+        <noscript><p>JavaScript is required to submit this form. You can also contact Nathan on LinkedIn.</p></noscript>
+      </form>
+    </div></section>
   </main>
   <footer class="wrap"><div class="footer-main"><a class="wordmark" href="#">augment<span class="unit">Wh<span class="mark" aria-hidden="true">+</span></span></a><span>Capacity today. Possibility tomorrow.</span><span>&copy; 2026 Augment Wh</span></div><p class="credit">Site photography: Reid Gardner BESS, Nevada. <a href="https://commons.wikimedia.org/wiki/File:Reid_Gardner_BESS.jpg">Sig. Chiocciola / Wikimedia Commons, CC0</a>. Shown for industry context; no affiliation implied.</p></footer>
 </body>
