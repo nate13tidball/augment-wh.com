@@ -6,6 +6,33 @@ and Python standard-library SMTP backend. No build step or third-party packages.
 Open `public/index.html` directly in a browser for a local preview.
 Form delivery requires the server described below; file previews do not send mail.
 
+## Brand assets
+
+The business repository's `brand/` folder is the source of logo artwork.
+`brand.config.json` selects `version` (such as `v1`) and `header_logo`
+(`lettermark`, `wordmark`, or `lockup`). `source_root` is relative to this website
+repository and defaults to `../brand` when checked out as a submodule.
+
+Run from the website repository after changing the selection or regenerating logos:
+
+```bash
+python3 scripts/sync_brand.py
+# Select the next complete logo set and save that version in the config:
+python3 scripts/sync_brand.py --version v2
+# For a standalone checkout, supply the location of the business repo's brand folder:
+python3 scripts/sync_brand.py --source-root /path/to/Augment-wh/brand
+```
+
+Each version must include `lettermark/aa-vN.png`, `wordmark/augment-wh-vN.png`,
+and `lockups/augment-wh-lockup-vN.png`. Missing files fail before overwriting
+deployed assets. The sync copies the selected artwork into `public/assets/brand/`;
+HTML references stable filenames, so switching versions requires no HTML edits.
+The header and footer use the selected format; the favicon uses the lettermark.
+`manifest.json` records the deployed version. Commit the config and copied assets
+in this website repository, then update its pointer in the business repository.
+GitHub Pages and standalone hosting use the committed copies and do not need
+access to the private business repo. Refresh the browser cache after switching.
+
 ## Inquiry and quote form
 
 The form collects name, reply email, optional company, inquiry type, and project
@@ -52,7 +79,8 @@ DNS for augment-wh.com remains owned by the separate hosting task.
 
 ## Content status
 
-Working brand: **Augment Wh**, inferred from the domain. Positioning is based on
+Confirmed company name: **Augment-wh**, with **Aa** as its compact lettermark.
+The website uses the selected brand assets described above. Positioning is based on
 the lifecycle/augmentation proposal in `EMS_Startups`, not its separate
 commissioning-workspace concept. This is an early-stage business page, not a claim
 of deployed software, customers, results, or finished integrations. The 4-6 week

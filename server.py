@@ -75,7 +75,7 @@ class Handler(BaseHTTPRequestHandler):
         self.connection.settimeout(10)
 
     def reply(self, status, data, content_type='application/json'):
-        body = json.dumps(data).encode() if content_type == 'application/json' else data
+        body = data if isinstance(data, bytes) else json.dumps(data).encode()
         self.send_response(status)
         self.send_header('Content-Type', content_type)
         self.send_header('Content-Length', str(len(body)))
@@ -90,6 +90,8 @@ class Handler(BaseHTTPRequestHandler):
         files = {'/': 'index.html', '/index.html': 'index.html', '/styles.css': 'styles.css',
                  '/contact.js': 'contact.js', '/assets/bess.jpg': 'assets/bess.jpg',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
+        for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
+            files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'
         filename = files.get(path, '404.html')
         content_type = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
         self.reply(200 if path in files else 404, (PUBLIC / filename).read_bytes(), content_type)

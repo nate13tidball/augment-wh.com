@@ -42,6 +42,19 @@ class InquiryTests(unittest.TestCase):
             return result
         try:
             server.attempts.clear()
+            for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
+                conn = HTTPConnection('127.0.0.1', app.server_port)
+                conn.request('GET', f'/assets/brand/{asset}')
+                response = conn.getresponse()
+                self.assertEqual(response.status, 200)
+                self.assertEqual(response.read(), (server.PUBLIC / 'assets' / 'brand' / asset).read_bytes())
+                conn.close()
+            conn = HTTPConnection('127.0.0.1', app.server_port)
+            conn.request('GET', '/assets/brand/../../brand.config.json')
+            response = conn.getresponse()
+            self.assertEqual(response.status, 404)
+            response.read()
+            conn.close()
             with patch('server.send_inquiry') as send:
                 self.assertEqual(request()[0], 200)
                 send.assert_called_once()
