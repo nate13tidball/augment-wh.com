@@ -25,3 +25,5 @@
 .form-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
 @media(max-width:800px){.contact-grid{grid-template-columns:1fr;gap:35px}}
 @media(max-width:400px){.form-row{grid-template-columns:1fr;gap:0}}
+
+.contact-actions{display:flex;flex-wrap:wrap;gap:16px}

@@ -73,8 +73,9 @@ and deployment are owned by Nathan's separate hosting task.
 GitHub repository: https://github.com/nate13tidball/augment-wh.com
 GitHub Pages: https://nate13tidball.github.io/augment-wh.com/
 The Pages workflow publishes only public/ on pushes to main. GitHub Pages cannot
-run the Python backend; the form is explicitly unavailable on github.io, with a
-LinkedIn fallback. Before enabling it, configure and verify a hosted email API.
+run the Python backend; the form is explicitly unavailable on github.io, with
+direct email and Google Calendar booking links available instead. Before enabling
+the form, configure and verify a hosted email API.
 DNS for augment-wh.com remains owned by the separate hosting task.
 
 ## Content status
@@ -86,8 +87,11 @@ commissioning-workspace concept. This is an early-stage business page, not a cla
 of deployed software, customers, results, or finished integrations. The 4-6 week
 pilot is labeled proposed and depends on scope and data readiness.
 
-Nathan's existing public LinkedIn URL remains a fallback contact destination. The
-inquiry form's recipient email was requested and still needs confirmation.
+Direct email opens the visitor's mail app addressed to `ntidball@augment-wh.com`.
+The meeting link uses `https://nathantidball.com/meet`, which forwards to Nathan's
+Google Calendar booking page. Deploy that route in the personal-site repository
+before publishing this link. Both work on static hosting without the form backend. The inquiry form still requires its separate
+recipient/SMTP configuration and delivery verification.
 Review brand, offer, biography, and contact details before publication.
 
 ## Sources and design references

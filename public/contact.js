@@ -2,7 +2,7 @@ const form = document.querySelector('#inquiry-form');
 const status = document.querySelector('#form-status');
 if (location.hostname.endsWith('.github.io')) {
   form.querySelector('button').disabled = true;
-  status.textContent = 'Email inquiries are coming soon. Please contact Nathan using the LinkedIn link.';
+  status.textContent = 'This form is unavailable on this site. Please email Nathan directly or schedule a meeting using the links provided.';
   form.prepend(status);
   form.querySelectorAll('input, select, textarea').forEach(field => { field.disabled = true; });
 }
@@ -25,9 +25,9 @@ form.addEventListener('submit', async (event) => {
     form.reset();
   } catch (error) {
     status.textContent = error.name === 'TimeoutError'
-      ? 'Delivery could not be confirmed. Please contact us on LinkedIn before retrying.'
+      ? 'Delivery could not be confirmed. Please email Nathan directly before retrying.'
       : (error instanceof TypeError || error instanceof SyntaxError)
-        ? 'The inquiry service is unavailable. Your details are still here. Please try again later or contact us on LinkedIn.'
+        ? 'The inquiry service is unavailable. Your details are still here. Please try again later, email Nathan directly, or schedule a meeting.'
         : error.message;
   } finally {
     button.disabled = false;
