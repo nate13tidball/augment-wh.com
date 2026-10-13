@@ -96,12 +96,29 @@ commissioning-workspace concept. This is an early-stage business page, not a cla
 of deployed software, customers, results, or finished integrations. The 4-6 week
 pilot is labeled proposed and depends on scope and data readiness.
 
-Direct email opens the visitor's mail app addressed to `ntidball@augment-wh.com`.
-The meeting link uses `https://nathantidball.com/meet`, which forwards to Nathan's
-Google Calendar booking page. Deploy that route in the personal-site repository
-before publishing this link. Both work on static hosting without the form backend. The inquiry form still requires its separate
-recipient/SMTP configuration and delivery verification.
-Review brand, offer, biography, and contact details before publication.
+## Contact link configuration
+
+Edit **`public/site-config.json`** to change these destinations without editing HTML:
+
+- `email`: address used by the email/outreach button.
+- `meetingUrl`: public booking link, currently `https://augment-wh.com/meet`.
+- `bookingUrl`: Google Calendar destination used by `/meet`.
+
+The homepage loads this file with caching disabled. `/meet` and `/meet/` redirect
+to `bookingUrl`: the Python server sends a temporary HTTP redirect; static hosts
+serve `public/meet/index.html`, which redirects using JavaScript. Static hosting
+must support directory index pages. JavaScript is required for the homepage
+contact links and the static booking redirect; the booking page includes a
+manual continue link once configuration loads.
+
+Deploy the updated config with the site; edits on an unpushed branch do not change
+production. Configure the host/CDN to revalidate `site-config.json` if it applies
+long-lived caching. Values in this file are public; keep credentials out of it.
+The inquiry form's SMTP recipient remains the separate `INQUIRY_TO` environment
+variable. Change that too if incoming form messages should go to a new inbox.
+
+Checks: `python3 -m unittest -v` and `node test_site_links.mjs` (Node is only used
+for this development check; the website still has no build step).
 
 ## Ouros template adaptation
 

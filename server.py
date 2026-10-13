@@ -87,8 +87,22 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # An explicit public-file list prevents traversal and accidental repo exposure.
         path = urlsplit(self.path).path
+        if path in ('/meet', '/meet/', '/meet/index.html'):
+            try:
+                destination = json.loads((PUBLIC / 'site-config.json').read_text())['bookingUrl']
+                if urlsplit(destination).scheme != 'https' or any(c in destination for c in '\r\n'):
+                    raise ValueError('Invalid booking URL.')
+            except (OSError, ValueError, KeyError, TypeError):
+                return self.reply(503, b'Booking is unavailable. Please try again later.', 'text/plain')
+            self.send_response(302)
+            self.send_header('Location', destination)
+            self.send_header('Cache-Control', 'no-store')
+            self.send_header('Content-Length', '0')
+            self.end_headers()
+            return
         files = {'/': 'index.html', '/index.html': 'index.html', '/styles.css': 'styles.css',
-                 '/contact.js': 'contact.js', '/assets/bess.jpg': 'assets/bess.jpg',
+                 '/contact.js': 'contact.js', '/site-links.js': 'site-links.js',
+                 '/site-config.json': 'site-config.json', '/assets/bess.jpg': 'assets/bess.jpg',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
         for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
             files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'
