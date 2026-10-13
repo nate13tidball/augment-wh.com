@@ -102,7 +102,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         files = {'/': 'index.html', '/index.html': 'index.html', '/styles.css': 'styles.css',
                  '/contact.js': 'contact.js', '/site-links.js': 'site-links.js',
-                 '/site-config.json': 'site-config.json', '/assets/bess.jpg': 'assets/bess.jpg',
+                 '/site-config.json': 'site-config.json', '/interactions.js': 'interactions.js', '/assets/bess.jpg': 'assets/bess.jpg',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
         for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
             files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'

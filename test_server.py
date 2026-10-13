@@ -49,7 +49,7 @@ class InquiryTests(unittest.TestCase):
                 self.assertEqual(response.status, 200)
                 self.assertEqual(response.read(), (server.PUBLIC / 'assets' / 'brand' / asset).read_bytes())
                 conn.close()
-            for path in ('/site-links.js', '/site-config.json'):
+            for path in ('/site-links.js', '/site-config.json', '/interactions.js'):
                 conn = HTTPConnection('127.0.0.1', app.server_port)
                 conn.request('GET', path)
                 response = conn.getresponse()

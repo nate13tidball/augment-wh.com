@@ -135,7 +135,10 @@ for this development check; the website still has no build step).
 The `design/ouros-template` branch adapts the saved Ouros Materials starter from
 `../nathantidball.com/web-templates/ouros-materials/`: oversized typography,
 rounded hero photography, numbered sections, neutral cards, a dark pilot section,
-and a large contact footer. The page uses Augment-wh's existing content, brand
+and a large contact footer. It now includes scroll entrances, word-by-word heading
+reveals, an expanding fixed menu, and animated pilot-scope disclosures reconstructed
+from the public Framer source maps. See [interaction evidence and checks](docs/ouros-interactions.md).
+The page uses Augment-wh's existing content, brand
 assets, and licensed BESS photograph. The source reference and screenshots remain
 in the personal-site repository.
 

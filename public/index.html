@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="site-links.js" defer></script>
   <script src="contact.js" defer></script>
+  <script src="interactions.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -26,55 +27,69 @@
   </header>
   <main id="main">
     <section class="hero wrap" aria-labelledby="hero-title">
-      <div class="hero-heading"><h1 id="hero-title">Augment-wh</h1><p>Battery capacity.<br>Better planned.</p></div>
-      <figure class="hero-media">
+      <div class="hero-heading"><h1 data-reveal id="hero-title">Augment-wh</h1><p data-reveal>Battery capacity.<br>Better planned.</p></div>
+      <figure class="hero-media" data-reveal>
         <img src="assets/bess.jpg" alt="Rows of utility-scale battery enclosures at the Reid Gardner energy storage site in Nevada" width="4032" height="3024" fetchpriority="high">
         <figcaption><span>Capacity planning for grid-scale storage</span><a href="#approach" aria-label="Explore our approach">↓</a></figcaption>
       </figure>
     </section>
 
     <section class="section wrap" id="approach" aria-labelledby="approach-title">
-      <div class="section-label"><span>/ The challenge</span><span>(01)</span></div>
+      <div class="section-label" data-reveal><span>/ The challenge</span><span>(01)</span></div>
       <h2 class="statement" id="approach-title"><strong>Your asset changes. Your plan should, too.</strong> Connect battery degradation, site constraints, and project economics to decide when and how to augment.</h2>
       <div class="section-heading"><p class="section-copy">Nameplate capacity is a starting point. It isn't a lifetime plan. We're developing a planning approach that connects the battery's operating history with the realities of the site and the economics of augmentation.</p><span class="audience">For asset owners, storage engineers,<br>and investment teams.</span></div>
       <div class="tiles">
-        <article class="tile"><span class="tile-number">01 / Capacity</span><h3>Understand<br>what you have.</h3><p>Bring together operating history, capacity tests, and degradation assumptions to assess how usable energy could change.</p><p class="output">Degradation &amp; duration outlook</p></article>
-        <article class="tile"><span class="tile-number">02 / Options</span><h3>Plan what<br>comes next.</h3><p>Evaluate low-voltage and medium-voltage augmentation against physical space, electrical limits, controls, and warranty constraints.</p><p class="output">LV / MV / no-action comparison</p></article>
-        <article class="tile"><span class="tile-number">03 / Investment</span><h3>Make the<br>capital case.</h3><p>Connect timing, cost, outage assumptions, and potential capacity recovery so engineering and finance can assess the same decision.</p><p class="output">An investment decision memo</p></article>
+        <article class="tile" data-reveal><span class="tile-number">01 / Capacity</span><h3>Understand<br> what you have.</h3><p>Bring together operating history, capacity tests, and degradation assumptions to assess how usable energy could change.</p><p class="output">Degradation &amp; duration outlook</p></article>
+        <article class="tile" data-reveal><span class="tile-number">02 / Options</span><h3>Plan what<br> comes next.</h3><p>Evaluate low-voltage and medium-voltage augmentation against physical space, electrical limits, controls, and warranty constraints.</p><p class="output">LV / MV / no-action comparison</p></article>
+        <article class="tile" data-reveal><span class="tile-number">03 / Investment</span><h3>Make the<br> capital case.</h3><p>Connect timing, cost, outage assumptions, and potential capacity recovery so engineering and finance can assess the same decision.</p><p class="output">An investment decision memo</p></article>
       </div>
     </section>
 
     <section class="section wrap" id="process" aria-labelledby="process-title">
-      <div class="section-label"><span>/ From evidence to action</span><span>(02)</span></div>
+      <div class="section-label" data-reveal><span>/ From evidence to action</span><span>(02)</span></div>
       <div class="split"><div class="intro"><h2 id="process-title">One shared view.<br>From site to finance.</h2><p>Start with the data you have. Make the assumptions visible. Test the options that matter.</p><a class="pill" href="#pilot">Explore the pilot <span aria-hidden="true">↗</span></a></div>
         <ol class="steps">
-          <li><span>01</span><div><h3>Establish the baseline</h3><p>Site configuration, operating history, capacity tests, and warranty terms.</p></div></li>
-          <li><span>02</span><div><h3>Model the tradeoffs</h3><p>Capacity trajectories, augmentation timing, site feasibility, and commercial sensitivities.</p></div></li>
-          <li><span>03</span><div><h3>Build the decision</h3><p>A comparison of options, key uncertainties, and the next engineering questions to resolve.</p></div></li>
+          <li data-reveal><span>01</span><div><h3>Establish the baseline</h3><p>Site configuration, operating history, capacity tests, and warranty terms.</p></div></li>
+          <li data-reveal><span>02</span><div><h3>Model the tradeoffs</h3><p>Capacity trajectories, augmentation timing, site feasibility, and commercial sensitivities.</p></div></li>
+          <li data-reveal><span>03</span><div><h3>Build the decision</h3><p>A comparison of options, key uncertainties, and the next engineering questions to resolve.</p></div></li>
         </ol>
       </div>
     </section>
 
     <section class="dark section" id="pilot" aria-labelledby="pilot-title"><div class="wrap">
-      <div class="section-label"><span>/ Start with one asset</span><span>(03)</span></div>
-      <div class="split pilot-grid">
-        <div class="intro"><p class="eyebrow">The augmentation decision pilot</p><h2 id="pilot-title">One asset.<br>One consequential<br>decision.</h2><p>We're speaking with owners and developers of grid-scale storage about an initial pilot focused on one operating asset or late-stage project.</p><a class="pill light" href="#contact">Discuss your project <span aria-hidden="true">↗</span></a><div class="tags"><span>Capacity</span><span>Augmentation</span><span>Investment</span></div></div>
-        <div class="pilot-scope"><p class="eyebrow">Proposed pilot scope</p><dl>
-          <div><dt>Starting point</dt><dd>One asset. One capacity decision.</dd></div>
-          <div><dt>Planning window</dt><dd>4 to 6 weeks, subject to scope and data readiness.</dd></div>
-          <div><dt>Decision outputs</dt><dd>Capacity outlook, augmentation options, timing considerations, and an investment memo.</dd></div>
-          <div><dt>What we'll need</dt><dd>Site topology, operating and capacity-test records, warranty terms, and cost and revenue assumptions.</dd></div>
-        </dl></div>
+      <div class="section-label" data-reveal><span>/ Start with one asset</span><span>(03)</span></div>
+      <div class="split pilot-grid" data-reveal>
+        <div><p class="eyebrow">The augmentation decision pilot</p><h2 id="pilot-title">One asset.<br>One consequential<br>decision.</h2></div>
+        <div class="intro"><p>We're speaking with owners and developers of grid-scale storage about an initial pilot focused on one operating asset or late-stage project.</p><a class="pill light" href="#contact">Discuss your project <span aria-hidden="true">↗</span></a><div class="tags"><span>Capacity</span><span>Augmentation</span><span>Investment</span></div></div>
+      </div>
+      <div class="pilot-scope">
+        <p class="eyebrow" data-reveal>Proposed pilot scope</p>
+        <details class="scope-item" data-reveal>
+          <summary><span class="scope-preview" aria-hidden="true"><span>01</span><img src="assets/bess.jpg" alt="" width="112" height="64" loading="lazy"></span><h3>Starting point</h3><span class="scope-icon" aria-hidden="true">+</span></summary>
+          <div class="scope-body"><p>One asset. One capacity decision.</p><div class="tags"><span>Operating asset</span><span>Late-stage project</span></div></div>
+        </details>
+        <details class="scope-item" data-reveal>
+          <summary><span class="scope-preview" aria-hidden="true"><span>02</span><img src="assets/bess.jpg" alt="" width="112" height="64" loading="lazy"></span><h3>Planning window</h3><span class="scope-icon" aria-hidden="true">+</span></summary>
+          <div class="scope-body"><p>4 to 6 weeks, subject to scope and data readiness.</p><div class="tags"><span>Focused scope</span><span>Data readiness</span></div></div>
+        </details>
+        <details class="scope-item" data-reveal>
+          <summary><span class="scope-preview" aria-hidden="true"><span>03</span><img src="assets/bess.jpg" alt="" width="112" height="64" loading="lazy"></span><h3>Decision outputs</h3><span class="scope-icon" aria-hidden="true">+</span></summary>
+          <div class="scope-body"><p>Capacity outlook, augmentation options, timing considerations, and an investment memo.</p><div class="tags"><span>Capacity outlook</span><span>LV / MV / no action</span><span>Investment memo</span></div></div>
+        </details>
+        <details class="scope-item" data-reveal>
+          <summary><span class="scope-preview" aria-hidden="true"><span>04</span><img src="assets/bess.jpg" alt="" width="112" height="64" loading="lazy"></span><h3>What we'll need</h3><span class="scope-icon" aria-hidden="true">+</span></summary>
+          <div class="scope-body"><p>Site topology, operating and capacity-test records, warranty terms, and cost and revenue assumptions.</p><div class="tags"><span>Site records</span><span>Warranty terms</span><span>Commercial assumptions</span></div></div>
+        </details>
       </div>
     </div></section>
 
     <section class="section wrap" id="team" aria-labelledby="team-title">
-      <div class="section-label"><span>/ Grounded in the asset</span><span>(04)</span></div>
-      <div class="split"><h2 id="team-title">Battery engineering.<br>With the whole<br>site in view.</h2><div class="team-copy"><p class="lead">Founded on practical experience in battery degradation, augmentation strategy, and technical modeling.</p><p>Our work brings together energy storage and chemical engineering expertise to connect battery behavior with long-term asset decisions.</p><p>Augment-wh's initial focus is capacity and augmentation planning, with a longer-term vision for lifecycle intelligence across battery storage assets.</p><a href="https://linkedin.com/in/nathantidball">Connect with us on LinkedIn <span aria-hidden="true">↗</span></a></div></div>
+      <div class="section-label" data-reveal><span>/ Grounded in the asset</span><span>(04)</span></div>
+      <div class="split"><h2 id="team-title">Battery engineering.<br>With the whole<br>site in view.</h2><div class="team-copy" data-reveal><p class="lead">Founded on practical experience in battery degradation, augmentation strategy, and technical modeling.</p><p>Our work brings together energy storage and chemical engineering expertise to connect battery behavior with long-term asset decisions.</p><p>Augment-wh's initial focus is capacity and augmentation planning, with a longer-term vision for lifecycle intelligence across battery storage assets.</p><a href="https://linkedin.com/in/nathantidball">Connect with us on LinkedIn <span aria-hidden="true">↗</span></a></div></div>
     </section>
 
     <section class="section wrap questions" aria-labelledby="faq-title">
-      <div class="section-label"><span>/ A few practical questions</span><span>(05)</span></div>
+      <div class="section-label" data-reveal><span>/ A few practical questions</span><span>(05)</span></div>
       <div class="split"><h2 id="faq-title">Before we talk.</h2><div class="faq">
       <details><summary>Is this a live software platform?</summary><p>Augment-wh is in development. We're exploring pilot projects and refining the initial capacity and augmentation planning workflow with potential customers.</p></details>
       <details><summary>Does this replace our EMS or control the site?</summary><p>The proposed pilot is an analysis and planning engagement. It does not issue dispatch commands or replace your energy management system, plant controller, or engineering approval process.</p></details>
@@ -83,7 +98,7 @@
     </section>
 
     <section class="section wrap contact" id="contact" aria-labelledby="contact-title">
-      <div class="section-label"><span>/ Let's talk capacity</span><span>(06)</span></div>
+      <div class="section-label" data-reveal><span>/ Let's talk capacity</span><span>(06)</span></div>
       <div class="split"><div class="intro"><h2 id="contact-title">What's next for<br>your battery asset?</h2><p>Tell us about your project or request a quote. Email us directly or schedule a meeting.</p>
         <div class="contact-actions"><a class="pill" data-contact-link="email">Email us <span aria-hidden="true">↗</span></a><a class="pill secondary" data-contact-link="meetingUrl" target="_blank" rel="noopener noreferrer">Schedule a meeting <span aria-hidden="true">↗</span></a></div>
         <p id="contact-link-status" role="status"></p><noscript><p>Enable JavaScript to load the email and booking links.</p></noscript><a class="text-link" href="https://linkedin.com/in/nathantidball">Connect with us on LinkedIn <span aria-hidden="true">↗</span></a>
