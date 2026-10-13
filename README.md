@@ -100,8 +100,13 @@ pilot is labeled proposed and depends on scope and data readiness.
 
 Edit **`public/site-config.json`** to change these destinations without editing HTML:
 
-- `email`: address used by the email/outreach button.
-- `meetingUrl`: public booking link, currently `https://augment-wh.com/meet`.
+- `email`: primary address used by the email/outreach button.
+- `emailCc`: CC address for that button, currently `nate.tidball@gmail.com`; use an
+  empty string to omit the CC.
+- `meetingUrl`: `./meet`, resolved relative to the deployed site. This becomes
+  `https://augment-wh.com/meet` in production and `http://127.0.0.1:8092/meet`
+  in the default local preview. It also preserves GitHub Pages subdirectory paths.
+  An absolute URL can be used to intentionally override this host-relative behavior.
 - `bookingUrl`: Google Calendar destination used by `/meet`.
 
 The homepage loads this file with caching disabled. `/meet` and `/meet/` redirect
@@ -116,6 +121,11 @@ production. Configure the host/CDN to revalidate `site-config.json` if it applie
 long-lived caching. Values in this file are public; keep credentials out of it.
 The inquiry form's SMTP recipient remains the separate `INQUIRY_TO` environment
 variable. Change that too if incoming form messages should go to a new inbox.
+`emailCc` applies to the mailto button, not the server-delivered inquiry form.
+
+For a NUC preview, keep the Mac `nuc` connection open and visit
+`http://127.0.0.1:8092/`. The meeting button stays on that local server before
+redirecting to the configured Google Calendar destination.
 
 Checks: `python3 -m unittest -v` and `node test_site_links.mjs` (Node is only used
 for this development check; the website still has no build step).

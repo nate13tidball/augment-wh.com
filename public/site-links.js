@@ -6,9 +6,12 @@ fetch(configUrl, { cache: 'no-store' })
     return response.json();
   })
   .then(config => {
+    const emailQuery = config.emailCc ? `?${new URLSearchParams({ cc: config.emailCc })}` : '';
+    const meetingUrl = new URL(config.meetingUrl, configUrl).href;
     document.querySelectorAll('[data-contact-link]').forEach(link => {
       const key = link.dataset.contactLink;
-      link.href = key === 'email' ? `mailto:${config.email}` : config[key];
+      link.href = key === 'email' ? `mailto:${config.email}${emailQuery}`
+        : key === 'meetingUrl' ? meetingUrl : config[key];
     });
     if (document.body.hasAttribute('data-booking-redirect')) {
       location.replace(config.bookingUrl);
