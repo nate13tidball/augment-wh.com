@@ -62,6 +62,15 @@ Checks: `python3 -m unittest -v test_server.py` (mocked SMTP, no email sent).
 Recipient and real SMTP delivery still need configuration and a live delivery
 test before publishing the form as operational.
 
+## Production deployment
+
+**`main` is continuously deployed to the live production website.** Nathan
+confirmed this on 2026-10-12. Whatever is pushed to `main`, including a force
+push, is what production displays after deployment completes.
+
+Keep design changes on a feature branch for review. Updating `main` is a
+production release; creating a feature branch alone does not change production.
+
 ## Hosting handoff
 
 Serve **only `public/`** as the document root. Do not serve the repository root,
@@ -93,6 +102,21 @@ Google Calendar booking page. Deploy that route in the personal-site repository
 before publishing this link. Both work on static hosting without the form backend. The inquiry form still requires its separate
 recipient/SMTP configuration and delivery verification.
 Review brand, offer, biography, and contact details before publication.
+
+## Ouros template adaptation
+
+The `design/ouros-template` branch adapts the saved Ouros Materials starter from
+`../nathantidball.com/web-templates/ouros-materials/`: oversized typography,
+rounded hero photography, numbered sections, neutral cards, a dark pilot section,
+and a large contact footer. The page uses Augment-wh's existing content, brand
+assets, and licensed BESS photograph. The source reference and screenshots remain
+in the personal-site repository.
+
+The existing inquiry API, form fields, GitHub Pages form guard, email link, and
+booking link are retained. The single-page layout needs no build step or new
+dependencies. Preview with `python3 -m http.server 8092 --bind 127.0.0.1 --directory public`
+and open `http://127.0.0.1:8092/` (static preview only; inquiry delivery requires
+the configured Python backend).
 
 ## Sources and design references
 
