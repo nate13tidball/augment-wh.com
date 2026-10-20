@@ -91,10 +91,10 @@ DNS for augment-wh.com remains owned by the separate hosting task.
 
 Confirmed company name: **Augment-wh**, with **Aa** as its compact lettermark.
 The website uses the selected brand assets described above. Positioning is based on
-the lifecycle/augmentation proposal in `EMS_Startups`, not its separate
-commissioning-workspace concept. This is an early-stage business page, not a claim
-of deployed software, customers, results, or finished integrations. The 4-6 week
-pilot is labeled proposed and depends on scope and data readiness.
+the company's augmentation work and founder expertise in storage controls,
+deployment, commissioning, and lifecycle engineering. The page describes an
+initial operating-site augmentation study without naming the customer or site. It
+does not claim a deployed software product, guaranteed outcome, or completed project.
 
 ## Contact link configuration
 
@@ -134,13 +134,12 @@ for this development check; the website still has no build step).
 
 The `design/ouros-template` branch adapts the saved Ouros Materials starter from
 `../nathantidball.com/web-templates/ouros-materials/`: oversized typography,
-rounded hero photography, numbered sections, neutral cards, a dark pilot section,
+a technical electrical-diagram hero, numbered sections, neutral cards, a dark engagement section,
 and a large contact footer. It now includes scroll entrances, word-by-word heading
 reveals, an expanding fixed menu, and animated pilot-scope disclosures reconstructed
 from the public Framer source maps. See [interaction evidence and checks](docs/ouros-interactions.md).
-The page uses Augment-wh's existing content, brand
-assets, and licensed BESS photograph. The source reference and screenshots remain
-in the personal-site repository.
+The page uses Augment-wh's existing content and brand assets. The source reference
+and screenshots remain in the personal-site repository.
 
 The existing inquiry API, form fields, GitHub Pages form guard, email link, and
 booking link are retained. The single-page layout needs no build step or new
@@ -158,8 +157,4 @@ the configured Python backend).
   for a decision-oriented story connecting battery data to action.
 - Original implementation and copy. No competitor source code, branding,
   testimonials, customer logos, or proprietary assets were copied.
-- `public/assets/bess.jpg`: [Reid Gardner BESS by Sig. Chiocciola](https://commons.wikimedia.org/wiki/File:Reid_Gardner_BESS.jpg),
-  [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), downloaded unchanged.
-  This industry-context photograph does not represent an Augment Wh installation.
-
 Keep private research, prospect data, and credentials out of the public directory.

@@ -13,7 +13,7 @@ from urllib.parse import urlsplit
 import mimetypes
 
 PUBLIC = Path(__file__).resolve().parent / 'public'
-KINDS = {'General inquiry', 'Request a quote', 'Discuss a pilot'}
+KINDS = {'General inquiry', 'Request a quote', 'Discuss augmentation'}
 LIMITS = {'name': 120, 'email': 254, 'company': 180, 'kind': 40, 'message': 5000, 'website': 200}
 lock = Lock()
 attempts = []
@@ -104,7 +104,7 @@ class Handler(BaseHTTPRequestHandler):
                  '/email': 'email/index.html', '/email/': 'email/index.html',
                  '/email/index.html': 'email/index.html',
                  '/contact.js': 'contact.js', '/site-links.js': 'site-links.js',
-                 '/site-config.json': 'site-config.json', '/interactions.js': 'interactions.js', '/assets/bess.jpg': 'assets/bess.jpg',
+                 '/site-config.json': 'site-config.json', '/interactions.js': 'interactions.js',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
         for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
             files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'
