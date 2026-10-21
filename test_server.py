@@ -68,14 +68,14 @@ class InquiryTests(unittest.TestCase):
                 self.assertEqual(response.getheader('Cache-Control'), 'no-store')
                 response.read()
                 conn.close()
-            for path, expected in (('/presentations/novasource', 200), ('/presentations/unknown-company', 404)):
+            for path, expected in (('/presentations/', 200), ('/presentations/novasource', 308), ('/presentations/novasource/', 200), ('/presentations/unknown-company', 404)):
                 conn = HTTPConnection('127.0.0.1', app.server_port)
                 conn.request('GET', path)
                 response = conn.getresponse()
                 self.assertEqual(response.status, expected)
                 response.read()
                 conn.close()
-            for path in ('/presentations/companies.json', '/presentations/presentation.js', '/presentations/presentation.css'):
+            for path in ('/presentations/companies.json', '/presentations/directory.js', '/presentations/presentation.js', '/presentations/presentation.css'):
                 conn = HTTPConnection('127.0.0.1', app.server_port)
                 conn.request('GET', path)
                 response = conn.getresponse()

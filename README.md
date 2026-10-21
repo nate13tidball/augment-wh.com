@@ -51,12 +51,12 @@ SMTP uses verified STARTTLS (587 default) or implicit TLS (`SMTP_TLS=implicit`,
 password-based SMTP; use an authorized SMTP relay/account supported by its provider.
 
 For local form testing set `INQUIRY_ORIGINS=http://127.0.0.1:8091`.
-The production proxy should forward `/api/inquiry` to `http://127.0.0.1:8091`;
-it can serve public/ directly or proxy all traffic to this server. Terminate TLS
-and enforce request/concurrency limits at the reverse proxy. The API has a 32 KiB
-body limit, honeypot, origin checks, field validation, and a process-local limit of
-20 mail attempts per hour. This basic global limit resets on restart and can be
-exhausted by spam; use proxy-level abuse controls for a public launch.
+For a self-hosted deployment, a reverse proxy can forward `/api/inquiry` to the
+local Python server. That loopback URL is not a Vercel backend: production on
+Vercel needs a Vercel Function or an external API route. The API has a 32 KiB body
+limit, honeypot, origin checks, field validation, and a process-local limit of 20
+mail attempts per hour. This basic global limit resets on restart and can be
+exhausted by spam; use platform-level abuse controls for a public launch.
 
 Checks: `python3 -m unittest -v test_server.py` (mocked SMTP, no email sent).
 Recipient and real SMTP delivery still need configuration and a live delivery
@@ -64,12 +64,14 @@ test before publishing the form as operational.
 
 ## Production deployment
 
-**`main` is continuously deployed to the live production website.** Nathan
-confirmed this on 2026-10-12. Whatever is pushed to `main`, including a force
-push, is what production displays after deployment completes.
+**Vercel is the current production host for augment-wh.com.** Nathan confirmed
+this on 2026-10-21. The Vercel project and its deployment settings live in the
+Vercel dashboard; this repository currently has no `vercel.json`. Before changing
+deployment behavior, verify the connected Vercel project and its production branch.
 
-Keep design changes on a feature branch for review. Updating `main` is a
-production release; creating a feature branch alone does not change production.
+This repository also has a GitHub Pages workflow that publishes `public/` when
+`main` changes. It is a secondary/legacy deployment path; Vercel is the current
+canonical host per Nathan. GitHub Pages cannot run the Python backend.
 
 ## Hosting handoff
 
@@ -77,16 +79,17 @@ Serve **only `public/`** as the document root. Do not serve the repository root,
 `.git`, or `docs`. The company presentation demo loads company favicon marks from
 Google's favicon service; the rest of the site's assets are local. Configure the
 web server to return `public/404.html` with an HTTP 404 status for missing paths.
-DNS, TLS, tunnel configuration, system services, and deployment are owned by
-Nathan's separate hosting task.
+Vercel's project root/output settings are managed in its dashboard, not this repo.
+`server.py` is a local loopback server; Vercel will not run it as a persistent
+server just because it is present. If the inquiry API is expected to work in
+production, verify that `/api/inquiry` is connected to a Vercel Function or an
+external backend/proxy.
 
 GitHub repository: https://github.com/nate13tidball/augment-wh.com
 GitHub Pages: https://nate13tidball.github.io/augment-wh.com/
-The Pages workflow publishes only public/ on pushes to main. GitHub Pages cannot
-run the Python backend; the form is explicitly unavailable on github.io, with
-direct email and Google Calendar booking links available instead. Before enabling
-the form, configure and verify a hosted email API.
-DNS for augment-wh.com remains owned by the separate hosting task.
+The Pages workflow publishes only `public/` on pushes to `main`; its form cannot
+use the Python backend. Keep this fallback deployment's limitations distinct
+from the Vercel production deployment.
 
 ## Content status
 
@@ -126,9 +129,36 @@ variable. Change that too if incoming form messages should go to a new inbox.
 
 ## Company presentation demos
 
-`public/presentations/companies.json` is an editable starter index for `/presentations/<slug>/` pages. All listed companies use one shared demo presentation in `presentation.js`; add a company entry and matching folder shell to add a route. Set an entry's optional `presentation` field to an HTML filename in that company's folder (for example, `custom.html`) to use a company-specific presentation instead. The page shows the current date and a clear demo notice; its sample claims do not imply a customer relationship, meeting, or completed assessment. Company marks currently use site favicons via Google's favicon service, with initials as a fallback. Replace these with approved local logo assets before making a real customer-facing deck.
+The homepage navigation links to the company library at `/presentations/`. `public/presentations/companies.json` is an editable starter index for `/presentations/<slug>/` pages. All listed companies use one shared demo presentation in `presentation.js`; add a company entry and matching folder shell to add a route. Set an entry's optional `presentation` field to an HTML filename in that company's folder (for example, `custom.html`) to use a company-specific presentation instead. The page shows the current date and a clear demo notice; its sample claims do not imply a customer relationship, meeting, or completed assessment. Company marks currently use site favicons via Google's favicon service, with initials as a fallback. Replace these with approved local logo assets before making a real customer-facing deck.
 
 The starter list spans renewable asset operations, project developers/owners, and storage providers; it is not a claim that every company is a direct NovaSource competitor. Trimark describes controls/services across battery storage and other generation types ([company overview](https://trimarkassoc.com/company/)); NovaSource describes BESS operations and maintenance ([BESS services](https://www.novasourcepower.com/services/battery-energy-storage-systems-bess/)); DESRI describes developing, owning, and operating renewable and storage assets ([DESRI](https://desri.com/)); Plus Power describes developing, owning, and operating standalone battery projects ([company overview](https://www.pluspower.com/about/)).
+
+## Admin access and cookies
+
+The site currently has no visitor login, admin panel, session handling, or
+first-party cookie code. On 2026-10-21, the live homepage and a presentation page
+both returned no `Set-Cookie` header (the homepage first redirects to its
+canonical HTTPS URL). This does not inspect browser cookies for other sites or
+cookies from third-party services; company favicon images are requested from
+Google.
+
+Vercel can support secure auth cookies through a server-side app/function; see
+[Sign in with Vercel](https://vercel.com/docs/sign-in-with-vercel/getting-started).
+Do not use a client-only password check for an admin area: the protected data and
+write endpoint also need server-side authorization.
+
+If the goal is only to restrict the entire site, Vercel's [deployment password
+protection](https://vercel.com/docs/deployment-protection/methods-to-protect-deployments/password-protection)
+is simpler than building a login page, but it does not provide an editor and makes
+the whole deployment private.
+
+If browser-based editing of company records and presentations is wanted, the
+[Vercel Payload Website Starter](https://vercel.com/templates/cms/payload-website-starter)
+is a ready-to-clone/deploy CMS with an authenticated `/admin`, access control,
+database, and media storage. It is a Next.js/Payload platform and would require
+migrating this site's current HTML/CSS and JSON content model; it is not a drop-in
+login page. For the current small list, editing `companies.json` and deploying is
+still the simplest workflow. A login UI alone would not make that workflow editable.
 
 For a NUC preview, keep the Mac `nuc` connection open and visit
 `http://127.0.0.1:8092/`. The meeting button stays on that local server before

@@ -91,8 +91,14 @@ class Handler(BaseHTTPRequestHandler):
             parts = path.removeprefix('/presentations/').strip('/').split('/')
             companies = json.loads((PUBLIC / 'presentations/companies.json').read_text())
             company = next((item for item in companies if item['slug'] == parts[0].lower()), None)
-            if company and path.rstrip('/') == f"/presentations/{company['slug']}":
-                return self.reply(200, (PUBLIC / 'presentations/index.html').read_bytes(), 'text/html; charset=utf-8')
+            if company and len(parts) == 1 and not path.endswith('/'):
+                self.send_response(308)
+                self.send_header('Location', f"/presentations/{company['slug']}/")
+                self.send_header('Content-Length', '0')
+                self.end_headers()
+                return
+            if company and len(parts) == 1 and path.endswith('/'):
+                return self.reply(200, (PUBLIC / 'presentations/template.html').read_bytes(), 'text/html; charset=utf-8')
             custom = company.get('presentation') if company else None
             custom_path = f"/presentations/{company['slug']}/{custom}" if isinstance(custom, str) and custom and Path(custom).name == custom else None
             if company and custom_path == path:
@@ -119,7 +125,10 @@ class Handler(BaseHTTPRequestHandler):
                  '/email': 'email/index.html', '/email/': 'email/index.html',
                  '/email/index.html': 'email/index.html',
                  '/contact.js': 'contact.js', '/site-links.js': 'site-links.js',
+                 '/presentations/': 'presentations/index.html',
+                 '/presentations/index.html': 'presentations/index.html',
                  '/presentations/companies.json': 'presentations/companies.json',
+                 '/presentations/directory.js': 'presentations/directory.js',
                  '/presentations/presentation.css': 'presentations/presentation.css',
                  '/presentations/presentation.js': 'presentations/presentation.js',
                  '/site-config.json': 'site-config.json', '/interactions.js': 'interactions.js',
