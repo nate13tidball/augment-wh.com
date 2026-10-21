@@ -74,10 +74,11 @@ production release; creating a feature branch alone does not change production.
 ## Hosting handoff
 
 Serve **only `public/`** as the document root. Do not serve the repository root,
-`.git`, or `docs`. All deployed assets are local; no third-party fetches are needed
-to render the page. Configure the web server to return `public/404.html` with an
-HTTP 404 status for missing paths. DNS, TLS, tunnel configuration, system services,
-and deployment are owned by Nathan's separate hosting task.
+`.git`, or `docs`. The company presentation demo loads company favicon marks from
+Google's favicon service; the rest of the site's assets are local. Configure the
+web server to return `public/404.html` with an HTTP 404 status for missing paths.
+DNS, TLS, tunnel configuration, system services, and deployment are owned by
+Nathan's separate hosting task.
 
 GitHub repository: https://github.com/nate13tidball/augment-wh.com
 GitHub Pages: https://nate13tidball.github.io/augment-wh.com/
@@ -122,6 +123,12 @@ long-lived caching. Values in this file are public; keep credentials out of it.
 The inquiry form's SMTP recipient remains the separate `INQUIRY_TO` environment
 variable. Change that too if incoming form messages should go to a new inbox.
 `emailCc` applies to the mailto button, not the server-delivered inquiry form.
+
+## Company presentation demos
+
+`public/presentations/companies.json` is an editable starter index for `/presentations/<slug>/` pages. All listed companies use one shared demo presentation in `presentation.js`; add a company entry and matching folder shell to add a route. Set an entry's optional `presentation` field to an HTML filename in that company's folder (for example, `custom.html`) to use a company-specific presentation instead. The page shows the current date and a clear demo notice; its sample claims do not imply a customer relationship, meeting, or completed assessment. Company marks currently use site favicons via Google's favicon service, with initials as a fallback. Replace these with approved local logo assets before making a real customer-facing deck.
+
+The starter list spans renewable asset operations, project developers/owners, and storage providers; it is not a claim that every company is a direct NovaSource competitor. Trimark describes controls/services across battery storage and other generation types ([company overview](https://trimarkassoc.com/company/)); NovaSource describes BESS operations and maintenance ([BESS services](https://www.novasourcepower.com/services/battery-energy-storage-systems-bess/)); DESRI describes developing, owning, and operating renewable and storage assets ([DESRI](https://desri.com/)); Plus Power describes developing, owning, and operating standalone battery projects ([company overview](https://www.pluspower.com/about/)).
 
 For a NUC preview, keep the Mac `nuc` connection open and visit
 `http://127.0.0.1:8092/`. The meeting button stays on that local server before

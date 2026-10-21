@@ -1,0 +1,14 @@
+[
+  {"slug":"novasource","name":"NovaSource Power Services","domain":"novasourcepower.com","type":"Renewable asset operations"},
+  {"slug":"trimark","name":"Trimark Associates","domain":"trimarkassoc.com","type":"Energy controls and services"},
+  {"slug":"solv","name":"SOLV Energy","domain":"solvenergy.com","type":"Renewable energy operations"},
+  {"slug":"desri","name":"DESRI","domain":"desri.com","type":"Renewable energy developer"},
+  {"slug":"arevon","name":"Arevon","domain":"arevonenergy.com","type":"Renewable energy developer and operator"},
+  {"slug":"aes","name":"The AES Corporation","domain":"aes.com","type":"Energy developer and operator"},
+  {"slug":"nextera-energy-resources","name":"NextEra Energy Resources","domain":"nexteraenergyresources.com","type":"Renewable energy developer and operator"},
+  {"slug":"fluence","name":"Fluence","domain":"fluenceenergy.com","type":"Energy storage technology and services"},
+  {"slug":"tesla-energy","name":"Tesla Energy","domain":"tesla.com","type":"Energy storage technology"},
+  {"slug":"plus-power","name":"Plus Power","domain":"pluspower.com","type":"Battery storage developer and operator"},
+  {"slug":"invenergy","name":"Invenergy","domain":"invenergy.com","type":"Energy developer and operator"},
+  {"slug":"jupiter-power","name":"Jupiter Power","domain":"jupiterpower.com","type":"Battery storage developer and operator"}
+]

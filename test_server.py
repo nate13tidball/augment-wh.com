@@ -1,7 +1,9 @@
 import json
 import os
+import tempfile
 import unittest
 from http.client import HTTPConnection
+from pathlib import Path
 from threading import Thread
 from unittest.mock import patch, MagicMock
 
@@ -66,6 +68,32 @@ class InquiryTests(unittest.TestCase):
                 self.assertEqual(response.getheader('Cache-Control'), 'no-store')
                 response.read()
                 conn.close()
+            for path, expected in (('/presentations/novasource', 200), ('/presentations/unknown-company', 404)):
+                conn = HTTPConnection('127.0.0.1', app.server_port)
+                conn.request('GET', path)
+                response = conn.getresponse()
+                self.assertEqual(response.status, expected)
+                response.read()
+                conn.close()
+            for path in ('/presentations/companies.json', '/presentations/presentation.js', '/presentations/presentation.css'):
+                conn = HTTPConnection('127.0.0.1', app.server_port)
+                conn.request('GET', path)
+                response = conn.getresponse()
+                self.assertEqual(response.status, 200)
+                response.read()
+                conn.close()
+            with tempfile.TemporaryDirectory() as temp:
+                public = Path(temp)
+                (public / 'presentations' / 'demo').mkdir(parents=True)
+                (public / 'presentations' / 'companies.json').write_text(json.dumps([{'slug': 'demo', 'presentation': 'custom.html'}]))
+                (public / 'presentations' / 'demo' / 'custom.html').write_text('<h1>Custom deck</h1>')
+                with patch.object(server, 'PUBLIC', public):
+                    conn = HTTPConnection('127.0.0.1', app.server_port)
+                    conn.request('GET', '/presentations/demo/custom.html')
+                    response = conn.getresponse()
+                    self.assertEqual(response.status, 200)
+                    self.assertEqual(response.read(), b'<h1>Custom deck</h1>')
+                    conn.close()
             conn = HTTPConnection('127.0.0.1', app.server_port)
             conn.request('GET', '/assets/brand/../../brand.config.json')
             response = conn.getresponse()

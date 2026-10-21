@@ -87,6 +87,21 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # An explicit public-file list prevents traversal and accidental repo exposure.
         path = urlsplit(self.path).path
+        if path.startswith('/presentations/'):
+            parts = path.removeprefix('/presentations/').strip('/').split('/')
+            companies = json.loads((PUBLIC / 'presentations/companies.json').read_text())
+            company = next((item for item in companies if item['slug'] == parts[0].lower()), None)
+            if company and path.rstrip('/') == f"/presentations/{company['slug']}":
+                return self.reply(200, (PUBLIC / 'presentations/index.html').read_bytes(), 'text/html; charset=utf-8')
+            custom = company.get('presentation') if company else None
+            custom_path = f"/presentations/{company['slug']}/{custom}" if isinstance(custom, str) and custom and Path(custom).name == custom else None
+            if company and custom_path == path:
+                filename = (PUBLIC / path.lstrip('/')).resolve()
+                if filename.is_relative_to(PUBLIC) and filename.is_file():
+                    content_type = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+                    return self.reply(200, filename.read_bytes(), content_type)
+            if company:
+                return self.reply(404, (PUBLIC / '404.html').read_bytes(), 'text/html; charset=utf-8')
         if path in ('/meet', '/meet/', '/meet/index.html'):
             try:
                 destination = json.loads((PUBLIC / 'site-config.json').read_text())['bookingUrl']
@@ -104,6 +119,9 @@ class Handler(BaseHTTPRequestHandler):
                  '/email': 'email/index.html', '/email/': 'email/index.html',
                  '/email/index.html': 'email/index.html',
                  '/contact.js': 'contact.js', '/site-links.js': 'site-links.js',
+                 '/presentations/companies.json': 'presentations/companies.json',
+                 '/presentations/presentation.css': 'presentations/presentation.css',
+                 '/presentations/presentation.js': 'presentations/presentation.js',
                  '/site-config.json': 'site-config.json', '/interactions.js': 'interactions.js',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
         for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
