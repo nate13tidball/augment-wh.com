@@ -7,7 +7,7 @@ static-only interpretation for the `design/ouros-template` branch.
 ## Extracted code
 
 Local inspection archive:
-`/home/ntidball/workspace/scratch/ouros-runtime-2026-10-12/`
+`a temporary runtime capture directory`
 
 - `index.html`: downloaded public page.
 - `manifest.json`: URLs, byte counts, and SHA-256 hashes for 15 deployed modules

@@ -108,30 +108,15 @@ class Handler(BaseHTTPRequestHandler):
                     return self.reply(200, filename.read_bytes(), content_type)
             if company:
                 return self.reply(404, (PUBLIC / '404.html').read_bytes(), 'text/html; charset=utf-8')
-        if path in ('/meet', '/meet/', '/meet/index.html'):
-            try:
-                destination = json.loads((PUBLIC / 'site-config.json').read_text())['bookingUrl']
-                if urlsplit(destination).scheme != 'https' or any(c in destination for c in '\r\n'):
-                    raise ValueError('Invalid booking URL.')
-            except (OSError, ValueError, KeyError, TypeError):
-                return self.reply(503, b'Booking is unavailable. Please try again later.', 'text/plain')
-            self.send_response(302)
-            self.send_header('Location', destination)
-            self.send_header('Cache-Control', 'no-store')
-            self.send_header('Content-Length', '0')
-            self.end_headers()
-            return
         files = {'/': 'index.html', '/index.html': 'index.html', '/styles.css': 'styles.css',
-                 '/email': 'email/index.html', '/email/': 'email/index.html',
-                 '/email/index.html': 'email/index.html',
-                 '/contact.js': 'contact.js', '/site-links.js': 'site-links.js',
+                 '/contact.js': 'contact.js',
                  '/presentations/': 'presentations/index.html',
                  '/presentations/index.html': 'presentations/index.html',
                  '/presentations/companies.json': 'presentations/companies.json',
                  '/presentations/directory.js': 'presentations/directory.js',
                  '/presentations/presentation.css': 'presentations/presentation.css',
                  '/presentations/presentation.js': 'presentations/presentation.js',
-                 '/site-config.json': 'site-config.json', '/interactions.js': 'interactions.js',
+                 '/interactions.js': 'interactions.js',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
         for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
             files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'
@@ -161,12 +146,12 @@ class Handler(BaseHTTPRequestHandler):
             now = time.monotonic()
             attempts[:] = [stamp for stamp in attempts if now - stamp < 3600]
             if len(attempts) >= 20:
-                return self.reply(429, {'error': 'Too many inquiries. Please try later or contact us on LinkedIn.'})
+                return self.reply(429, {'error': 'Too many inquiries. Please try again later.'})
             attempts.append(now)
         try:
             send_inquiry(data)
         except Exception:
-            return self.reply(503, {'error': 'Email delivery is unavailable. Please try later or contact us on LinkedIn.'})
+            return self.reply(503, {'error': 'Email delivery is unavailable. Please try again later.'})
         self.reply(200, {'ok': True})
 
 

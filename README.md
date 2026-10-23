@@ -64,14 +64,13 @@ test before publishing the form as operational.
 
 ## Production deployment
 
-**Vercel is the current production host for augment-wh.com.** Nathan confirmed
-this on 2026-10-21. The Vercel project and its deployment settings live in the
+**Vercel is the current production host for augment-wh.com.** The production host is documented as Vercel. The Vercel project and its deployment settings live in the
 Vercel dashboard; this repository currently has no `vercel.json`. Before changing
 deployment behavior, verify the connected Vercel project and its production branch.
 
 This repository also has a GitHub Pages workflow that publishes `public/` when
 `main` changes. It is a secondary/legacy deployment path; Vercel is the current
-canonical host per Nathan. GitHub Pages cannot run the Python backend.
+canonical host per the project owner. GitHub Pages cannot run the Python backend.
 
 ## Hosting handoff
 
@@ -85,8 +84,6 @@ server just because it is present. If the inquiry API is expected to work in
 production, verify that `/api/inquiry` is connected to a Vercel Function or an
 external backend/proxy.
 
-GitHub repository: https://github.com/nate13tidball/augment-wh.com
-GitHub Pages: https://nate13tidball.github.io/augment-wh.com/
 The Pages workflow publishes only `public/` on pushes to `main`; its form cannot
 use the Python backend. Keep this fallback deployment's limitations distinct
 from the Vercel production deployment.
@@ -100,36 +97,15 @@ deployment, commissioning, and lifecycle engineering. The page describes an
 initial operating-site augmentation study without naming the customer or site. It
 does not claim a deployed software product, guaranteed outcome, or completed project.
 
-## Contact link configuration
+## Contact
 
-Edit **`public/site-config.json`** to change these destinations without editing HTML:
+The inquiry form sends submissions to the business recipient configured in
+`INQUIRY_TO`. The visitor's validated address is used for replies.
 
-- `email`: primary address used by the email/outreach button.
-- `emailCc`: CC address for that button, currently `nate.tidball@gmail.com`; use an
-  empty string to omit the CC.
-- `meetingUrl`: `./meet`, resolved relative to the deployed site. This becomes
-  `https://augment-wh.com/meet` in production and `http://127.0.0.1:8092/meet`
-  in the default local preview. It also preserves GitHub Pages subdirectory paths.
-  An absolute URL can be used to intentionally override this host-relative behavior.
-- `bookingUrl`: Google Calendar destination used by `/meet`.
-
-The homepage loads this file with caching disabled. `/meet` and `/meet/` redirect
-to `bookingUrl`: the Python server sends a temporary HTTP redirect; static hosts
-serve `public/meet/index.html`, which redirects using JavaScript. Static hosting
-must support directory index pages. JavaScript is required for the homepage
-contact links and the static booking redirect; the booking page includes a
-manual continue link once configuration loads.
-
-Deploy the updated config with the site; edits on an unpushed branch do not change
-production. Configure the host/CDN to revalidate `site-config.json` if it applies
-long-lived caching. Values in this file are public; keep credentials out of it.
-The inquiry form's SMTP recipient remains the separate `INQUIRY_TO` environment
-variable. Change that too if incoming form messages should go to a new inbox.
-`emailCc` applies to the mailto button, not the server-delivered inquiry form.
 
 ## Company presentation demos
 
-The homepage navigation links to the company library at `/presentations/`. `public/presentations/companies.json` is an editable starter index for `/presentations/<slug>/` pages. All listed companies use one shared demo presentation in `presentation.js`; add a company entry and matching folder shell to add a route. Set an entry's optional `presentation` field to an HTML filename in that company's folder (for example, `custom.html`) to use a company-specific presentation instead. The page shows the current date and a clear demo notice; its sample claims do not imply a customer relationship, meeting, or completed assessment. Company marks currently use site favicons via Google's favicon service, with initials as a fallback. Replace these with approved local logo assets before making a real customer-facing deck.
+The homepage navigation links to the company library at `/presentations/`. `public/presentations/companies.json` is an editable starter index for `/presentations/<slug>/` pages. All listed companies use one shared demo presentation in `presentation.js`; add a company entry and matching folder shell to add a route. Set an entry's optional `presentation` field to an HTML filename in that company's folder (for example, `custom.html`) to use a company-specific presentation instead. The page shows the current date and a clear demo notice; its sample claims do not imply a customer relationship or completed assessment. Company marks currently use site favicons via Google's favicon service, with initials as a fallback. Replace these with approved local logo assets before making a real customer-facing deck.
 
 The starter list spans renewable asset operations, project developers/owners, and storage providers; it is not a claim that every company is a direct NovaSource competitor. Trimark describes controls/services across battery storage and other generation types ([company overview](https://trimarkassoc.com/company/)); NovaSource describes BESS operations and maintenance ([BESS services](https://www.novasourcepower.com/services/battery-energy-storage-systems-bess/)); DESRI describes developing, owning, and operating renewable and storage assets ([DESRI](https://desri.com/)); Plus Power describes developing, owning, and operating standalone battery projects ([company overview](https://www.pluspower.com/about/)).
 
@@ -161,8 +137,7 @@ login page. For the current small list, editing `companies.json` and deploying i
 still the simplest workflow. A login UI alone would not make that workflow editable.
 
 For a NUC preview, keep the Mac `nuc` connection open and visit
-`http://127.0.0.1:8092/`. The meeting button stays on that local server before
-redirecting to the configured Google Calendar destination.
+`http://127.0.0.1:8092/`. The preview uses the local static server.
 
 Checks: `python3 -m unittest -v` and `node test_site_links.mjs` (Node is only used
 for this development check; the website still has no build step).
@@ -170,16 +145,15 @@ for this development check; the website still has no build step).
 ## Ouros template adaptation
 
 The `design/ouros-template` branch adapts the saved Ouros Materials starter from
-`../nathantidball.com/web-templates/ouros-materials/`: oversized typography,
+the Ouros Materials reference: oversized typography,
 a technical electrical-diagram hero, numbered sections, neutral cards, a dark engagement section,
 and a large contact footer. It now includes scroll entrances, word-by-word heading
 reveals, an expanding fixed menu, and animated pilot-scope disclosures reconstructed
 from the public Framer source maps. See [interaction evidence and checks](docs/ouros-interactions.md).
 The page uses Augment-wh's existing content and brand assets. The source reference
-and screenshots remain in the personal-site repository.
+and screenshots remain in a separate design repository.
 
-The existing inquiry API, form fields, GitHub Pages form guard, email link, and
-booking link are retained. The single-page layout needs no build step or new
+The existing inquiry API and form fields are retained. The single-page layout needs no build step or new
 dependencies. Preview with `python3 -m http.server 8092 --bind 127.0.0.1 --directory public`
 and open `http://127.0.0.1:8092/` (static preview only; inquiry delivery requires
 the configured Python backend).

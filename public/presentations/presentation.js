@@ -35,7 +35,7 @@
         <article class="card"><span>02 / Compare</span><b>Test practical options</b><p>Explore augmentation timing against site limits, electrical constraints, and commercial assumptions.</p></article>
         <article class="card"><span>03 / Decide</span><b>Make tradeoffs visible</b><p>Give engineering and finance a shared view of capacity outlook, uncertainty, and next steps.</p></article>
       </section>
-      <p class="note">Illustrative demo only. This is a shared sample presentation rendered with company identity and date; it does not represent a completed assessment, customer relationship, or meeting.</p>
+      <p class="note">Illustrative demo only. This is a shared sample presentation rendered with company identity and date; it does not represent a completed assessment, customer relationship.</p>
       <footer class="footer"><span>Prepared ${date} · ${escapeHTML(company.name)}</span><a href="${escapeHTML(base)}/#contact">Continue the conversation ↗</a></footer>`;
     root.querySelector('[data-company-logo]').addEventListener('error', event => {
       const mark = document.createElement('span');

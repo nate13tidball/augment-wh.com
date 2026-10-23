@@ -11,7 +11,6 @@
   <title>Augment-wh | Engineering more from existing battery sites</title>
   <link rel="icon" href="assets/brand/favicon.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
-  <script src="site-links.js" defer></script>
   <script src="contact.js" defer></script>
   <script src="interactions.js" defer></script>
 </head>
@@ -107,7 +106,7 @@
 
     <section class="section wrap" id="team" aria-labelledby="team-title">
       <div class="section-label" data-reveal><span>/ The team</span><span>(04)</span></div>
-      <div class="split"><h2 id="team-title">Engineers who know<br>what happens after<br>the one-line.</h2><div class="team-copy" data-reveal><p class="lead">Deep operating experience across grid-scale batteries, site controls, deployment, commissioning, and lifecycle engineering.</p><p>Our team has worked where storage projects get difficult: SCADA and PPC integration, commissioning and grid compliance, field configuration, battery degradation, service workflows, fleet telemetry, dispatch constraints, and software deployment to live assets.</p><p>That range lets us connect the augmentation concept to the controls changes, field work, commissioning sequence, operating risks, and economics required to make it real.</p><a href="https://linkedin.com/in/nathantidball">Connect with us on LinkedIn <span aria-hidden="true">↗</span></a></div></div>
+      <div class="split"><h2 id="team-title">Engineers who know<br>what happens after<br>the one-line.</h2><div class="team-copy" data-reveal><p class="lead">Deep operating experience across grid-scale batteries, site controls, deployment, commissioning, and lifecycle engineering.</p><p>Our team has worked where storage projects get difficult: SCADA and PPC integration, commissioning and grid compliance, field configuration, battery degradation, service workflows, fleet telemetry, dispatch constraints, and software deployment to live assets.</p><p>That range lets us connect the augmentation concept to the controls changes, field work, commissioning sequence, operating risks, and economics required to make it real.</p></div></div>
     </section>
 
     <section class="section wrap questions" aria-labelledby="faq-title">
@@ -122,19 +121,17 @@
     <section class="section wrap contact" id="contact" aria-labelledby="contact-title">
       <div class="section-label" data-reveal><span>/ Start with the site</span><span>(06)</span></div>
       <div class="split"><div class="intro"><h2 id="contact-title">Could your existing site<br>carry more capacity?</h2><p>Tell us what is driving the augmentation decision and what site information is available. We can start with a short technical discussion.</p>
-        <div class="contact-actions"><a class="pill" data-contact-link="email">Email us <span aria-hidden="true">↗</span></a><a class="pill secondary" data-contact-link="meetingUrl" target="_blank" rel="noopener noreferrer">Schedule a meeting <span aria-hidden="true">↗</span></a></div>
-        <p id="contact-link-status" role="status"></p><noscript><p>Enable JavaScript to load the email and booking links.</p></noscript><a class="text-link" href="https://linkedin.com/in/nathantidball">Connect with us on LinkedIn <span aria-hidden="true">↗</span></a>
-      </div>
+        </div>
       <form id="inquiry-form" action="/api/inquiry" method="post">
         <div class="form-row"><label>Name<input name="name" autocomplete="name" maxlength="120" required></label><label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label></div>
         <label>Company <span class="optional">(optional)</span><input name="company" autocomplete="organization" maxlength="180"></label>
         <label>How can we help?<select name="kind"><option>General inquiry</option><option>Request a quote</option><option>Discuss augmentation</option></select></label>
         <label>Project details<textarea name="message" rows="5" minlength="10" maxlength="5000" placeholder="Your project, the decision you're facing, and your timeline." required></textarea></label>
         <div class="form-trap" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
-        <p class="form-note">We'll use these details to respond to your request. Please don't include confidential site data.</p>
+        <p class="form-note">Your details will be sent to our configured business contact to respond to your request. Please don't include confidential site data.</p>
         <button class="pill" type="submit">Send inquiry <span aria-hidden="true">&#8599;</span></button>
         <p id="form-status" role="status" aria-live="polite"></p>
-        <noscript><p>JavaScript is required to submit this form. You can also email us directly or schedule a meeting using the links above.</p></noscript>
+        <noscript><p>JavaScript is required to submit this form.</p></noscript>
       </form>
       </div>
     </section>

@@ -51,22 +51,12 @@ class InquiryTests(unittest.TestCase):
                 self.assertEqual(response.status, 200)
                 self.assertEqual(response.read(), (server.PUBLIC / 'assets' / 'brand' / asset).read_bytes())
                 conn.close()
-            for path in ('/site-links.js', '/site-config.json', '/interactions.js'):
+            for path in ('/interactions.js',):
                 conn = HTTPConnection('127.0.0.1', app.server_port)
                 conn.request('GET', path)
                 response = conn.getresponse()
                 self.assertEqual(response.status, 200)
                 self.assertEqual(response.read(), (server.PUBLIC / path.lstrip('/')).read_bytes())
-                conn.close()
-            destination = json.loads((server.PUBLIC / 'site-config.json').read_text())['bookingUrl']
-            for path in ('/meet', '/meet/', '/meet/index.html'):
-                conn = HTTPConnection('127.0.0.1', app.server_port)
-                conn.request('GET', path)
-                response = conn.getresponse()
-                self.assertEqual(response.status, 302)
-                self.assertEqual(response.getheader('Location'), destination)
-                self.assertEqual(response.getheader('Cache-Control'), 'no-store')
-                response.read()
                 conn.close()
             for path, expected in (('/presentations/', 200), ('/presentations/novasource', 308), ('/presentations/novasource/', 200), ('/presentations/unknown-company', 404)):
                 conn = HTTPConnection('127.0.0.1', app.server_port)
