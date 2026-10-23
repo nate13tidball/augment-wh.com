@@ -64,9 +64,8 @@ test before publishing the form as operational.
 
 ## Production deployment
 
-**`main` is continuously deployed to the live production website.** Nathan
-confirmed this on 2026-10-12. Whatever is pushed to `main`, including a force
-push, is what production displays after deployment completes.
+**`main` is continuously deployed to the live production website.** Whatever is
+pushed to `main` is what production displays after deployment completes.
 
 Keep design changes on a feature branch for review. Updating `main` is a
 production release; creating a feature branch alone does not change production.
@@ -77,14 +76,11 @@ Serve **only `public/`** as the document root. Do not serve the repository root,
 `.git`, or `docs`. All deployed assets are local; no third-party fetches are needed
 to render the page. Configure the web server to return `public/404.html` with an
 HTTP 404 status for missing paths. DNS, TLS, tunnel configuration, system services,
-and deployment are owned by Nathan's separate hosting task.
+and deployment are managed separately.
 
-GitHub repository: https://github.com/nate13tidball/augment-wh.com
-GitHub Pages: https://nate13tidball.github.io/augment-wh.com/
 The Pages workflow publishes only public/ on pushes to main. GitHub Pages cannot
-run the Python backend; the form is explicitly unavailable on github.io, with
-direct email and Google Calendar booking links available instead. Before enabling
-the form, configure and verify a hosted email API.
+run the Python backend; before enabling the form there, configure and verify a
+hosted email API.
 DNS for augment-wh.com remains owned by the separate hosting task.
 
 ## Content status
@@ -96,54 +92,25 @@ commissioning-workspace concept. This is an early-stage business page, not a cla
 of deployed software, customers, results, or finished integrations. The 4-6 week
 pilot is labeled proposed and depends on scope and data readiness.
 
-## Contact link configuration
+## Contact
 
-Edit **`public/site-config.json`** to change these destinations without editing HTML:
-
-- `email`: primary address used by the email/outreach button.
-- `emailCc`: CC address for that button, currently `nate.tidball@gmail.com`; use an
-  empty string to omit the CC.
-- `meetingUrl`: `./meet`, resolved relative to the deployed site. This becomes
-  `https://augment-wh.com/meet` in production and `http://127.0.0.1:8092/meet`
-  in the default local preview. It also preserves GitHub Pages subdirectory paths.
-  An absolute URL can be used to intentionally override this host-relative behavior.
-- `bookingUrl`: Google Calendar destination used by `/meet`.
-
-The homepage loads this file with caching disabled. `/meet` and `/meet/` redirect
-to `bookingUrl`: the Python server sends a temporary HTTP redirect; static hosts
-serve `public/meet/index.html`, which redirects using JavaScript. Static hosting
-must support directory index pages. JavaScript is required for the homepage
-contact links and the static booking redirect; the booking page includes a
-manual continue link once configuration loads.
-
-Deploy the updated config with the site; edits on an unpushed branch do not change
-production. Configure the host/CDN to revalidate `site-config.json` if it applies
-long-lived caching. Values in this file are public; keep credentials out of it.
-The inquiry form's SMTP recipient remains the separate `INQUIRY_TO` environment
-variable. Change that too if incoming form messages should go to a new inbox.
-`emailCc` applies to the mailto button, not the server-delivered inquiry form.
-
-For a NUC preview, keep the Mac `nuc` connection open and visit
-`http://127.0.0.1:8092/`. The meeting button stays on that local server before
-redirecting to the configured Google Calendar destination.
-
-Checks: `python3 -m unittest -v` and `node test_site_links.mjs` (Node is only used
-for this development check; the website still has no build step).
+The inquiry form sends submissions to the business recipient configured in
+`INQUIRY_TO`. The visitor's validated address is used for replies.
 
 ## Ouros template adaptation
 
 The `design/ouros-template` branch adapts the saved Ouros Materials starter from
-`../nathantidball.com/web-templates/ouros-materials/`: oversized typography,
+the Ouros Materials reference: oversized typography,
 rounded hero photography, numbered sections, neutral cards, a dark pilot section,
 and a large contact footer. It now includes scroll entrances, word-by-word heading
 reveals, an expanding fixed menu, and animated pilot-scope disclosures reconstructed
 from the public Framer source maps. See [interaction evidence and checks](docs/ouros-interactions.md).
 The page uses Augment-wh's existing content, brand
 assets, and licensed BESS photograph. The source reference and screenshots remain
-in the personal-site repository.
+in a separate design repository.
 
-The existing inquiry API, form fields, GitHub Pages form guard, email link, and
-booking link are retained. The single-page layout needs no build step or new
+The existing inquiry API and form fields are retained. The single-page layout
+needs no build step or new
 dependencies. Preview with `python3 -m http.server 8092 --bind 127.0.0.1 --directory public`
 and open `http://127.0.0.1:8092/` (static preview only; inquiry delivery requires
 the configured Python backend).
