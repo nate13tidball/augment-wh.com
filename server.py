@@ -101,6 +101,8 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return
         files = {'/': 'index.html', '/index.html': 'index.html', '/styles.css': 'styles.css',
+                 '/v2': 'v2/index.html', '/v2/': 'v2/index.html',
+                 '/v2/index.html': 'v2/index.html', '/v2/styles.css': 'v2/styles.css',
                  '/email': 'email/index.html', '/email/': 'email/index.html',
                  '/email/index.html': 'email/index.html',
                  '/contact.js': 'contact.js', '/site-links.js': 'site-links.js',

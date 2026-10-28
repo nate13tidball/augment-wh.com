@@ -56,6 +56,16 @@ class InquiryTests(unittest.TestCase):
                 self.assertEqual(response.status, 200)
                 self.assertEqual(response.read(), (server.PUBLIC / path.lstrip('/')).read_bytes())
                 conn.close()
+            for path, filename in (
+                ('/v2', 'v2/index.html'), ('/v2/', 'v2/index.html'),
+                ('/v2/index.html', 'v2/index.html'), ('/v2/styles.css', 'v2/styles.css'),
+            ):
+                conn = HTTPConnection('127.0.0.1', app.server_port)
+                conn.request('GET', path)
+                response = conn.getresponse()
+                self.assertEqual(response.status, 200)
+                self.assertEqual(response.read(), (server.PUBLIC / filename).read_bytes())
+                conn.close()
             destination = json.loads((server.PUBLIC / 'site-config.json').read_text())['bookingUrl']
             for path in ('/meet', '/meet/', '/meet/index.html'):
                 conn = HTTPConnection('127.0.0.1', app.server_port)

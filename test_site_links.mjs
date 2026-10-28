@@ -52,5 +52,7 @@ runInNewContext(script, {
 await new Promise(resolve => setImmediate(resolve));
 assert.match(status.textContent, /could not load/);
 assert.doesNotMatch(read('./public/index.html').replace(/<[^>]*>/g, ''), /\bnathan\b/i);
+assert.doesNotMatch(read('./public/v2/index.html').replace(/<[^>]*>/g, ''), /\bnathan\b/i);
+assert.match(read('./public/v2/index.html'), /\.\.\/site-links\.js/);
 assert.doesNotMatch(read('./public/contact.js'), /\bnathan\b/i);
 console.log('Email CC, local/production/prefixed booking links, redirects, failure handling, and company wording passed.');

@@ -6,6 +6,9 @@ and Python standard-library SMTP backend. No build step or third-party packages.
 Open `public/index.html` directly in a browser for a local preview.
 Form delivery requires the server described below; file previews do not send mail.
 
+The pitch-deck-based homepage concept lives at `public/v2/index.html` and renders
+at `/v2/`. Preview it with the same static server used for the main homepage.
+
 ## Brand assets
 
 The business repository's `brand/` folder is the source of logo artwork.
