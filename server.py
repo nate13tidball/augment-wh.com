@@ -110,6 +110,16 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(404, (PUBLIC / '404.html').read_bytes(), 'text/html; charset=utf-8')
         files = {'/': 'index.html', '/index.html': 'index.html', '/styles.css': 'styles.css',
                  '/contact.js': 'contact.js',
+                 '/dev': 'dev/index.html', '/dev/': 'dev/index.html',
+                 '/dev/index.html': 'dev/index.html', '/dev/styles.css': 'dev/styles.css',
+                 '/dev/map': 'dev/map/index.html', '/dev/map/': 'dev/map/index.html',
+                 '/dev/map/index.html': 'dev/map/index.html',
+                 '/dev/deck': 'dev/deck/index.html', '/dev/deck/': 'dev/deck/index.html',
+                 '/dev/deck/index.html': 'dev/deck/index.html',
+                 '/dev/field': 'dev/field/index.html', '/dev/field/': 'dev/field/index.html',
+                 '/dev/field/index.html': 'dev/field/index.html',
+                 '/dev/memo': 'dev/memo/index.html', '/dev/memo/': 'dev/memo/index.html',
+                 '/dev/memo/index.html': 'dev/memo/index.html',
                  '/presentations/': 'presentations/index.html',
                  '/presentations/index.html': 'presentations/index.html',
                  '/presentations/companies.json': 'presentations/companies.json',
@@ -118,7 +128,7 @@ class Handler(BaseHTTPRequestHandler):
                  '/presentations/presentation.js': 'presentations/presentation.js',
                  '/interactions.js': 'interactions.js',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
-        for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
+        for asset in ('header.png', 'logo.png', 'full-logo.png', 'favicon.png', 'manifest.json'):
             files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'
         filename = files.get(path, '404.html')
         content_type = mimetypes.guess_type(filename)[0] or 'application/octet-stream'

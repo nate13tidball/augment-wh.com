@@ -44,7 +44,7 @@ class InquiryTests(unittest.TestCase):
             return result
         try:
             server.attempts.clear()
-            for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
+            for asset in ('header.png', 'logo.png', 'full-logo.png', 'favicon.png', 'manifest.json'):
                 conn = HTTPConnection('127.0.0.1', app.server_port)
                 conn.request('GET', f'/assets/brand/{asset}')
                 response = conn.getresponse()
@@ -71,6 +71,20 @@ class InquiryTests(unittest.TestCase):
                 response = conn.getresponse()
                 self.assertEqual(response.status, 200)
                 response.read()
+                conn.close()
+            for path, filename in (
+                ('/dev', 'dev/index.html'), ('/dev/', 'dev/index.html'),
+                ('/dev/index.html', 'dev/index.html'), ('/dev/styles.css', 'dev/styles.css'),
+                ('/dev/map', 'dev/map/index.html'), ('/dev/map/', 'dev/map/index.html'),
+                ('/dev/deck', 'dev/deck/index.html'), ('/dev/deck/', 'dev/deck/index.html'),
+                ('/dev/field', 'dev/field/index.html'), ('/dev/field/', 'dev/field/index.html'),
+                ('/dev/memo', 'dev/memo/index.html'), ('/dev/memo/', 'dev/memo/index.html'),
+            ):
+                conn = HTTPConnection('127.0.0.1', app.server_port)
+                conn.request('GET', path)
+                response = conn.getresponse()
+                self.assertEqual(response.status, 200)
+                self.assertEqual(response.read(), (server.PUBLIC / filename).read_bytes())
                 conn.close()
             with tempfile.TemporaryDirectory() as temp:
                 public = Path(temp)

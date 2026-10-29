@@ -1,4 +1,9 @@
 {
-  "version": "v1",
-  "header_logo": "lockup"
+  "source": "brand/production",
+  "source_manifest_sha256": "1edce393820fc839f6189e57c401eabaf37cd599b07f7040e5a6fa549f9edba3",
+  "header_logo": "full-logo",
+  "assets": {
+    "logo": "1f2106d439365d6a58da25353434882a5c6caa6cc689cf91a42b911e3d1f78b8",
+    "full-logo": "9ea9dca0009e601def4b283dc08a97d479a0559bd43e3d951eca2c7b0fe8a976"
+  }
 }

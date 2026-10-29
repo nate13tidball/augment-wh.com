@@ -6,29 +6,35 @@ and Python standard-library SMTP backend. No build step or third-party packages.
 Open `public/index.html` directly in a browser for a local preview.
 Form delivery requires the server described below; file previews do not send mail.
 
+Three concepts based on the current NovaSource pitch deck live under `public/dev/`
+and render at `/dev/`: a slide-like deck flow, an engineering field brief, and an
+owner decision memo. They share the deck's navy, teal, lime, and slate design system
+and use the canonical full-name production logo.
+
 ## Brand assets
 
-The business repository's `brand/` folder is the source of logo artwork.
-`brand.config.json` selects `version` (such as `v1`) and `header_logo`
-(`lettermark`, `wordmark`, or `lockup`). `source_root` is relative to this website
-repository and defaults to `../brand` when checked out as a submodule.
+The business repository's `brand/production/` folder is the source of approved
+logo artwork. `brand.config.json` selects `header_logo` (`logo` or `full-logo`).
+`source_root` is relative to this website repository and defaults to
+`../brand/production` when checked out as a submodule.
 
 Run from the website repository after changing the selection or regenerating logos:
 
 ```bash
 python3 scripts/sync_brand.py
-# Select the next complete logo set and save that version in the config:
-python3 scripts/sync_brand.py --version v2
 # For a standalone checkout, supply the location of the business repo's brand folder:
-python3 scripts/sync_brand.py --source-root /path/to/Augment-wh/brand
+python3 scripts/sync_brand.py --source-root /path/to/Augment-wh/brand/production
 ```
 
-Each version must include `lettermark/aa-vN.png`, `wordmark/augment-wh-vN.png`,
-and `lockups/augment-wh-lockup-vN.png`. Missing files fail before overwriting
-deployed assets. The sync copies the selected artwork into `public/assets/brand/`;
-HTML references stable filenames, so switching versions requires no HTML edits.
-The header and footer use the selected format; the favicon uses the lettermark.
-`manifest.json` records the deployed version. Commit the config and copied assets
+Production must include `augment-logo.png` and `augment-full-logo.png`.
+Missing files fail before overwriting deployed assets.
+The sync validates the exact production schema and manifest before copying approved artwork into
+`public/assets/brand/`; HTML references stable filenames.
+The header and footer use the full-name logo; the favicon uses the compact logo.
+The website must keep these copied files because the submodule is deployed independently and
+cannot read files from its parent repository. They are deployment outputs, not alternate brand
+sources. `manifest.json` records the parent production-manifest hash and each copied asset hash.
+Commit the config and copied assets
 in this website repository, then update its pointer in the business repository.
 GitHub Pages and standalone hosting use the committed copies and do not need
 access to the private business repo. Refresh the browser cache after switching.
