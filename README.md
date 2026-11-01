@@ -62,7 +62,7 @@ Production must include `augment-logo.png` and `augment-full-logo.png`.
 Missing files fail before overwriting deployed assets.
 The sync validates the exact production schema and manifest before copying approved artwork into
 `public/assets/brand/`; HTML references stable filenames.
-The header and footer use the full-name logo; the favicon uses the compact logo.
+The header and footer use the full-name logo with its centered slogan; the favicon uses the compact logo.
 The website must keep these copied files because the submodule is deployed independently and
 cannot read files from its parent repository. They are deployment outputs, not alternate brand
 sources. `manifest.json` records the parent production-manifest hash and each copied asset hash.

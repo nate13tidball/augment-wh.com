@@ -208,5 +208,22 @@ h2 { max-width: 1060px; margin: 18px 0 24px; font-size: clamp(42px, 5.4vw, 72px)
 .motion-preview .reveal-ready:not(.is-visible) { opacity: 0; transform: translateY(24px); }
 
 .partnership-scope { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 40px; margin: 20px 0 0; padding-left: 20px; color: #d9d9d9; font-size: 17px; line-height: 1.5; }
+
+/* Homepage refinements; /dev/ previews retain their original layout. */
+.homepage .lead-time-stats { gap: 20px; max-width: 900px; margin-inline: auto; padding: 0; background: transparent; }
+.homepage .lead-time-stats > div { display: grid; justify-items: center; align-content: center; min-height: 250px; padding: 24px; border: 3px solid #a42c24; border-radius: 22px; background: #fff2f0; box-shadow: 7px 7px 0 #dfaaa4; text-align: center; }
+.homepage .lead-time-stats > div + div { border-left: 3px solid #a42c24; }
+.homepage .lead-time-stats dt { min-height: 0; font-size: clamp(20px, 2.2vw, 28px); line-height: 1.2; text-decoration: none; }
+.homepage .lead-time-stats dd { justify-items: center; gap: 4px; margin-top: 16px; }
+.homepage .lead-time-stats abbr { color: #a42c24; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+.homepage .problem-band h2#problem-title { max-width: none; font-size: clamp(16px, 5vw, 64px); font-weight: 400; letter-spacing: -.045em; text-wrap: nowrap; }
+.homepage .problem-band h2#problem-title span { display: block; white-space: nowrap; }
+.homepage .problem-band h2#problem-title strong { color: var(--risk); font-weight: 800; }
+@media (max-width: 680px) {
+  .homepage .lead-time-stats { gap: 12px; }
+  .homepage .lead-time-stats > div { min-height: 205px; padding: 14px 8px; box-shadow: 4px 4px 0 #dfaaa4; }
+  .homepage .lead-time-stats dt { font-size: clamp(15px, 4vw, 22px); }
+  .homepage .lead-time-stats strong { font-size: clamp(50px, 12vw, 72px); }
+}
 .partnership-scope li::marker { color: var(--green); }
 @media (max-width: 680px) { .partnership-scope { grid-template-columns: 1fr; } }
