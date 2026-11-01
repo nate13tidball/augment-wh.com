@@ -24,6 +24,7 @@ section[id] { scroll-margin-top: 32px; }
 .frame { width: var(--frame); margin-inline: auto; }
 .skip { position: fixed; top: -100px; left: 20px; z-index: 10; padding: 14px; background: var(--white); color: var(--charcoal); }
 .skip:focus { top: 20px; }
+.site-masthead { background: linear-gradient(180deg, #dfe7df 0%, #e8ece8 62%, var(--paper) 100%); }
 .site-header { padding-block: 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px 32px; }
 .site-header .brand { width: min(420px, 100%); }
 .brand { display: block; flex: 0 1 420px; }
