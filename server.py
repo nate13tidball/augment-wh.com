@@ -1,4 +1,4 @@
-"""Static website and SMTP inquiry endpoint. Run behind an HTTPS reverse proxy."""
+"""Static website and inquiry endpoint. Run behind an HTTPS reverse proxy."""
 import json
 from api.admin import is_admin
 import logging
@@ -11,8 +11,10 @@ from email.message import EmailMessage
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Lock
-from urllib.parse import urlsplit
 import mimetypes
+from urllib.error import HTTPError, URLError
+from urllib.parse import quote, urlencode, urlsplit
+from urllib.request import Request, urlopen
 
 PUBLIC = Path(__file__).resolve().parent / 'public'
 LIMITS = {'name': 120, 'email': 254, 'company': 180, 'kind': 40, 'message': 5000, 'website': 200}
@@ -42,7 +44,17 @@ def validate(data):
     return values
 
 
+def inquiry_body(values):
+    return '\n'.join([
+        'New website inquiry', '', 'Name: ' + values['name'],
+        'Email: ' + values['email'], 'Company: ' + (values['company'] or 'Not provided'),
+        'Type: ' + values['kind'], '', values['message'],
+    ])
+
+
 def send_inquiry(values):
+    if any(os.environ.get(key) for key in ('GRAPH_TENANT_ID', 'GRAPH_CLIENT_ID', 'GRAPH_CLIENT_SECRET')):
+        return send_graph_inquiry(values)
     required = ('SMTP_HOST', 'SMTP_USER', 'SMTP_PASSWORD', 'INQUIRY_FROM', 'INQUIRY_TO')
     missing = [key for key in required if not os.environ.get(key)]
     if missing:
@@ -52,11 +64,7 @@ def send_inquiry(values):
     message['To'] = os.environ['INQUIRY_TO']
     message['Reply-To'] = values['email']
     message['Subject'] = '[Augment Wh] ' + values['kind']
-    message.set_content('\n'.join([
-        'New website inquiry', '', 'Name: ' + values['name'],
-        'Email: ' + values['email'], 'Company: ' + (values['company'] or 'Not provided'),
-        'Type: ' + values['kind'], '', values['message'],
-    ]))
+    message.set_content(inquiry_body(values))
     context = ssl.create_default_context()
     tls_mode = os.environ.get('SMTP_TLS', 'starttls')
     if tls_mode not in {'starttls', 'implicit'}:
@@ -80,6 +88,56 @@ def send_inquiry(values):
             raise RuntimeError('Recipient refused.')
 
 
+def send_graph_inquiry(values):
+    required = ('GRAPH_TENANT_ID', 'GRAPH_CLIENT_ID', 'GRAPH_CLIENT_SECRET', 'INQUIRY_FROM', 'INQUIRY_TO')
+    missing = [key for key in required if not os.environ.get(key)]
+    if missing:
+        raise RuntimeError('Missing Microsoft Graph environment variable(s): ' + ', '.join(missing) + '.')
+    tenant = os.environ['GRAPH_TENANT_ID']
+    token_request = Request(
+        f'https://login.microsoftonline.com/{quote(tenant, safe="")}/oauth2/v2.0/token',
+        data=urlencode({
+            'client_id': os.environ['GRAPH_CLIENT_ID'],
+            'client_secret': os.environ['GRAPH_CLIENT_SECRET'],
+            'scope': 'https://graph.microsoft.com/.default',
+            'grant_type': 'client_credentials',
+        }).encode(),
+        headers={'Content-Type': 'application/x-www-form-urlencoded'},
+        method='POST',
+    )
+    try:
+        with urlopen(token_request, timeout=10) as response:
+            result = json.load(response)
+    except HTTPError as error:
+        raise RuntimeError(f'Microsoft Graph sign-in failed (HTTP {error.code}). Check the tenant, app ID, and app secret.') from error
+    except URLError as error:
+        raise RuntimeError('Could not connect to Microsoft Graph sign-in.') from error
+    token = result.get('access_token') if isinstance(result, dict) else None
+    if not isinstance(token, str) or not token:
+        raise RuntimeError('Microsoft Graph did not return an access token.')
+
+    body = {'message': {
+        'subject': '[Augment Wh] ' + values['kind'],
+        'body': {'contentType': 'Text', 'content': inquiry_body(values)},
+        'toRecipients': [{'emailAddress': {'address': os.environ['INQUIRY_TO']}}],
+        'replyTo': [{'emailAddress': {'address': values['email']}}],
+    }}
+    mail_request = Request(
+        f'https://graph.microsoft.com/v1.0/users/{quote(os.environ["INQUIRY_FROM"], safe="")}/sendMail',
+        data=json.dumps(body).encode(),
+        headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'},
+        method='POST',
+    )
+    try:
+        with urlopen(mail_request, timeout=10) as response:
+            if response.status != 202:
+                raise RuntimeError(f'Microsoft Graph did not accept the inquiry (HTTP {response.status}).')
+    except HTTPError as error:
+        raise RuntimeError(f'Microsoft Graph rejected the inquiry (HTTP {error.code}). Check Mail.Send permission and mailbox access.') from error
+    except URLError as error:
+        raise RuntimeError('Could not connect to Microsoft Graph mail delivery.') from error
+
+
 def delivery_error(error):
     """Return actionable mail diagnostics without exposing addresses or SMTP text."""
     code = getattr(error, 'smtp_code', None)
@@ -89,6 +147,14 @@ def delivery_error(error):
             return 'The mail server rejected INQUIRY_TO. Check that recipient address.'
         return str(error)
     if isinstance(error, smtplib.SMTPAuthenticationError):
+        response = error.smtp_error.decode('utf-8', 'replace') if isinstance(error.smtp_error, bytes) else str(error.smtp_error)
+        response = response.lower()
+        if 'smtpclientauthentication is disabled for the tenant' in response:
+            return 'Microsoft 365 has disabled SMTP AUTH for this organization. Please email ntidball@augment-wh.com directly.'
+        if 'smtpclientauthentication is disabled for the mailbox' in response:
+            return 'Microsoft 365 has disabled SMTP AUTH for this mailbox. Please email ntidball@augment-wh.com directly.'
+        if 'basic authentication is disabled' in response:
+            return 'Microsoft 365 has disabled password-based SMTP. Please email ntidball@augment-wh.com directly.'
         return 'SMTP authentication failed. Check SMTP_USER, SMTP_PASSWORD, and provider SMTP access.'
     if isinstance(error, smtplib.SMTPRecipientsRefused):
         return 'The mail server rejected INQUIRY_TO. Check that recipient address and provider policy.'

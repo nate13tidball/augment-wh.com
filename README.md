@@ -77,28 +77,35 @@ The form collects name, reply email, optional company, and inquiry details.
 `POST /api/inquiry` is served by `api/inquiry.py` on Vercel; it validates inputs and sends a plain-text email to the
 fixed `INQUIRY_TO` address; Reply-To is the visitor's validated address. It does not
 send visitor autoresponders or store inquiries in a database. Failed submissions
-keep form details visible. Success means the SMTP relay accepted the email, not
+keep form details visible. Success means the mail service accepted the email, not
 that final inbox delivery has been verified.
 
-Run `python3 server.py` to serve the site and API on loopback port 8091. Set the
-environment variables listed in `.env.example` in the service manager, including
-the confirmed recipient, an authenticated sender, and an SMTP provider's credentials.
-The script does not automatically read .env files. Keep secrets outside public/.
-SMTP uses verified STARTTLS (587 default) or implicit TLS (`SMTP_TLS=implicit`,
-465 default when SMTP_PORT is unset). Do not assume a Microsoft 365 mailbox permits
-password-based SMTP; use an authorized SMTP relay/account supported by its provider.
+For Microsoft Graph delivery, set `GRAPH_TENANT_ID`, `GRAPH_CLIENT_ID`, and
+`GRAPH_CLIENT_SECRET` in Vercel Production, along with `INQUIRY_FROM` and
+`INQUIRY_TO`. The app requests a Microsoft Graph token using client credentials,
+then calls `/users/{INQUIRY_FROM}/sendMail`. Grant its service principal the
+Exchange Online `Application Mail.Send` role, scoped to the sender mailbox using
+[Application RBAC](https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac).
+Do not add an unscoped Entra `Mail.Send` grant: Microsoft says it would override
+the mailbox scope. Keep the client secret outside Git and `public/`.
+
+Run `python3 server.py` to serve the site and API on loopback port 8091. The
+script does not automatically read .env files. SMTP remains a fallback when no
+Graph variables are set; it uses STARTTLS (587 default) or implicit TLS
+(`SMTP_TLS=implicit`, 465 default). A partial Graph configuration fails explicitly
+instead of falling back to SMTP.
 
 For local form testing set `INQUIRY_ORIGINS=http://127.0.0.1:8091`.
 For a self-hosted deployment, a reverse proxy can forward `/api/inquiry` to the
-local Python server. The Vercel handler uses the shared validation and SMTP
-delivery functions in `server.py`. The API has a 32 KiB body
+local Python server. The Vercel handler uses the shared validation and delivery
+functions in `server.py`. The API has a 32 KiB body
 limit, honeypot, origin checks, field validation, and a process-local limit of 20
 mail attempts per hour. This basic global limit resets on restart and can be
 exhausted by spam; use platform-level abuse controls for a public launch.
 
-Checks: `python3 -m unittest -v test_server.py` (mocked SMTP, no email sent).
-Recipient and real SMTP delivery still need configuration and a live delivery
-test before publishing the form as operational.
+Checks: `python3 -m unittest -v test_server.py` (mocked mail delivery, no email sent).
+Verify Graph credentials, mailbox authorization, and live delivery before
+considering the form operational.
 
 ## Production deployment
 
