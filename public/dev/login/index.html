@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin login | Augment-wh</title>
+  <style>
+    body { font: 1rem system-ui, sans-serif; margin: 0; background: #f5f5f3; color: #17212b; }
+    main { max-width: 24rem; margin: 10vh auto; padding: 1.5rem; }
+    h1 { font-size: 2rem; }
+    label, input { display: block; }
+    input { box-sizing: border-box; width: 100%; margin: .5rem 0 1rem; padding: .8rem; font: inherit; }
+    button { font: inherit; padding: .7rem 1.2rem; cursor: pointer; }
+    :focus-visible { outline: 3px solid #158578; outline-offset: 3px; }
+    #status { min-height: 3rem; line-height: 1.5; }
+    a { color: inherit; }
+    [hidden] { display: none; }
+  </style>
+  <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/dev/login/login.js"></script>
+</head>
+<body>
+  <main>
+    <nav><a href="/dev/">← Page tree</a></nav>
+    <h1>Admin login</h1>
+    <p>Sign in for 30 days on this browser, across tabs.</p>
+    <p id="status" role="status" aria-live="polite">Checking session…</p>
+    <form id="login" hidden>
+      <label for="pin">PIN</label>
+      <input id="pin" name="pin" type="password" inputmode="numeric" pattern="[0-9]{4,12}" minlength="4" maxlength="12" autocomplete="current-password" required>
+      <button type="submit">Sign in</button>
+    </form>
+    <div id="admin" hidden>
+      <p><a href="/dev/">Continue to development pages →</a></p>
+      <button id="logout" type="button">Sign out</button>
+    </div>
+    <noscript>Enable JavaScript to sign in.</noscript>
+  </main>
+</body>
+</html>

@@ -118,30 +118,35 @@ The starter list spans renewable asset operations, project developers/owners, an
 
 ## Admin access and cookies
 
-The site currently has no visitor login, admin panel, session handling, or
-first-party cookie code. On 2026-10-21, the live homepage and a presentation page
-both returned no `Set-Cookie` header (the homepage first redirects to its
-canonical HTTPS URL). This does not inspect browser cookies for other sites or
-cookies from third-party services; company favicon images are requested from
-Google.
+The `/dev/` page links to `/dev/login/`. The Vercel Python Function at
+`api/admin.py` validates a PIN on the server and issues a signed admin cookie
+for 30 days. The cookie covers the entire host, persists across tabs and browser
+restarts, and uses Secure, HttpOnly, SameSite=Strict, and the `__Host-` prefix.
+Use the canonical `https://www.augment-wh.com` host consistently: cookies are
+host-specific. Sign out on the login page to clear this browser's cookie.
 
-Vercel can support secure auth cookies through a server-side app/function; see
-[Sign in with Vercel](https://vercel.com/docs/sign-in-with-vercel/getting-started).
-Do not use a client-only password check for an admin area: the protected data and
-write endpoint also need server-side authorization.
+Set these Production environment variables in Vercel and redeploy:
 
-If the goal is only to restrict the entire site, Vercel's [deployment password
-protection](https://vercel.com/docs/deployment-protection/methods-to-protect-deployments/password-protection)
-is simpler than building a login page, but it does not provide an editor and makes
-the whole deployment private.
+- `ADMIN_PIN`: Nathan's chosen PIN (4–12 digits).
+- `ADMIN_SESSION_SECRET`: at least 32 random characters, generated with
+  `python3 -c "import secrets; print(secrets.token_urlsafe(48))"`.
 
-If browser-based editing of company records and presentations is wanted, the
-[Vercel Payload Website Starter](https://vercel.com/templates/cms/payload-website-starter)
-is a ready-to-clone/deploy CMS with an authenticated `/admin`, access control,
-database, and media storage. It is a Next.js/Payload platform and would require
-migrating this site's current HTML/CSS and JSON content model; it is not a drop-in
-login page. For the current small list, editing `companies.json` and deploying is
-still the simplest workflow. A login UI alone would not make that workflow editable.
+Login fails closed until both values are configured. Neither credential belongs
+in Git or public files. Changing the PIN alone does not revoke existing cookies;
+rotate the session secret to revoke all sessions. `GET /api/admin` reports
+`{"admin": true}` for a valid session. Future protected endpoints must call
+`api.admin.is_admin(headers)` before returning protected data or accepting writes.
+Vercel routing middleware in `middleware.js` requires the signed cookie for
+every `/dev` and `/dev/*` request, except the login page and its script. Guests
+redirect to login and return to their requested development page after signing
+in. `/api/analytics` also checks the cookie in the Python handler. Responses use
+private/no-store caching. The main site and presentations remain public.
+The GitHub Pages fallback excludes `/dev/` because it cannot enforce authentication. The static local server and GitHub Pages cannot run
+the login API. Tests use in-memory HTTP handlers without starting a server.
+
+This is a basic shared PIN login. A fixed one-second check delay slows casual
+guessing but is not a distributed rate limit. Use Vercel firewall rate limiting
+before granting this short PIN access to sensitive data or destructive actions.
 
 For a NUC preview, keep the Mac `nuc` connection open and visit
 `http://127.0.0.1:8092/`. The preview uses the local static server.
@@ -198,9 +203,7 @@ Vercel, then redeploy:
 - `ANALYTICS_PROJECT_ID`: project ID.
 - `ANALYTICS_TEAM_ID`: team ID for team projects; omit for personal projects.
 
-The dashboard loads automatically and has a refresh button. There is currently no
-password protection: anyone with the URL can view these aggregate reports after
-configuration. The Vercel token stays on the server. The endpoint disables response
+The dashboard loads automatically and has a refresh button. Admin login is required to view these reports, including direct API requests. The Vercel token stays on the server. The endpoint disables response
 caching and limits queries to the configured project and fixed reports.
 
 Check with `python3 -m unittest -v test_analytics.py` (mocked Vercel, no server or

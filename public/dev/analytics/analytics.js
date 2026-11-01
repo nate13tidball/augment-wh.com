@@ -8,8 +8,12 @@ async function loadAnalytics() {
   status.textContent = 'Loading analytics…';
   try {
     const response = await fetch('/api/analytics', {
-      cache: 'no-store', credentials: 'omit',
+      cache: 'no-store', credentials: 'same-origin',
     });
+    if (response.status === 401) {
+      location.replace('/dev/login/?next=/dev/analytics');
+      return;
+    }
     if (response.status === 404) throw new Error('Analytics API is not deployed. Check that Vercel deploys the repository’s api/ folder.');
     if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('Analytics API unavailable. Check the Vercel deployment.');
     const data = await response.json();

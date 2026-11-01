@@ -17,9 +17,20 @@ class AnalyticsTests(unittest.TestCase):
 
     def request(self):
         app = object.__new__(analytics.handler)
+        app.headers = {}
         app.reply = MagicMock()
-        app.do_GET()
+        with patch.object(analytics, 'is_admin', return_value=True):
+            app.do_GET()
         return app.reply.call_args.args
+
+    def test_signed_out_never_queries_vercel(self):
+        app = object.__new__(analytics.handler)
+        app.headers = {}
+        app.reply = MagicMock()
+        with patch.object(analytics, 'query') as query:
+            app.do_GET()
+            self.assertEqual(app.reply.call_args.args[0], 401)
+            query.assert_not_called()
 
     def test_not_configured_never_queries_vercel(self):
         with patch.dict(os.environ, {}, clear=True), patch.object(analytics, 'query') as query:

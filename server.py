@@ -1,5 +1,6 @@
 """Static website and SMTP inquiry endpoint. Run behind an HTTPS reverse proxy."""
 import json
+from api.admin import is_admin
 import os
 import re
 import smtplib
@@ -87,6 +88,15 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # An explicit public-file list prevents traversal and accidental repo exposure.
         path = urlsplit(self.path).path
+        if (path == '/dev' or path.startswith('/dev/')) and path not in (
+            '/dev/login', '/dev/login/', '/dev/login/index.html', '/dev/login/login.js'
+        ) and not is_admin(self.headers):
+            self.send_response(302)
+            self.send_header('Location', '/dev/login/')
+            self.send_header('Cache-Control', 'private, no-store')
+            self.send_header('Content-Length', '0')
+            self.end_headers()
+            return
         if path.startswith('/presentations/'):
             parts = path.removeprefix('/presentations/').strip('/').split('/')
             companies = json.loads((PUBLIC / 'presentations/companies.json').read_text())
@@ -111,6 +121,9 @@ class Handler(BaseHTTPRequestHandler):
         files = {'/': 'index.html', '/index.html': 'index.html', '/styles.css': 'styles.css',
                  '/contact.js': 'contact.js',
                  '/dev': 'dev/index.html', '/dev/': 'dev/index.html',
+                 '/dev/login': 'dev/login/index.html', '/dev/login/': 'dev/login/index.html',
+                 '/dev/login/index.html': 'dev/login/index.html',
+                 '/dev/login/login.js': 'dev/login/login.js',
                  '/dev/index.html': 'dev/index.html', '/dev/styles.css': 'dev/styles.css',
                  '/dev/analytics': 'dev/analytics/index.html', '/dev/analytics/': 'dev/analytics/index.html',
                  '/dev/analytics/analytics.js': 'dev/analytics/analytics.js',

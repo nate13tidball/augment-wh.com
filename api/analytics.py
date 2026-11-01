@@ -1,4 +1,5 @@
 """Read-only Vercel Web Analytics proxy. No third-party dependencies."""
+from api.admin import is_admin
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler
 import json
@@ -35,6 +36,8 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
+        if not is_admin(self.headers):
+            return self.reply(401, {'error': 'Admin login required.'})
         required = ('ANALYTICS_VERCEL_TOKEN', 'ANALYTICS_PROJECT_ID')
         if not all(os.environ.get(key) for key in required):
             return self.reply(503, {'error': 'Not connected yet. Complete the setup steps below, then redeploy.'})

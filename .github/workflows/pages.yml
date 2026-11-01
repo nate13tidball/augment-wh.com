@@ -19,9 +19,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # Pages has no server-side auth. Never publish the protected dev tree there.
+      - name: Prepare public-only fallback
+        run: |
+          mkdir pages-public
+          rsync -a --exclude='/dev/' public/ pages-public/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: pages-public
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
