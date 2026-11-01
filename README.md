@@ -29,6 +29,20 @@ and degraded-capacity dollar figures were supplied/approved by Nathan; the paren
 repository's `pitch_offering/v3-website-content-review.md` retains source and
 editorial context. The dollar figures describe degraded capacity, not service revenue.
 
+## Scroll reveal behavior
+
+The homepage now uses fade-and-rise entrances tested at `/dev/scroll-reveal/`.
+That clone remains available for comparison.
+It uses the existing IntersectionObserver in `interactions.js`, marks individual
+content blocks, and lightly staggers the offering cards. Each block appears once.
+The “Enable motion” link opts into animation for this preview only, even when
+the browser prefers reduced motion; the default respects that preference.
+The hero remains immediately visible; reduced-motion and no-JavaScript visitors
+receive readable content without animation. The homepage shares this reveal behavior, without the experiment banner.
+Its chart fills the panel width; display cropping removes horizontal white
+image margins while preserving axes and labels.
+The clone shares homepage assets and retains the working inquiry endpoint.
+
 ## Brand assets
 
 The business repository's `brand/production/` folder is the source of approved

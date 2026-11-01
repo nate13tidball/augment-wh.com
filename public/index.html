@@ -12,6 +12,11 @@
   <title>Augment-wh | Battery augmentation for existing sites</title>
   <link rel="icon" href="/assets/brand/favicon.png" type="image/png">
   <link rel="stylesheet" href="/assets/homepage/homepage.css">
+  <script>
+    if (new URLSearchParams(location.search).get('motion') === 'on') {
+      document.documentElement.classList.add('motion-preview');
+    }
+  </script>
   <script src="/interactions.js" defer></script>
   <script src="/contact.js" defer></script>
   <script>
@@ -54,9 +59,9 @@
 
     <section class="approach-band" id="approach" aria-labelledby="approach-title">
       <div class="section frame">
-        <div class="section-label"><span>/ The technical solution</span><span>(01)</span></div>
-        <h2 id="approach-title">Add capacity.<br>Plan to keep it.</h2>
-        <p class="section-intro">Our core product is a controls and integration solution for annual deployments of modern energy storage systems.</p>
+        <div data-reveal class="section-label"><span>/ The technical solution</span><span>(01)</span></div>
+        <h2 data-reveal id="approach-title">Add capacity.<br>Plan to keep it.</h2>
+        <p data-reveal class="section-intro">Our core product is a controls and integration solution for annual deployments of modern energy storage systems.</p>
         <div class="offer-grid">
           <article data-reveal>
             <span class="offer-label">01 / Core product</span>
@@ -74,16 +79,16 @@
             <p>Recurring integration and deployment underpin capacity-guarantee warranties, with terms defined for each project.</p>
           </article>
         </div>
-        <p class="section-takeaway">Your site grows and changes. Renew its capacity as the original batteries age.</p>
+        <p data-reveal class="section-takeaway">Your site grows and changes. Renew its capacity as the original batteries age.</p>
       </div>
     </section>
 
     <section class="section frame why-now" id="infrastructure" aria-labelledby="why-title">
-      <div class="section-label"><span>/ Why existing sites</span><span>(02)</span></div>
+      <div data-reveal class="section-label"><span>/ Why existing sites</span><span>(02)</span></div>
       <div>
-        <h2 id="why-title">Start with the infrastructure<br class="desktop-break"> already in place.</h2>
+        <h2 data-reveal id="why-title">Start with the infrastructure<br class="desktop-break"> already in place.</h2>
       </div>
-      <dl class="lead-time-stats">
+      <dl data-reveal class="lead-time-stats">
         <div>
           <dt>MV/HV transformer lead time</dt>
           <dd><strong>32</strong><span>months average</span></dd>
@@ -102,15 +107,15 @@
 
     <section class="problem-band" id="problem" aria-labelledby="problem-title">
       <div class="section frame">
-      <div class="section-label"><span>/ The operating challenge</span><span>(03)</span></div>
-      <h2 id="problem-title">Installed capacity isn’t always<br class="desktop-break"> available capacity.</h2>
-      <p class="section-intro">Identify what limits usable energy before choosing an intervention.</p>
+      <div data-reveal class="section-label"><span>/ The operating challenge</span><span>(03)</span></div>
+      <h2 data-reveal id="problem-title">Installed capacity isn’t always<br class="desktop-break"> available capacity.</h2>
+      <p data-reveal class="section-intro">Identify what limits usable energy before choosing an intervention.</p>
       <dl class="problem-list">
-        <div><dt>State-of-charge imbalance</dt><dd>Uneven charge levels limit the energy the system delivers.</dd></div>
-        <div><dt>Service outages</dt><dd>Equipment out of service leaves part of the site’s capacity unavailable.</dd></div>
-        <div><dt>Battery degradation</dt><dd>These assets lose approximately 2% of their battery capacity annually.</dd></div>
+        <div data-reveal><dt>State-of-charge imbalance</dt><dd>Uneven charge levels limit the energy the system delivers.</dd></div>
+        <div data-reveal><dt>Service outages</dt><dd>Equipment out of service leaves part of the site’s capacity unavailable.</dd></div>
+        <div data-reveal><dt>Battery degradation</dt><dd>These assets lose approximately 2% of their battery capacity annually.</dd></div>
       </dl>
-      <figure class="degradation-evidence">
+      <figure data-reveal class="degradation-evidence">
         <figcaption>
           <p class="eyebrow">U.S. grid / Modeled degraded capacity</p>
           <ul class="market-totals">
@@ -119,15 +124,15 @@
             <li><strong>~16%</strong><span>Annual growth / 2027–2037</span></li>
           </ul>
         </figcaption>
-        <img src="/assets/homepage/degraded-capacity-market.png" alt="U.S. battery fleet capacity and modeled degradation through 2037." width="2399" height="1350" loading="lazy">
+        <div class="plot-image"><img src="/assets/homepage/degraded-capacity-market.png" alt="U.S. battery fleet capacity and modeled degradation through 2037." width="2399" height="1350" loading="lazy"></div>
       </figure>
       </div>
     </section>
 
     <section class="section frame team-section" id="team" aria-labelledby="team-title">
-      <div class="section-label"><span>/ Our team</span><span>(04)</span></div>
-      <h2 class="team-lede" id="team-title">An independent team with deep Tesla Megapack experience.</h2>
-      <ul class="team-disciplines">
+      <div data-reveal class="section-label"><span>/ Our team</span><span>(04)</span></div>
+      <h2 data-reveal class="team-lede" id="team-title">An independent team with deep Tesla Megapack experience.</h2>
+      <ul data-reveal class="team-disciplines">
         <li><span class="team-check" aria-hidden="true">✓</span>Project</li>
         <li><span class="team-check" aria-hidden="true">✓</span>Commissioning</li>
         <li><span class="team-check" aria-hidden="true">✓</span>Service</li>
@@ -136,10 +141,10 @@
 
     <section class="partnership" id="partnership" aria-labelledby="partnership-title">
       <div class="section frame">
-        <div class="section-label"><span>/ Design with us</span><span>(05)</span></div>
-        <h2 id="partnership-title">Your site.<br>Our next five months.</h2>
+        <div data-reveal class="section-label"><span>/ Design with us</span><span>(05)</span></div>
+        <h2 data-reveal id="partnership-title">Your site.<br>Our next five months.</h2>
         <p class="partnership-lede">We’re seeking an owner partner to design a practical augmentation solution for an existing battery site.</p>
-        <div class="partnership-details">
+        <div data-reveal class="partnership-details">
           <div><h3>What we’ll work through</h3><p>Your capacity needs, controls and integration design, and the economics of recurring battery deployments.</p></div>
           <div><h3>The commitment we’re seeking</h3><p>A non-binding letter of intent to purchase the solution if it proves profitable.</p></div>
         </div>
@@ -147,10 +152,10 @@
       </div>
     </section>
     <section class="section frame contact" id="contact" aria-labelledby="contact-title">
-      <div class="section-label" data-reveal><span>/ Start with the site</span><span>(06)</span></div>
-      <div class="contact-grid"><div class="intro"><h2 id="contact-title">Bring more capacity<br>to your existing site.</h2><p>Tell us about your site, capacity needs, and timeline.</p>
+      <div data-reveal class="section-label"><span>/ Start with the site</span><span>(06)</span></div>
+      <div class="contact-grid"><div class="intro"><h2 data-reveal id="contact-title">Bring more capacity<br>to your existing site.</h2><p>Tell us about your site, capacity needs, and timeline.</p>
         </div>
-      <form id="inquiry-form" action="/api/inquiry" method="post">
+      <form data-reveal id="inquiry-form" action="/api/inquiry" method="post">
         <div class="form-row"><label>Name<input name="name" autocomplete="name" maxlength="120" required></label><label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label></div>
         <label>Company <span class="optional">(optional)</span><input name="company" autocomplete="organization" maxlength="180"></label>
         <label>Inquiry details<textarea name="message" rows="5" minlength="10" maxlength="5000" placeholder="Tell us what you’d like to discuss." required></textarea></label>
