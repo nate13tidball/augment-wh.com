@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>Analytics | Augment-wh</title>
+  <link rel="canonical" href="https://www.augment-wh.com/dev/analytics">
+  <script>
+    if (location.pathname === '/dev/analytics/') location.replace('/dev/analytics' + location.search + location.hash);
+  </script>
   <link rel="icon" href="/assets/brand/favicon.png" type="image/png">
   <style>
     * { box-sizing: border-box; }
@@ -33,10 +37,14 @@
     @media (max-width: 540px) { button { width: 100%; margin-bottom: 8px; } section, details { padding: 16px; } }
   </style>
   <script src="/dev/analytics/analytics.js" defer></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <main>
-    <nav aria-label="Development"><a href="/dev/">Page tree</a><a href="/dev/analytics/" aria-current="page">Analytics</a></nav>
+    <nav aria-label="Development"><a href="/dev/">Page tree</a><a href="/dev/analytics" aria-current="page">Analytics</a></nav>
     <h1>Visitor analytics</h1>
     <p class="muted">Production traffic from Vercel Web Analytics. Load the latest numbers on demand.</p>
     <button id="refresh" type="button">Refresh analytics</button>
@@ -57,7 +65,7 @@
     <details>
       <summary>Connect Vercel Analytics</summary>
       <ol>
-        <li>Enable Web Analytics in your Vercel project and add its tracking script to the pages you want to measure. Collection starts after deployment.</li>
+        <li>Vercel Web Analytics tracking is installed across the main site, presentations, and development pages. Collection starts when visitors load these pages with JavaScript enabled.</li>
         <li>In Vercel → Project → Settings → Environment Variables, set <code>ANALYTICS_VERCEL_TOKEN</code> to an access token authorized for this project, and <code>ANALYTICS_PROJECT_ID</code> to its project ID.</li>
         <li>For a team-owned project, also set <code>ANALYTICS_TEAM_ID</code>. Omit it for a personal project.</li>
         <li>Keep the API token server-side and redeploy. This page loads automatically. No historical visits are collected retroactively.</li>

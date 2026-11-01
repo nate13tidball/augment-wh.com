@@ -179,7 +179,7 @@ Keep private research, prospect data, and credentials out of the public director
 
 ## Development analytics dashboard
 
-`/dev/analytics/` displays all-time production visitors/page views and top pages
+`/dev/analytics` displays all-time production visitors/page views and top pages
 from the last seven days using the public [Vercel Web Analytics API](https://vercel.com/docs/analytics/web-analytics-api).
 The read-only proxy is a standard-library Vercel Python Function at `api/analytics.py`.
 It needs the repository root as Vercel's project root, with `public/` as static
@@ -187,9 +187,12 @@ output, so Vercel discovers `api/`. No deployment settings are changed by this c
 The local Python server and GitHub Pages serve the dashboard shell but do not run
 this Vercel-only proxy. The UI reports a missing/unavailable API explicitly.
 
-Enable Web Analytics, add the tracking script to the pages to measure, and deploy.
-Tracking is not installed by the dashboard itself. Set these Production environment
-variables in Vercel, then redeploy:
+Vercel Web Analytics is enabled for the project. Every public HTML page includes
+the standard HTML tracking script at `/_vercel/insights/script.js`, including the
+main site, presentations, and development pages. No npm packages or build step
+are needed. The canonical dashboard URL is `/dev/analytics`; `/dev/analytics/`
+forwards there in the browser. Set these Production environment variables in
+Vercel, then redeploy:
 
 - `ANALYTICS_VERCEL_TOKEN`: Vercel access token authorized for the project.
 - `ANALYTICS_PROJECT_ID`: project ID.
