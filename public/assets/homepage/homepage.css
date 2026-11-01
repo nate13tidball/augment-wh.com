@@ -28,12 +28,21 @@ section[id] { scroll-margin-top: 32px; }
 .site-header .brand { width: min(420px, 100%); }
 .brand { display: block; flex: 0 1 420px; }
 .brand img { display: block; width: 100%; height: auto; }
-.header-cta { display: inline-flex; gap: 20px; padding: 14px 20px; border-radius: 100px; background: var(--charcoal); color: var(--white); font-size: 14px; font-weight: 700; text-decoration: none; }
-.contents { grid-column: 1 / -1; padding-top: 14px; border-top: 1px solid var(--line); }
-.contents ol { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); list-style: none; margin: 0; padding: 0; }
-.contents li + li { border-left: 1px solid var(--line); }
-.contents a { display: grid; gap: 10px; height: 100%; padding: 6px 20px 10px; font-size: 14px; font-weight: 700; text-decoration: none; }
-.contents li:first-child a { padding-left: 0; }
+.menu { position: relative; justify-self: end; }
+.menu > summary { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--charcoal); color: var(--white); cursor: pointer; list-style: none; }
+.menu > summary::-webkit-details-marker { display: none; }
+.menu-icon, .menu-icon::before, .menu-icon::after { display: block; width: 22px; height: 2px; background: currentColor; transition: transform .2s ease, opacity .2s ease; }
+.menu-icon { position: relative; }
+.menu-icon::before, .menu-icon::after { position: absolute; left: 0; content: ""; }
+.menu-icon::before { transform: translateY(-7px); }
+.menu-icon::after { transform: translateY(7px); }
+.menu[open] .menu-icon { background: transparent; }
+.menu[open] .menu-icon::before { transform: rotate(45deg); }
+.menu[open] .menu-icon::after { transform: rotate(-45deg); }
+.menu nav.contents { position: absolute; top: calc(100% + 12px); right: 0; z-index: 20; width: min(320px, calc(100vw - 40px)); padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); box-shadow: 0 16px 40px rgb(0 0 0 / .18); }
+.contents ol { display: grid; grid-template-columns: 1fr; list-style: none; margin: 0; padding: 0; }
+.contents li + li { border-top: 1px solid var(--line); }
+.contents a, .contents li:first-child a { display: block; padding: 12px 14px; font-size: 15px; font-weight: 700; text-decoration: none; }
 .contents a:hover { color: var(--charcoal); text-decoration: underline; text-decoration-color: var(--green); }
 .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .section-label { display: flex; justify-content: space-between; gap: 24px; padding-top: 12px; margin-bottom: 24px; border-top: 1px solid var(--line); font-size: 14px; }
@@ -103,13 +112,9 @@ h2 { max-width: 1060px; margin: 18px 0 24px; font-size: clamp(42px, 5.4vw, 72px)
 }
 @media (max-width: 680px) {
   :root { --frame: calc(100% - 40px); }
-  .site-header { padding-block: 14px; grid-template-columns: 1fr; gap: 14px; }
-  .header-cta { justify-self: start; }
-  .site-header .brand { flex-basis: 280px; max-width: 100%; }
-  .contents ol { grid-template-columns: 1fr 1fr; gap: 0 20px; }
-  .contents li + li { border-left: 0; }
-  .contents li { border-top: 1px solid var(--line); }
-  .contents a, .contents li:first-child a { padding: 12px 0; font-size: 13px; gap: 8px; }
+  .site-header { padding-block: 14px; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; }
+  .site-header .brand { width: min(280px, 100%); flex-basis: auto; }
+  .menu > summary { width: 44px; height: 44px; }
   .hero { padding-block: 36px 28px; }
   h1 { font-size: clamp(43px, 9vw, 60px); margin-block: 20px; }
   .hero-bottom { margin-top: 24px; }
@@ -131,6 +136,7 @@ h2 { max-width: 1060px; margin: 18px 0 24px; font-size: clamp(42px, 5.4vw, 72px)
   :root { scroll-behavior: auto; }
   .reveal-ready { transition: none; }
   .reveal-ready:not(.is-visible) { opacity: 1; transform: none; }
+  .menu-icon, .menu-icon::before, .menu-icon::after { transition: none; }
 }
 .degradation-evidence { margin: 32px 0 0; padding: 0; color: var(--charcoal); background: var(--white); }
 .degradation-evidence figcaption { padding: clamp(16px, 3vw, 28px); margin-bottom: 0; }
