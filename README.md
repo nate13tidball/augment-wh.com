@@ -6,9 +6,10 @@ and Python standard-library SMTP backend. No build step or third-party packages.
 Open `public/index.html` directly in a browser for a local preview.
 Form delivery requires the server described below; file previews do not send mail.
 
-Three concepts based on the current NovaSource pitch deck live under `public/dev/`
-and render at `/dev/`: a slide-like deck flow, an engineering field brief, and an
-owner decision memo. They share the deck's navy, teal, lime, and slate design system
+The page tree lives at `/dev/`; visiting `/dev` forwards there in the browser.
+Three concepts based on the current NovaSource pitch deck live below `public/dev/`:
+a slide-like deck flow at `/dev/deck/`, an engineering field brief at `/dev/field/`,
+and an owner decision memo at `/dev/memo/`. They share the deck's navy, teal, lime, and slate design system
 and use the canonical full-name production logo.
 
 ## Brand assets
