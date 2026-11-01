@@ -27,7 +27,9 @@ section[id] { scroll-margin-top: 32px; }
 .site-header { padding-block: 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px 32px; }
 .site-header .brand { width: min(420px, 100%); }
 .brand { display: block; flex: 0 1 420px; }
+.brand-link { display: block; }
 .brand img { display: block; width: 100%; height: auto; }
+.brand-slogan { display: block; margin-top: 4px; color: var(--gray); font-size: clamp(11px, 1.1vw, 14px); font-weight: 700; letter-spacing: .01em; line-height: 1.25; }
 .menu { position: relative; justify-self: end; }
 .menu > summary { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--charcoal); color: var(--white); cursor: pointer; list-style: none; }
 .menu > summary::-webkit-details-marker { display: none; }
