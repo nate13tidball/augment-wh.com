@@ -48,6 +48,6 @@ class handler(BaseHTTPRequestHandler):
             server.attempts.append(now)
         try:
             server.send_inquiry(data)
-        except Exception:
-            return self.reply(503, {'error': 'Email delivery is unavailable. Please try again later.'})
+        except Exception as error:
+            return self.reply(503, {'error': server.delivery_error(error)})
         self.reply(200, {'ok': True})

@@ -1,6 +1,7 @@
 """Static website and SMTP inquiry endpoint. Run behind an HTTPS reverse proxy."""
 import json
 from api.admin import is_admin
+import logging
 import os
 import re
 import smtplib
@@ -43,8 +44,9 @@ def validate(data):
 
 def send_inquiry(values):
     required = ('SMTP_HOST', 'SMTP_USER', 'SMTP_PASSWORD', 'INQUIRY_FROM', 'INQUIRY_TO')
-    if not all(os.environ.get(key) for key in required):
-        raise RuntimeError('Email delivery is not configured.')
+    missing = [key for key in required if not os.environ.get(key)]
+    if missing:
+        raise RuntimeError('Missing Vercel environment variable(s): ' + ', '.join(missing) + '.')
     message = EmailMessage()
     message['From'] = os.environ['INQUIRY_FROM']
     message['To'] = os.environ['INQUIRY_TO']
@@ -56,17 +58,49 @@ def send_inquiry(values):
         'Type: ' + values['kind'], '', values['message'],
     ]))
     context = ssl.create_default_context()
-    implicit_tls = os.environ.get('SMTP_TLS', 'starttls') == 'implicit'
+    tls_mode = os.environ.get('SMTP_TLS', 'starttls')
+    if tls_mode not in {'starttls', 'implicit'}:
+        raise RuntimeError('Invalid SMTP_TLS setting. Use "starttls" or "implicit".')
+    implicit_tls = tls_mode == 'implicit'
     client = smtplib.SMTP_SSL if implicit_tls else smtplib.SMTP
     options = {'timeout': 15}
     if implicit_tls:
         options['context'] = context
-    with client(os.environ['SMTP_HOST'], int(os.environ.get('SMTP_PORT', '465' if implicit_tls else '587')), **options) as smtp:
+    try:
+        port = int(os.environ.get('SMTP_PORT') or ('465' if implicit_tls else '587'))
+    except ValueError as error:
+        raise RuntimeError('Invalid SMTP_PORT setting. Use a numeric port.') from error
+    if not 1 <= port <= 65535:
+        raise RuntimeError('Invalid SMTP_PORT setting. Use a port from 1 to 65535.')
+    with client(os.environ['SMTP_HOST'], port, **options) as smtp:
         if not implicit_tls:
             smtp.starttls(context=context)
         smtp.login(os.environ['SMTP_USER'], os.environ['SMTP_PASSWORD'])
         if smtp.send_message(message):
             raise RuntimeError('Recipient refused.')
+
+
+def delivery_error(error):
+    """Return actionable mail diagnostics without exposing addresses or SMTP text."""
+    code = getattr(error, 'smtp_code', None)
+    logging.error('Inquiry email delivery failed (%s%s)', type(error).__name__, f', SMTP {code}' if code else '')
+    if isinstance(error, RuntimeError):
+        if str(error) == 'Recipient refused.':
+            return 'The mail server rejected INQUIRY_TO. Check that recipient address.'
+        return str(error)
+    if isinstance(error, smtplib.SMTPAuthenticationError):
+        return 'SMTP authentication failed. Check SMTP_USER, SMTP_PASSWORD, and provider SMTP access.'
+    if isinstance(error, smtplib.SMTPRecipientsRefused):
+        return 'The mail server rejected INQUIRY_TO. Check that recipient address and provider policy.'
+    if isinstance(error, smtplib.SMTPSenderRefused):
+        return 'The mail server rejected INQUIRY_FROM. Use a sender address authorized by your SMTP provider.'
+    if isinstance(error, smtplib.SMTPDataError):
+        return 'The mail server rejected the message. Check sender authorization and provider sending limits.'
+    if isinstance(error, smtplib.SMTPResponseException):
+        return f'The mail server returned SMTP error {error.smtp_code}. Check the SMTP settings and provider logs.'
+    if isinstance(error, (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected, TimeoutError, OSError)):
+        return 'Could not connect securely to the mail server. Check SMTP_HOST, SMTP_PORT, and SMTP_TLS.'
+    return 'Email delivery failed unexpectedly. Check the Vercel function logs for the error type.'
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -183,8 +217,8 @@ class Handler(BaseHTTPRequestHandler):
             attempts.append(now)
         try:
             send_inquiry(data)
-        except Exception:
-            return self.reply(503, {'error': 'Email delivery is unavailable. Please try again later.'})
+        except Exception as error:
+            return self.reply(503, {'error': delivery_error(error)})
         self.reply(200, {'ok': True})
 
 
