@@ -1,0 +1,77 @@
+/* Canonical colors: Augment-wh brand/production/palette.json.
+   Page-local overrides keep the other development concepts unchanged. */
+.concept-deck {
+  --navy: #202220;
+  --slate: #5c5c5c;
+  --teal: #169e18;
+  --lime: #169e18;
+  --paper: #efefef;
+  --white: #ffffff;
+  --line-dark: #b8b8b8;
+  color: var(--slate);
+  background: var(--paper);
+}
+.concept-deck .concept-bar {
+  min-height: 172px;
+  padding-block: 18px;
+  color: var(--slate);
+}
+.concept-deck .logo-plate { padding: 0; border-radius: 0; background: transparent; }
+.concept-deck .logo-plate img { width: min(420px, 100%); height: auto; }
+.concept-deck .logo-plate { flex: 0 1 420px; }
+.concept-deck .concept-bar nav { flex-wrap: wrap; justify-content: flex-end; }
+.concept-deck .deck-hero,
+.concept-deck .deck-cta {
+  width: 100%;
+  padding-inline: max(24px, calc((100% - 1180px) / 2));
+  color: var(--white);
+  background: var(--navy);
+  border: 0;
+}
+.concept-deck .deck-hero { min-height: calc(100svh - 172px); }
+.concept-deck .hero-lede,
+.concept-deck .deck-cta > p:not(.kicker, #contact-link-status) { color: #d9d9d9; }
+.concept-deck .kicker,
+.concept-deck .deck-rows dt,
+.concept-deck .deck-steps span,
+.concept-deck .pool-grid span,
+.concept-deck .timeline span,
+.concept-deck .lime-line { color: var(--slate); }
+.concept-deck .deck-hero .kicker,
+.concept-deck .deck-cta .kicker { color: #d9d9d9; }
+.concept-deck .lime-line { border-left: 3px solid var(--teal); padding-left: 20px; }
+.concept-deck .deck-rows dd,
+.concept-deck .deck-steps p,
+.concept-deck .pool-grid p,
+.concept-deck .market-heading > p,
+.concept-deck .market-facts small,
+.concept-deck .point small,
+.concept-deck .fine-print,
+.concept-deck .concept-footer { color: var(--slate); }
+.concept-deck .market-line {
+  border-color: #b8b8b8;
+  background: linear-gradient(157deg, transparent 49.4%, var(--teal) 49.7% 50.3%, transparent 50.6%);
+}
+.concept-deck .button.teal { color: var(--navy); }
+.concept-deck :focus-visible { outline-color: var(--slate); }
+.concept-deck .deck-hero :focus-visible,
+.concept-deck .deck-cta :focus-visible { outline-color: var(--white); }
+.concept-deck .concept-footer { min-height: 150px; }
+.concept-deck .concept-footer img {
+  width: min(300px, 100%);
+  height: auto;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+@media (max-width: 980px) {
+  .concept-deck .concept-bar { flex-wrap: wrap; }
+  .concept-deck .concept-bar nav { justify-content: flex-start; padding-bottom: 12px; }
+}
+@media (max-width: 680px) {
+  .concept-deck .concept-bar { min-height: 126px; }
+  .concept-deck .logo-plate { flex-basis: 280px; max-width: 100%; }
+  .concept-deck .deck-hero { min-height: calc(100svh - 126px); }
+  .concept-deck .deck-hero,
+  .concept-deck .deck-cta { padding-inline: 15px; }
+}

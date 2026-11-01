@@ -12,6 +12,12 @@ a slide-like deck flow at `/dev/deck/`, an engineering field brief at `/dev/fiel
 and an owner decision memo at `/dev/memo/`. They share the deck's navy, teal, lime, and slate design system
 and use the canonical full-name production logo.
 
+The deck concept now follows `brand/production/palette.json`: charcoal hero and
+closing sections, light-gray content sections, charcoal body text, and logo-green
+accents. Its page-local `public/dev/deck/brand.css` keeps the other concepts' styles
+separate. The full-name logo is 420px wide in the desktop header (280px on phones)
+and 300px in the footer, with its native aspect ratio preserved.
+
 ## Brand assets
 
 The business repository's `brand/production/` folder is the source of approved
