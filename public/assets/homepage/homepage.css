@@ -30,12 +30,10 @@ section[id] { scroll-margin-top: 32px; }
 .brand img { display: block; width: 100%; height: auto; }
 .header-cta { display: inline-flex; gap: 20px; padding: 14px 20px; border-radius: 100px; background: var(--charcoal); color: var(--white); font-size: 14px; font-weight: 700; text-decoration: none; }
 .contents { grid-column: 1 / -1; padding-top: 20px; border-top: 1px solid var(--line); }
-.contents-label { margin-bottom: 18px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .contents ol { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); list-style: none; margin: 0; padding: 0; }
 .contents li + li { border-left: 1px solid var(--line); }
 .contents a { display: grid; gap: 10px; height: 100%; padding: 6px 20px 10px; font-size: 14px; font-weight: 700; text-decoration: none; }
 .contents li:first-child a { padding-left: 0; }
-.contents a span { font-size: 11px; font-weight: 400; font-variant-numeric: tabular-nums; }
 .contents a:hover { color: var(--charcoal); text-decoration: underline; text-decoration-color: var(--green); }
 .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .section-label { display: flex; justify-content: space-between; gap: 24px; padding-top: 18px; margin-bottom: 48px; border-top: 1px solid var(--line); font-size: 14px; }
