@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Analytics | Augment-wh</title>
+  <link rel="icon" href="/assets/brand/favicon.png" type="image/png">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f2f5f7; color: #0b1724; font: 16px/1.5 system-ui, sans-serif; }
+    main { max-width: 900px; margin: auto; padding: 32px 20px 64px; }
+    a { color: #176a70; }
+    nav { display: flex; gap: 24px; border-bottom: 1px solid #cbd5dd; padding-bottom: 16px; }
+    nav [aria-current] { color: #0b1724; font-weight: 700; }
+    h1 { font-size: clamp(2rem, 6vw, 3rem); margin-bottom: 0; }
+    h2 { font-size: 1.2rem; }
+    .muted { color: #526473; }
+    form, section, details { background: white; border: 1px solid #d7dfe5; border-radius: 12px; padding: 24px; margin-top: 24px; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; }
+    input, button { font: inherit; padding: 10px 14px; border-radius: 6px; }
+    input { max-width: 100%; border: 1px solid #8a9ca8; }
+    button { background: #0b1724; color: white; border: 1px solid #0b1724; cursor: pointer; }
+    button:disabled { opacity: .6; cursor: wait; }
+    :focus-visible { outline: 3px solid #16878b; outline-offset: 3px; }
+    .metrics { display: flex; gap: 48px; flex-wrap: wrap; }
+    .metrics strong { display: block; font-size: 2.5rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 0; border-bottom: 1px solid #e3e9ed; text-align: right; }
+    th:first-child, td:first-child { text-align: left; overflow-wrap: anywhere; }
+    summary { cursor: pointer; font-weight: 600; }
+    code { overflow-wrap: anywhere; }
+    li { margin: 8px 0; }
+    [hidden] { display: none; }
+    @media (max-width: 540px) { input, button { width: 100%; margin-bottom: 8px; } form, section, details { padding: 16px; } }
+  </style>
+  <script src="/dev/analytics/analytics.js" defer></script>
+</head>
+<body>
+  <main>
+    <nav aria-label="Development"><a href="/dev/">Page tree</a><a href="/dev/analytics/" aria-current="page">Analytics</a></nav>
+    <h1>Visitor analytics</h1>
+    <p class="muted">Production traffic from Vercel Web Analytics. Load the latest numbers on demand.</p>
+    <form id="access">
+      <label for="password">Dashboard password</label>
+      <input id="password" type="password" autocomplete="off" required aria-describedby="password-help">
+      <button type="submit">Load analytics</button>
+      <p id="password-help" class="muted">Use your separate dashboard password, never your Vercel account password or API token. It is not saved in this browser.</p>
+    </form>
+    <p id="status" role="status" aria-live="polite">Enter your dashboard password to connect.</p>
+    <div id="results" hidden>
+      <section aria-labelledby="totals-title">
+        <h2 id="totals-title">All-time totals</h2>
+        <div class="metrics"><div><strong id="visitors">—</strong>Visitors</div><div><strong id="pageviews">—</strong>Page views</div></div>
+        <p class="muted">Since analytics collection began; visitor counts are Vercel’s anonymous visitor metric.</p>
+      </section>
+      <section aria-labelledby="pages-title">
+        <h2 id="pages-title">Top pages · last 7 days</h2>
+        <p id="period" class="muted"></p>
+        <table><thead><tr><th scope="col">Page</th><th scope="col">Views</th><th scope="col">Visitors</th></tr></thead><tbody id="pages"></tbody></table>
+        <p class="muted">Up to 10 pages, with remaining traffic grouped by Vercel as “Others”. Includes development pages when tracked.</p>
+      </section>
+    </div>
+    <details>
+      <summary>Connect Vercel Analytics</summary>
+      <ol>
+        <li>Enable Web Analytics in your Vercel project and add its tracking script to the pages you want to measure. Collection starts after deployment.</li>
+        <li>In Vercel → Project → Settings → Environment Variables, set <code>ANALYTICS_VERCEL_TOKEN</code> to an access token authorized for this project, and <code>ANALYTICS_PROJECT_ID</code> to its project ID.</li>
+        <li>For a team-owned project, also set <code>ANALYTICS_TEAM_ID</code>. Omit it for a personal project.</li>
+        <li>Set <code>ANALYTICS_DASHBOARD_PASSWORD</code> to a separate, long random password. Keep these settings server-side.</li>
+        <li>Redeploy, then enter the dashboard password above. No historical visits are collected retroactively.</li>
+      </ol>
+      <p><a href="https://vercel.com/docs/analytics/quickstart">Tracking setup</a> · <a href="https://vercel.com/docs/analytics/web-analytics-api">API documentation</a></p>
+    </details>
+    <noscript><p>Enable JavaScript to load the analytics dashboard.</p></noscript>
+  </main>
+</body>
+</html>

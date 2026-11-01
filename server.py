@@ -112,6 +112,8 @@ class Handler(BaseHTTPRequestHandler):
                  '/contact.js': 'contact.js',
                  '/dev': 'dev/index.html', '/dev/': 'dev/index.html',
                  '/dev/index.html': 'dev/index.html', '/dev/styles.css': 'dev/styles.css',
+                 '/dev/analytics': 'dev/analytics/index.html', '/dev/analytics/': 'dev/analytics/index.html',
+                 '/dev/analytics/analytics.js': 'dev/analytics/analytics.js',
                  '/dev/map': 'dev/map/index.html', '/dev/map/': 'dev/map/index.html',
                  '/dev/map/index.html': 'dev/map/index.html',
                  '/dev/deck': 'dev/deck/index.html', '/dev/deck/': 'dev/deck/index.html',

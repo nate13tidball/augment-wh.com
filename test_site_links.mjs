@@ -14,7 +14,7 @@ for (const concept of ['deck', 'field', 'memo']) {
 }
 const devIndex = read('./public/dev/index.html');
 assert.match(devIndex, /<h1>Site map<\/h1>/);
-for (const route of ['/', '/dev/', '/dev/deck/', '/dev/field/', '/dev/memo/', '/presentations/']) {
+for (const route of ['/', '/dev/', '/dev/deck/', '/dev/field/', '/dev/memo/', '/dev/analytics/', '/presentations/']) {
   assert.ok(devIndex.includes(`href="${route}"`), `Page tree is missing ${route}`);
 }
 const redirect = devIndex.match(/<script>([\s\S]*?)<\/script>/)[1];
@@ -26,3 +26,9 @@ for (const pathname of ['/dev', '/dev/']) {
   assert.deepEqual(destinations, pathname === '/dev' ? ['/dev/?test=1#tree'] : []);
 }
 console.log('No personal contact pathways remain; development concepts use the canonical logo.');
+
+const analytics = read('./public/dev/analytics/index.html');
+assert.match(analytics, /aria-current="page">Analytics/);
+assert.match(analytics, /name="robots" content="noindex, nofollow"/);
+assert.match(read('./public/dev/map/index.html'), /href="\/dev\/analytics\/"/);
+assert.doesNotMatch(read('./public/dev/analytics/analytics.js'), /localStorage|sessionStorage|innerHTML/);
