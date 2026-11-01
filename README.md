@@ -48,8 +48,8 @@ access to the private business repo. Refresh the browser cache after switching.
 
 ## Inquiry and quote form
 
-The form collects name, reply email, optional company, inquiry type, and project
-details. `POST /api/inquiry` validates inputs and sends a plain-text email to the
+The form collects name, reply email, optional company, and inquiry details.
+`POST /api/inquiry` is served by `api/inquiry.py` on Vercel; it validates inputs and sends a plain-text email to the
 fixed `INQUIRY_TO` address; Reply-To is the visitor's validated address. It does not
 send visitor autoresponders or store inquiries in a database. Failed submissions
 keep form details visible. Success means the SMTP relay accepted the email, not
@@ -65,8 +65,8 @@ password-based SMTP; use an authorized SMTP relay/account supported by its provi
 
 For local form testing set `INQUIRY_ORIGINS=http://127.0.0.1:8091`.
 For a self-hosted deployment, a reverse proxy can forward `/api/inquiry` to the
-local Python server. That loopback URL is not a Vercel backend: production on
-Vercel needs a Vercel Function or an external API route. The API has a 32 KiB body
+local Python server. The Vercel handler uses the shared validation and SMTP
+delivery functions in `server.py`. The API has a 32 KiB body
 limit, honeypot, origin checks, field validation, and a process-local limit of 20
 mail attempts per hour. This basic global limit resets on restart and can be
 exhausted by spam; use platform-level abuse controls for a public launch.
@@ -171,7 +171,8 @@ from the public Framer source maps. See [interaction evidence and checks](docs/o
 The page uses Augment-wh's existing content and brand assets. The source reference
 and screenshots remain in a separate design repository.
 
-The existing inquiry API and form fields are retained. The single-page layout needs no build step or new
+The inquiry form keeps name, email, optional company, and one inquiry details
+message box. The single-page layout needs no build step or new
 dependencies. Preview with `python3 -m http.server 8092 --bind 127.0.0.1 --directory public`
 and open `http://127.0.0.1:8092/` (static preview only; inquiry delivery requires
 the configured Python backend).

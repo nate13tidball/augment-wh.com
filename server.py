@@ -14,7 +14,6 @@ from urllib.parse import urlsplit
 import mimetypes
 
 PUBLIC = Path(__file__).resolve().parent / 'public'
-KINDS = {'General inquiry', 'Request a quote', 'Discuss augmentation'}
 LIMITS = {'name': 120, 'email': 254, 'company': 180, 'kind': 40, 'message': 5000, 'website': 200}
 lock = Lock()
 attempts = []
@@ -29,8 +28,12 @@ def validate(data):
         if not isinstance(value, str) or len(value) > limit or '\x00' in value:
             raise ValueError('Please check the length and format of your details.')
         values[key] = value.strip()
-    if not values['name'] or len(values['message']) < 10 or values['kind'] not in KINDS:
-        raise ValueError('Please provide your name, inquiry type, and project details.')
+    if not values['name'] or len(values['message']) < 10:
+        raise ValueError('Please provide your name and inquiry details.')
+    if not values['kind']:
+        values['kind'] = 'Website inquiry'
+    elif values['kind'] not in {'General inquiry', 'Request a quote', 'Discuss augmentation'}:
+        raise ValueError('Invalid inquiry type.')
     if not re.fullmatch(r'[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+', values['email']):
         raise ValueError('Please enter a valid email address.')
     if any(c in values['email'] for c in '\r\n'):

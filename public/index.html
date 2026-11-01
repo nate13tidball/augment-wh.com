@@ -129,8 +129,7 @@
       <form id="inquiry-form" action="/api/inquiry" method="post">
         <div class="form-row"><label>Name<input name="name" autocomplete="name" maxlength="120" required></label><label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label></div>
         <label>Company <span class="optional">(optional)</span><input name="company" autocomplete="organization" maxlength="180"></label>
-        <label>How can we help?<select name="kind"><option>General inquiry</option><option>Request a quote</option><option>Discuss augmentation</option></select></label>
-        <label>Project details<textarea name="message" rows="5" minlength="10" maxlength="5000" placeholder="Your project, the decision you're facing, and your timeline." required></textarea></label>
+        <label>Inquiry details<textarea name="message" rows="5" minlength="10" maxlength="5000" placeholder="Tell us what you’d like to discuss." required></textarea></label>
         <div class="form-trap" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
         <p class="form-note">Your details will be sent to our configured business contact to respond to your request. Please don't include confidential site data.</p>
         <button class="pill" type="submit">Send inquiry <span aria-hidden="true">&#8599;</span></button>
