@@ -181,7 +181,7 @@ Keep private research, prospect data, and credentials out of the public director
 
 `/dev/analytics/` displays all-time production visitors/page views and top pages
 from the last seven days using the public [Vercel Web Analytics API](https://vercel.com/docs/analytics/web-analytics-api).
-The private proxy is a standard-library Vercel Python Function at `api/analytics.py`.
+The read-only proxy is a standard-library Vercel Python Function at `api/analytics.py`.
 It needs the repository root as Vercel's project root, with `public/` as static
 output, so Vercel discovers `api/`. No deployment settings are changed by this code.
 The local Python server and GitHub Pages serve the dashboard shell but do not run
@@ -194,15 +194,11 @@ variables in Vercel, then redeploy:
 - `ANALYTICS_VERCEL_TOKEN`: Vercel access token authorized for the project.
 - `ANALYTICS_PROJECT_ID`: project ID.
 - `ANALYTICS_TEAM_ID`: team ID for team projects; omit for personal projects.
-- `ANALYTICS_DASHBOARD_PASSWORD`: separate, long random dashboard password.
 
-Enter only the dashboard password in the page. The Vercel token stays on the server.
-The endpoint rejects unauthenticated requests, disables response caching, and
-limits queries to the configured project and fixed reports. Passwords are sent
-in a POST body, cleared from the input immediately, and never persisted in browser
-storage or application logs. Use Vercel firewall rate limiting if this small private
-dashboard needs additional protection from password guessing; the shared password
-is not a multi-user account system.
+The dashboard loads automatically and has a refresh button. There is currently no
+password protection: anyone with the URL can view these aggregate reports after
+configuration. The Vercel token stays on the server. The endpoint disables response
+caching and limits queries to the configured project and fixed reports.
 
 Check with `python3 -m unittest -v test_analytics.py` (mocked Vercel, no server or
 real credentials required) and `node test_site_links.mjs`. Live totals require

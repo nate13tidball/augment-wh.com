@@ -1,7 +1,6 @@
-"""Private, read-only Vercel Web Analytics proxy. No third-party dependencies."""
+"""Read-only Vercel Web Analytics proxy. No third-party dependencies."""
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler
-import hmac
 import json
 import os
 from urllib.error import HTTPError, URLError
@@ -23,7 +22,7 @@ def query(resource, **params):
 
 class handler(BaseHTTPRequestHandler):
     def log_message(self, *_args):
-        pass  # Never log passwords, requests, or upstream credentials.
+        pass  # Never log requests or upstream credentials.
 
     def reply(self, status, data):
         body = json.dumps(data).encode()
@@ -36,24 +35,9 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
-        self.reply(405, {'error': 'Use the dashboard to load analytics.'})
-
-    def do_POST(self):
-        required = ('ANALYTICS_DASHBOARD_PASSWORD', 'ANALYTICS_VERCEL_TOKEN', 'ANALYTICS_PROJECT_ID')
+        required = ('ANALYTICS_VERCEL_TOKEN', 'ANALYTICS_PROJECT_ID')
         if not all(os.environ.get(key) for key in required):
             return self.reply(503, {'error': 'Not connected yet. Complete the setup steps below, then redeploy.'})
-        try:
-            length = int(self.headers.get('Content-Length', '0'))
-            if not 0 < length <= 4096:
-                return self.reply(400, {'error': 'Invalid request.'})
-            payload = json.loads(self.rfile.read(length))
-            password = payload.get('password') if isinstance(payload, dict) else None
-            if not isinstance(password, str):
-                return self.reply(400, {'error': 'Enter your dashboard password.'})
-        except (ValueError, UnicodeError):
-            return self.reply(400, {'error': 'Invalid request.'})
-        if not hmac.compare_digest(password.encode(), os.environ['ANALYTICS_DASHBOARD_PASSWORD'].encode()):
-            return self.reply(401, {'error': 'Dashboard password incorrect.'})
         until = datetime.now(timezone.utc)
         since = until - timedelta(days=7)
         try:

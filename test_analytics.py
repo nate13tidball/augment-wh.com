@@ -13,34 +13,23 @@ class AnalyticsTests(unittest.TestCase):
     config = {
         'ANALYTICS_VERCEL_TOKEN': 'upstream-test-token',
         'ANALYTICS_PROJECT_ID': 'prj_test',
-        'ANALYTICS_DASHBOARD_PASSWORD': 'separate-test-password',
     }
 
-    def request(self, body):
+    def request(self):
         app = object.__new__(analytics.handler)
-        app.headers = {'Content-Length': str(len(body))}
-        app.rfile = io.BytesIO(body)
         app.reply = MagicMock()
-        app.do_POST()
+        app.do_GET()
         return app.reply.call_args.args
 
     def test_not_configured_never_queries_vercel(self):
         with patch.dict(os.environ, {}, clear=True), patch.object(analytics, 'query') as query:
-            self.assertEqual(self.request(b'{}')[0], 503)
+            self.assertEqual(self.request()[0], 503)
             query.assert_not_called()
 
-    def test_password_required_before_upstream_request(self):
-        with patch.dict(os.environ, self.config, clear=True), patch.object(analytics, 'query') as query:
-            self.assertEqual(self.request(b'{"password":"wrong"}')[0], 401)
-            self.assertEqual(self.request(b'{"password":""}')[0], 401)
-            for body in (b'[]', b'invalid', b'{"password":42}', b'x' * 4097):
-                self.assertEqual(self.request(body)[0], 400)
-            query.assert_not_called()
-
-    def test_reports_and_empty_traffic(self):
+    def test_reports_without_password_and_empty_traffic(self):
         totals = {'visitors': 0, 'pageviews': 0}
         with patch.dict(os.environ, self.config, clear=True), patch.object(analytics, 'query', side_effect=[totals, []]) as query:
-            status, data = self.request(json.dumps({'password': self.config['ANALYTICS_DASHBOARD_PASSWORD']}).encode())
+            status, data = self.request()
         self.assertEqual(status, 200)
         self.assertEqual(data['totals'], totals)
         self.assertEqual(data['pages'], [])
@@ -53,7 +42,7 @@ class AnalyticsTests(unittest.TestCase):
     def test_upstream_error_is_not_zero_and_does_not_leak_secrets(self):
         error = HTTPError('https://api.vercel.com', 403, 'secret-upstream-detail', {}, None)
         with patch.dict(os.environ, self.config, clear=True), patch.object(analytics, 'query', side_effect=error):
-            status, data = self.request(json.dumps({'password': self.config['ANALYTICS_DASHBOARD_PASSWORD']}).encode())
+            status, data = self.request()
         self.assertEqual(status, 502)
         self.assertNotIn('totals', data)
         self.assertNotIn('secret-upstream-detail', json.dumps(data))

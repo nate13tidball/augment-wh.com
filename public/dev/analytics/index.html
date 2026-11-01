@@ -16,10 +16,8 @@
     h1 { font-size: clamp(2rem, 6vw, 3rem); margin-bottom: 0; }
     h2 { font-size: 1.2rem; }
     .muted { color: #526473; }
-    form, section, details { background: white; border: 1px solid #d7dfe5; border-radius: 12px; padding: 24px; margin-top: 24px; }
-    label { display: block; margin-bottom: 8px; font-weight: 600; }
-    input, button { font: inherit; padding: 10px 14px; border-radius: 6px; }
-    input { max-width: 100%; border: 1px solid #8a9ca8; }
+    section, details { background: white; border: 1px solid #d7dfe5; border-radius: 12px; padding: 24px; margin-top: 24px; }
+    button { font: inherit; padding: 10px 14px; border-radius: 6px; }
     button { background: #0b1724; color: white; border: 1px solid #0b1724; cursor: pointer; }
     button:disabled { opacity: .6; cursor: wait; }
     :focus-visible { outline: 3px solid #16878b; outline-offset: 3px; }
@@ -32,7 +30,7 @@
     code { overflow-wrap: anywhere; }
     li { margin: 8px 0; }
     [hidden] { display: none; }
-    @media (max-width: 540px) { input, button { width: 100%; margin-bottom: 8px; } form, section, details { padding: 16px; } }
+    @media (max-width: 540px) { button { width: 100%; margin-bottom: 8px; } section, details { padding: 16px; } }
   </style>
   <script src="/dev/analytics/analytics.js" defer></script>
 </head>
@@ -41,13 +39,8 @@
     <nav aria-label="Development"><a href="/dev/">Page tree</a><a href="/dev/analytics/" aria-current="page">Analytics</a></nav>
     <h1>Visitor analytics</h1>
     <p class="muted">Production traffic from Vercel Web Analytics. Load the latest numbers on demand.</p>
-    <form id="access">
-      <label for="password">Dashboard password</label>
-      <input id="password" type="password" autocomplete="off" required aria-describedby="password-help">
-      <button type="submit">Load analytics</button>
-      <p id="password-help" class="muted">Use your separate dashboard password, never your Vercel account password or API token. It is not saved in this browser.</p>
-    </form>
-    <p id="status" role="status" aria-live="polite">Enter your dashboard password to connect.</p>
+    <button id="refresh" type="button">Refresh analytics</button>
+    <p id="status" role="status" aria-live="polite">Loading analytics…</p>
     <div id="results" hidden>
       <section aria-labelledby="totals-title">
         <h2 id="totals-title">All-time totals</h2>
@@ -67,8 +60,7 @@
         <li>Enable Web Analytics in your Vercel project and add its tracking script to the pages you want to measure. Collection starts after deployment.</li>
         <li>In Vercel → Project → Settings → Environment Variables, set <code>ANALYTICS_VERCEL_TOKEN</code> to an access token authorized for this project, and <code>ANALYTICS_PROJECT_ID</code> to its project ID.</li>
         <li>For a team-owned project, also set <code>ANALYTICS_TEAM_ID</code>. Omit it for a personal project.</li>
-        <li>Set <code>ANALYTICS_DASHBOARD_PASSWORD</code> to a separate, long random password. Keep these settings server-side.</li>
-        <li>Redeploy, then enter the dashboard password above. No historical visits are collected retroactively.</li>
+        <li>Keep the API token server-side and redeploy. This page loads automatically. No historical visits are collected retroactively.</li>
       </ol>
       <p><a href="https://vercel.com/docs/analytics/quickstart">Tracking setup</a> · <a href="https://vercel.com/docs/analytics/web-analytics-api">API documentation</a></p>
     </details>

@@ -32,3 +32,5 @@ assert.match(analytics, /aria-current="page">Analytics/);
 assert.match(analytics, /name="robots" content="noindex, nofollow"/);
 assert.match(read('./public/dev/map/index.html'), /href="\/dev\/analytics\/"/);
 assert.doesNotMatch(read('./public/dev/analytics/analytics.js'), /localStorage|sessionStorage|innerHTML/);
+assert.doesNotMatch(analytics, /type="password"|ANALYTICS_DASHBOARD_PASSWORD/);
+assert.match(read('./public/dev/analytics/analytics.js'), /loadAnalytics\(\);/);

@@ -1,19 +1,14 @@
-const form = document.querySelector('#access');
+const button = document.querySelector('#refresh');
 const status = document.querySelector('#status');
 const results = document.querySelector('#results');
 const number = value => typeof value === 'number' ? value.toLocaleString() : '—';
-form.addEventListener('submit', async event => {
-  event.preventDefault();
-  const button = form.querySelector('button');
-  const password = document.querySelector('#password');
-  const body = JSON.stringify({ password: password.value });
-  password.value = '';
+async function loadAnalytics() {
   button.disabled = true;
   results.hidden = true;
   status.textContent = 'Loading analytics…';
   try {
     const response = await fetch('/api/analytics', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body, cache: 'no-store', credentials: 'omit',
+      cache: 'no-store', credentials: 'omit',
     });
     if (response.status === 404) throw new Error('Analytics API is not deployed. Check that Vercel deploys the repository’s api/ folder.');
     if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('Analytics API unavailable. Check the Vercel deployment.');
@@ -42,10 +37,12 @@ form.addEventListener('submit', async event => {
     }
     document.querySelector('#period').textContent = `${new Date(data.since).toLocaleString()} – ${new Date(data.until).toLocaleString()}`;
     results.hidden = false;
-    status.textContent = 'Updated just now. Enter your password again to refresh.';
+    status.textContent = 'Updated just now.';
   } catch (error) {
     status.textContent = error.message;
   } finally {
     button.disabled = false;
   }
-});
+}
+button.addEventListener('click', loadAnalytics);
+loadAnalytics();
