@@ -6,17 +6,28 @@ and Python standard-library SMTP backend. No build step or third-party packages.
 Open `public/index.html` directly in a browser for a local preview.
 Form delivery requires the server described below; file previews do not send mail.
 
-The page tree lives at `/dev/`; visiting `/dev` forwards there in the browser.
-Three concepts based on the current NovaSource pitch deck live below `public/dev/`:
-a slide-like deck flow at `/dev/deck/`, an engineering field brief at `/dev/field/`,
-and an owner decision memo at `/dev/memo/`. They share the deck's navy, teal, lime, and slate design system
-and use the canonical full-name production logo.
+## Homepage and preserved versions
 
-The deck concept now follows `brand/production/palette.json`: charcoal hero and
-closing sections, light-gray content sections, charcoal body text, and logo-green
-accents. Its page-local `public/dev/deck/brand.css` keeps the other concepts' styles
-separate. The full-name logo is 420px wide in the desktop header (280px on phones)
-and 300px in the footer, with its native aspect ratio preserved.
+The V3 pitch-deck page is now the homepage at `/`. It describes the controls and
+integration product, annual ESS deployments, capacity guarantees, lead times,
+modeled degradation, team experience, and the five-month partnership ask.
+The inquiry form retains `/api/inquiry` and `contact.js`.
+
+The previous homepage is preserved at `/dev/previous-home/`, behind the existing
+admin login on Vercel. `/dev/deck/` retains the working preview. The development
+page tree at `/dev/` lists both, plus the field and memo concepts.
+
+The homepage and deck preview share `public/assets/homepage/homepage.css` and
+images under that same directory. Public assets live outside the protected
+`/dev/` tree and remain available on the GitHub Pages fallback. The prior
+homepage still uses the original `public/styles.css` and scripts.
+
+The page uses approved green, charcoal, and light-gray branding. Text blocks
+stay within 20 words, with aligned statistics, section numbering, and a contents
+bar. The full-width battery-site illustration was supplied by Nathan. Lead-time
+and degraded-capacity dollar figures were supplied/approved by Nathan; the parent
+repository's `pitch_offering/v3-website-content-review.md` retains source and
+editorial context. The dollar figures describe degraded capacity, not service revenue.
 
 ## Brand assets
 

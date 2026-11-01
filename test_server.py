@@ -72,22 +72,34 @@ class InquiryTests(unittest.TestCase):
                 self.assertEqual(response.status, 200)
                 response.read()
                 conn.close()
-            for path, filename in (
-                ('/dev', 'dev/index.html'), ('/dev/', 'dev/index.html'),
-                ('/dev/index.html', 'dev/index.html'), ('/dev/styles.css', 'dev/styles.css'),
-                ('/dev/map', 'dev/map/index.html'), ('/dev/map/', 'dev/map/index.html'),
-                ('/dev/deck', 'dev/deck/index.html'), ('/dev/deck/', 'dev/deck/index.html'),
-                ('/dev/field', 'dev/field/index.html'), ('/dev/field/', 'dev/field/index.html'),
-                ('/dev/memo', 'dev/memo/index.html'), ('/dev/memo/', 'dev/memo/index.html'),
-            ):
-                conn = HTTPConnection('127.0.0.1', app.server_port)
-                conn.request('GET', path)
-                response = conn.getresponse()
-                self.assertEqual(response.status, 200)
-                self.assertEqual(response.read(), (server.PUBLIC / filename).read_bytes())
-                conn.close()
+            conn = HTTPConnection('127.0.0.1', app.server_port)
+            conn.request('GET', '/dev/previous-home/')
+            response = conn.getresponse()
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.getheader('Location'), '/dev/login/')
+            response.read()
+            conn.close()
+            with patch.object(server, 'is_admin', return_value=True):
+                for path, filename in (
+                    ('/assets/homepage/homepage.css', 'assets/homepage/homepage.css'),
+                    ('/assets/homepage/battery-site-concept.jpeg', 'assets/homepage/battery-site-concept.jpeg'),
+                    ('/assets/homepage/degraded-capacity-market.png', 'assets/homepage/degraded-capacity-market.png'),
+                    ('/dev/previous-home/', 'dev/previous-home/index.html'),
+                    ('/dev', 'dev/index.html'), ('/dev/', 'dev/index.html'),
+                    ('/dev/index.html', 'dev/index.html'), ('/dev/styles.css', 'dev/styles.css'),
+                    ('/dev/map', 'dev/map/index.html'), ('/dev/map/', 'dev/map/index.html'),
+                    ('/dev/deck', 'dev/deck/index.html'), ('/dev/deck/', 'dev/deck/index.html'),
+                    ('/dev/field', 'dev/field/index.html'), ('/dev/field/', 'dev/field/index.html'),
+                    ('/dev/memo', 'dev/memo/index.html'), ('/dev/memo/', 'dev/memo/index.html'),
+                ):
+                    conn = HTTPConnection('127.0.0.1', app.server_port)
+                    conn.request('GET', path)
+                    response = conn.getresponse()
+                    self.assertEqual(response.status, 200)
+                    self.assertEqual(response.read(), (server.PUBLIC / filename).read_bytes())
+                    conn.close()
             with tempfile.TemporaryDirectory() as temp:
-                public = Path(temp)
+                public = Path(temp).resolve()
                 (public / 'presentations' / 'demo').mkdir(parents=True)
                 (public / 'presentations' / 'companies.json').write_text(json.dumps([{'slug': 'demo', 'presentation': 'custom.html'}]))
                 (public / 'presentations' / 'demo' / 'custom.html').write_text('<h1>Custom deck</h1>')

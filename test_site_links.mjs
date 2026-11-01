@@ -9,7 +9,7 @@ assert.doesNotMatch(read('./server.py'), /nathan|tidball|linkedin|booking/i);
 for (const concept of ['deck', 'field', 'memo']) {
   const html = read(`./public/dev/${concept}/index.html`);
   assert.doesNotMatch(html, /nathan|tidball|linkedin|meeting|calendar|mailto:/i);
-  assert.match(html, /\.\.\/\.\.\/assets\/brand\/full-logo\.png/);
+  assert.match(html, /(?:\.\.\/\.\.\/|\/)assets\/brand\/full-logo\.png/);
   assert.match(html, /name="robots" content="noindex, nofollow"/);
 }
 const devIndex = read('./public/dev/index.html');
@@ -55,3 +55,12 @@ for (const filename of readdirSync(new URL('./public/', import.meta.url), { recu
   assert.equal(window.vaq[0][0], 'event');
 }
 console.log('All HTML pages include Vercel tracking once; analytics URL is canonical without a trailing slash.');
+
+const homepage = read('./public/index.html');
+assert.doesNotMatch(homepage, /noindex|(?:src|href)="[^"#]*\/dev\//);
+assert.match(homepage, /id="inquiry-form"/);
+assert.match(homepage, /id="contact"/);
+assert.match(homepage, /src="\/contact.js"/);
+assert.match(read('./public/dev/previous-home/index.html'), /noindex, nofollow/);
+assert.match(devIndex, /href="\/dev\/previous-home\/"/);
+console.log('Homepage is public with its inquiry form; previous homepage is retained under dev.');

@@ -134,6 +134,9 @@ class Handler(BaseHTTPRequestHandler):
                  '/dev/map/index.html': 'dev/map/index.html',
                  '/dev/deck': 'dev/deck/index.html', '/dev/deck/': 'dev/deck/index.html',
                  '/dev/deck/index.html': 'dev/deck/index.html',
+                 '/dev/previous-home': 'dev/previous-home/index.html',
+                 '/dev/previous-home/': 'dev/previous-home/index.html',
+                 '/dev/previous-home/index.html': 'dev/previous-home/index.html',
                  '/dev/field': 'dev/field/index.html', '/dev/field/': 'dev/field/index.html',
                  '/dev/field/index.html': 'dev/field/index.html',
                  '/dev/memo': 'dev/memo/index.html', '/dev/memo/': 'dev/memo/index.html',
@@ -148,6 +151,8 @@ class Handler(BaseHTTPRequestHandler):
                  '/assets/favicon.svg': 'assets/favicon.svg'}
         for asset in ('header.png', 'logo.png', 'full-logo.png', 'favicon.png', 'manifest.json'):
             files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'
+        for asset in ('homepage.css', 'battery-site-concept.jpeg', 'degraded-capacity-market.png'):
+            files[f'/assets/homepage/{asset}'] = f'assets/homepage/{asset}'
         filename = files.get(path, '404.html')
         content_type = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
         self.reply(200 if path in files else 404, (PUBLIC / filename).read_bytes(), content_type)
