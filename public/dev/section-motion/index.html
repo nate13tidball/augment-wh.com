@@ -17,6 +17,8 @@
     .motion-options a { display: block; padding: 8px 12px; border: 1px solid #6b746b; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; }
     .motion-options a[aria-current="page"] { border-color: #50c654; background: #166a1a; }
     .motion-options a:hover { border-color: #50c654; }
+    .motion-toggle { margin-top: 10px; padding: 7px 12px; border: 1px solid #50c654; border-radius: 8px; color: #fff; background: transparent; font: 700 13px Arial, sans-serif; cursor: pointer; }
+    .motion-toggle:hover { background: #166a1a; }
     .motion-toolbar p { margin-top: 8px; color: #d9d9d9; font-size: 12px; }
     .motion-ready[data-motion="sweep"] .motion-section { opacity: 1; transform: translateX(0); transition: opacity .75s ease, transform .75s cubic-bezier(.2,.7,.2,1); }
     .motion-ready[data-motion="sweep"] .motion-section:not(.motion-visible) { opacity: 0; transform: translateX(-7vw); }
@@ -30,10 +32,8 @@
     .motion-ready[data-motion="curtain"] .motion-section:not(.motion-visible)::after { transform: scaleY(1); }
     .motion-ready[data-motion="focus"] .motion-section { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1), filter .8s ease; }
     .motion-ready[data-motion="focus"] .motion-section:not(.motion-visible) { opacity: 0; transform: scale(.94) translateY(30px); filter: blur(6px); }
-    @media (prefers-reduced-motion: reduce) {
-      .motion-section { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
-      .motion-section::after { transform: scaleY(0) !important; transition: none !important; }
-    }
+    .motion-paused .motion-section { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+    .motion-paused .motion-section::after { transform: scaleY(0) !important; transition: none !important; }
   </style>
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -50,6 +50,7 @@
       <a data-option="curtain" href="?motion=curtain">02 / Curtain</a>
       <a data-option="focus" href="?motion=focus">03 / Focus</a>
     </nav>
+    <button class="motion-toggle" id="motion-toggle" type="button">Pause animations</button>
     <p id="motion-status">Scroll down and back up. Sections replay when they reenter the page.</p>
   </div>
   <div id="preview"></div>
@@ -79,16 +80,24 @@
       });
 
       const status = document.querySelector('#motion-status');
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        status.textContent = 'Reduced motion is enabled, so sections appear without animation.';
-      } else if ('IntersectionObserver' in window) {
+      const toggle = document.querySelector('#motion-toggle');
+      if ('IntersectionObserver' in window) {
         document.documentElement.classList.add('motion-ready');
         const observer = new IntersectionObserver(entries => {
           entries.forEach(entry => entry.target.classList.toggle('motion-visible', entry.isIntersecting));
         }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
         sections.forEach(section => observer.observe(section));
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          status.textContent = 'Device reduced motion is on; this preview plays animations so you can compare them. Pause anytime.';
+        }
+        toggle.addEventListener('click', () => {
+          const paused = document.documentElement.classList.toggle('motion-paused');
+          toggle.textContent = paused ? 'Play animations' : 'Pause animations';
+          status.textContent = paused ? 'Animations paused.' : 'Animations playing. Scroll down and back up to compare.';
+        });
       } else {
         status.textContent = 'This browser does not support section animation.';
+        toggle.hidden = true;
       }
     }).catch(error => {
       document.querySelector('#motion-status').textContent = `Preview unavailable: ${error.message}`;
