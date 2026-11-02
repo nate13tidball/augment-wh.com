@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Section motion study | Augment-wh</title>
+  <link rel="icon" href="/assets/brand/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/assets/homepage/homepage.css">
+  <style>
+    #preview { overflow-x: clip; }
+    .motion-lab section[id] { scroll-margin-top: 150px; }
+    .motion-toolbar { position: sticky; top: 0; z-index: 40; padding: 14px max(20px, calc((100vw - 1180px) / 2)); color: #fff; background: #202220; box-shadow: 0 8px 24px #0004; }
+    .motion-toolbar > a { color: #b7e3b9; font-size: 13px; }
+    .motion-toolbar h1 { margin: 6px 0 10px; font-size: clamp(22px, 3vw, 32px); line-height: 1.1; }
+    .motion-options { display: flex; flex-wrap: wrap; gap: 8px; }
+    .motion-options a { display: block; padding: 8px 12px; border: 1px solid #6b746b; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; }
+    .motion-options a[aria-current="page"] { border-color: #50c654; background: #166a1a; }
+    .motion-options a:hover { border-color: #50c654; }
+    .motion-toolbar p { margin-top: 8px; color: #d9d9d9; font-size: 12px; }
+    .motion-ready[data-motion="sweep"] .motion-section { opacity: 1; transform: translateX(0); transition: opacity .75s ease, transform .75s cubic-bezier(.2,.7,.2,1); }
+    .motion-ready[data-motion="sweep"] .motion-section:not(.motion-visible) { opacity: 0; transform: translateX(-7vw); }
+    .motion-ready[data-motion="sweep"] main > .motion-section:nth-child(even):not(.motion-visible) { transform: translateX(7vw); }
+    .motion-ready[data-motion="curtain"] .motion-section { position: relative; }
+    .motion-ready[data-motion="curtain"] .motion-section::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; border-bottom: 4px solid #169e18; background: #efefef; transform: scaleY(0); transform-origin: top; transition: transform .95s cubic-bezier(.2,.7,.2,1); }
+    .motion-ready[data-motion="curtain"] .hero::after,
+    .motion-ready[data-motion="curtain"] .partnership::after { background: #202220; }
+    .motion-ready[data-motion="curtain"] .approach-band::after { background: #fff; }
+    .motion-ready[data-motion="curtain"] .problem-band::after { background: #fff2f0; }
+    .motion-ready[data-motion="curtain"] .motion-section:not(.motion-visible)::after { transform: scaleY(1); }
+    .motion-ready[data-motion="focus"] .motion-section { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1), filter .8s ease; }
+    .motion-ready[data-motion="focus"] .motion-section:not(.motion-visible) { opacity: 0; transform: scale(.94) translateY(30px); filter: blur(6px); }
+    @media (prefers-reduced-motion: reduce) {
+      .motion-section { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+      .motion-section::after { transform: scaleY(0) !important; transition: none !important; }
+    }
+  </style>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body class="concept-deck homepage motion-lab">
+  <a class="skip" href="#preview">Skip to preview</a>
+  <div class="motion-toolbar">
+    <a href="/dev/">← Dev pages</a>
+    <h1>Section motion study</h1>
+    <nav class="motion-options" aria-label="Section animation options">
+      <a data-option="sweep" href="?motion=sweep">01 / Side sweep</a>
+      <a data-option="curtain" href="?motion=curtain">02 / Curtain</a>
+      <a data-option="focus" href="?motion=focus">03 / Focus</a>
+    </nav>
+    <p id="motion-status">Scroll down and back up. Sections replay when they reenter the page.</p>
+  </div>
+  <div id="preview"></div>
+  <noscript><p>This preview needs JavaScript.</p></noscript>
+  <script>
+    const modes = ['sweep', 'curtain', 'focus'];
+    const requested = new URLSearchParams(location.search).get('motion');
+    const mode = modes.includes(requested) ? requested : 'sweep';
+    document.documentElement.dataset.motion = mode;
+    document.querySelector(`[data-option="${mode}"]`).setAttribute('aria-current', 'page');
+
+    fetch('/').then(response => {
+      if (!response.ok) throw new Error(`Homepage returned ${response.status}`);
+      return response.text();
+    }).then(html => {
+      const page = new DOMParser().parseFromString(html, 'text/html');
+      const parts = ['.site-masthead', 'main', '.site-footer'].map(selector => page.querySelector(selector));
+      if (parts.some(part => !part)) throw new Error('Homepage sections are unavailable');
+      const sections = [...parts[1].querySelectorAll(':scope > section')];
+      sections.forEach(section => section.classList.add('motion-section'));
+      document.querySelector('#preview').replaceChildren(...parts);
+
+      const form = document.querySelector('#preview form');
+      form?.addEventListener('submit', event => {
+        event.preventDefault();
+        form.querySelector('#form-status').textContent = 'Preview only. Inquiries are disabled here.';
+      });
+
+      const status = document.querySelector('#motion-status');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        status.textContent = 'Reduced motion is enabled, so sections appear without animation.';
+      } else if ('IntersectionObserver' in window) {
+        document.documentElement.classList.add('motion-ready');
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => entry.target.classList.toggle('motion-visible', entry.isIntersecting));
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
+        sections.forEach(section => observer.observe(section));
+      } else {
+        status.textContent = 'This browser does not support section animation.';
+      }
+    }).catch(error => {
+      document.querySelector('#motion-status').textContent = `Preview unavailable: ${error.message}`;
+    });
+  </script>
+</body>
+</html>

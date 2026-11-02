@@ -10,7 +10,7 @@ Form delivery requires the server described below; file previews do not send mai
 
 The V3 pitch-deck page is now the homepage at `/`. It describes the controls and
 integration product, battery deployments as needed, capacity guarantees, lead times,
-modeled degradation, team experience, and a site-owner partnership for augmentation design and economic analysis.
+modeled degradation, team experience, and partnerships with site owners for augmentation design and economic analysis.
 The inquiry form retains `/api/inquiry` and `contact.js`.
 
 The previous homepage is preserved at `/dev/previous-home/`, behind the existing
@@ -42,6 +42,8 @@ receive readable content without animation. The homepage shares this reveal beha
 Its chart fills the panel width; display cropping removes horizontal white
 image margins while preserving axes and labels.
 The clone shares homepage assets and retains the working inquiry endpoint.
+
+`/dev/section-motion/` compares three section-level scroll treatments on the current homepage: side sweep, curtain, and focus. The preview loads homepage markup, replays each treatment in both scroll directions, disables inquiry submission, and respects reduced-motion preferences. The production page keeps its existing reveal behavior.
 
 ## Brand assets
 
