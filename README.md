@@ -9,7 +9,7 @@ Form delivery requires the server described below; file previews do not send mai
 ## Homepage and preserved versions
 
 The V3 pitch-deck page is now the homepage at `/`. It describes the controls and
-integration product, annual ESS deployments, capacity guarantees, lead times,
+integration product, battery deployments as needed, capacity guarantees, lead times,
 modeled degradation, team experience, and the five-month partnership ask.
 The inquiry form retains `/api/inquiry` and `contact.js`.
 
