@@ -10,7 +10,7 @@ Form delivery requires the server described below; file previews do not send mai
 
 The V3 pitch-deck page is now the homepage at `/`. It describes the controls and
 integration product, battery deployments as needed, capacity guarantees, lead times,
-modeled degradation, team experience, and the five-month partnership ask.
+modeled degradation, team experience, and a site-owner partnership for augmentation design and economic analysis.
 The inquiry form retains `/api/inquiry` and `contact.js`.
 
 The previous homepage is preserved at `/dev/previous-home/`, behind the existing
