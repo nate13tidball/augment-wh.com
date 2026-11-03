@@ -8,3 +8,4 @@
 - Never force-push, change remotes, or publish unrelated changes.
 - Preserve unrelated work already in the repository.
 - Keep webpage paragraphs and continuous prose blocks to 20 words maximum. Use short bullets or aligned columns for longer explanations. Follow the main page's `/ Section name` and `(01)` numbering treatment where appropriate.
+- Put secondary page options, such as animation controls, inside the hamburger menu rather than floating over content.

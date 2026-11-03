@@ -33,7 +33,7 @@ editorial context. The dollar figures describe degraded capacity, not service re
 
 The homepage uses the side sweep from `/dev/section-motion/`.
 Entire sections slide in from alternating sides and replay when scrolling back.
-The fixed button pauses animation and reveals every section; it can resume motion.
+The hamburger menu offers Pause animations and Play animations; pausing reveals every section.
 This behavior plays even when the device requests reduced motion.
 Without JavaScript or IntersectionObserver, content remains visible.
 
