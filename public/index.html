@@ -24,11 +24,6 @@
   <title>Augment-wh | Battery augmentation for existing sites</title>
   <link rel="icon" href="/assets/brand/favicon.png" type="image/png">
   <link rel="stylesheet" href="/assets/homepage/homepage.css">
-  <script>
-    if (new URLSearchParams(location.search).get('motion') === 'on') {
-      document.documentElement.classList.add('motion-preview');
-    }
-  </script>
   <script src="/interactions.js" defer></script>
   <script src="/contact.js" defer></script>
   <script>
@@ -61,6 +56,7 @@
       <img src="/assets/homepage/battery-site-concept.jpeg" alt="Battery enclosures, transformers, and transmission lines at a utility-scale storage site." width="2048" height="512" fetchpriority="high">
     </section>
   </div>
+  <button class="home-motion-toggle" id="home-motion-toggle" type="button" hidden>Pause animations</button>
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="frame">

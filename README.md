@@ -29,21 +29,22 @@ and degraded-capacity dollar figures were supplied/approved by Nathan; the paren
 repository's `pitch_offering/v3-website-content-review.md` retains source and
 editorial context. The dollar figures describe degraded capacity, not service revenue.
 
-## Scroll reveal behavior
+## Scroll motion
 
-The homepage now uses fade-and-rise entrances tested at `/dev/scroll-reveal/`.
-That clone remains available for comparison.
-It uses the existing IntersectionObserver in `interactions.js`, marks individual
-content blocks, and lightly staggers the offering cards. Each block appears once.
-The “Enable motion” link opts into animation for this preview only, even when
-the browser prefers reduced motion; the default respects that preference.
-The hero remains immediately visible; reduced-motion and no-JavaScript visitors
-receive readable content without animation. The homepage shares this reveal behavior, without the experiment banner.
-Its chart fills the panel width; display cropping removes horizontal white
-image margins while preserving axes and labels.
+The homepage uses the side sweep from `/dev/section-motion/`.
+Entire sections slide in from alternating sides and replay when scrolling back.
+The fixed button pauses animation and reveals every section; it can resume motion.
+This behavior plays even when the device requests reduced motion.
+Without JavaScript or IntersectionObserver, content remains visible.
+
+`/dev/section-motion/` retains sweep, curtain, and focus for comparison.
+It loads current homepage markup, replays each treatment in both directions, and disables inquiry submission.
+Its own pause button works under reduced motion too.
+
+`/dev/scroll-reveal/` preserves the earlier fade-and-rise experiment.
+It animates individual content blocks once and staggers the offering cards.
+Its default respects reduced motion, while “Enable motion” opts in for the preview.
 The clone shares homepage assets and retains the working inquiry endpoint.
-
-`/dev/section-motion/` compares three section-level scroll treatments on the current homepage: side sweep, curtain, and focus. The preview loads homepage markup, replays each treatment in both scroll directions, and disables inquiry submission. It plays motion even when the device requests reduced motion so the effects can be reviewed; a visible button pauses them. The production homepage uses side sweep, replays sections in both scroll directions, and respects reduced motion. `/?motion=on` explicitly enables motion for a visit when testing on a reduced-motion device.
 
 ## Brand assets
 
