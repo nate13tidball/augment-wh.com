@@ -1,5 +1,14 @@
 // Timings recovered from the public Ouros Framer components; see docs/ouros-interactions.md.
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const sweepHome = document.querySelector('body.sweep-home');
+if (sweepHome && 'IntersectionObserver' in window && (!reducedMotion.matches || document.documentElement.classList.contains('motion-preview'))) {
+  const sections = document.querySelectorAll('main > section');
+  document.documentElement.classList.add('sweep-ready');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => entry.target.classList.toggle('sweep-visible', entry.isIntersecting));
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
+  sections.forEach(section => observer.observe(section));
+}
 const statement = document.querySelector('.statement');
 if (statement && !reducedMotion.matches && 'IntersectionObserver' in window) {
   let index = 0;
@@ -21,7 +30,7 @@ if (statement && !reducedMotion.matches && 'IntersectionObserver' in window) {
   });
   statement.classList.add('words-ready');
 }
-if ('IntersectionObserver' in window) {
+if (!sweepHome && 'IntersectionObserver' in window) {
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;

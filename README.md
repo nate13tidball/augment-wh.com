@@ -43,7 +43,7 @@ Its chart fills the panel width; display cropping removes horizontal white
 image margins while preserving axes and labels.
 The clone shares homepage assets and retains the working inquiry endpoint.
 
-`/dev/section-motion/` compares three section-level scroll treatments on the current homepage: side sweep, curtain, and focus. The preview loads homepage markup, replays each treatment in both scroll directions, and disables inquiry submission. It plays motion even when the device requests reduced motion so the effects can be reviewed; a visible button pauses them. The production page keeps its existing reveal behavior and respects reduced motion.
+`/dev/section-motion/` compares three section-level scroll treatments on the current homepage: side sweep, curtain, and focus. The preview loads homepage markup, replays each treatment in both scroll directions, and disables inquiry submission. It plays motion even when the device requests reduced motion so the effects can be reviewed; a visible button pauses them. The production homepage uses side sweep, replays sections in both scroll directions, and respects reduced motion. `/?motion=on` explicitly enables motion for a visit when testing on a reduced-motion device.
 
 ## Brand assets
 
