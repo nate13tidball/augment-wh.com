@@ -29,6 +29,24 @@ and degraded-capacity dollar figures were supplied/approved by Nathan; the paren
 repository's `pitch_offering/v3-website-content-review.md` retains source and
 editorial context. The dollar figures describe degraded capacity, not service revenue.
 
+## Website review preview
+
+`/dev/site-review/` is a customer-facing rewrite staged under the protected
+development route. `/dev/site-review/investors/` holds a separate investor
+thesis. Neither route changes the production homepage. Both use the approved
+brand assets and existing `/api/inquiry` form flow. Local static preview can
+show the forms but cannot deliver mail without a configured API backend.
+
+The customer page makes site assessment the current conversation and labels
+integration, delivery, and capacity management by their project or planned
+status. It uses no unverified site outcome, deployment schedule, return, or
+capacity guarantee. The investor page uses the 3.5 and 7.8 GWh/year
+restoration-only screening model documented in
+`../pitch_offering/assumptions-and-sources.md`; those figures are not revenue,
+qualified projects, or observed restoration. Verify buyer demand, technical
+scope, deployment timing, site economics, and any guarantee terms before
+publishing stronger claims.
+
 ## Scroll motion
 
 The homepage uses the side sweep from `/dev/section-motion/`.
