@@ -1,3 +1,4 @@
+import hashlib
 import json
 import tempfile
 import unittest
@@ -7,38 +8,51 @@ from scripts.sync_brand import ASSETS, sync_brand
 
 
 class BrandTests(unittest.TestCase):
-    def test_version_switch_and_missing_assets(self):
+    @staticmethod
+    def write_production(source):
+        source.mkdir(parents=True)
+        files = {
+            'schema.json': {'kind': 'schema'},
+            'manifest.json': {'kind': 'manifest'},
+        }
+        assets = {}
+        for website_role, (production_role, relative) in ASSETS.items():
+            path = source / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(website_role.encode())
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            files[relative] = {'kind': 'image', 'role': production_role}
+            assets[production_role] = {'path': relative, 'sha256': digest}
+        schema = {'contract': 'test-brand-production', 'files': files}
+        (source / 'schema.json').write_text(json.dumps(schema))
+        manifest = {'contract': schema['contract'], 'assets': assets}
+        (source / 'manifest.json').write_text(json.dumps(manifest))
+
+    def test_sync_and_missing_assets(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            source = root / 'brand'
+            source = root / 'brand' / 'production'
             site = root / 'site'
             site.mkdir()
             config = site / 'brand.config.json'
-            config.write_text(json.dumps({'source_root': '../brand', 'version': 'v1', 'header_logo': 'lockup'}))
-            for version in ('v1', 'v2'):
-                for role, (folder, stem) in ASSETS.items():
-                    (source / folder).mkdir(parents=True, exist_ok=True)
-                    (source / folder / f'{stem}-{version}.png').write_bytes(f'{role}-{version}'.encode())
+            config.write_text(json.dumps({'source_root': '../brand/production', 'header_logo': 'full-logo'}))
+            self.write_production(source)
             destination = sync_brand(config)
-            self.assertEqual((destination / 'header.png').read_bytes(), b'lockup-v1')
-            self.assertEqual((destination / 'favicon.png').read_bytes(), b'lettermark-v1')
-            sync_brand(config, version='v2')
-            self.assertEqual((destination / 'header.png').read_bytes(), b'lockup-v2')
-            self.assertEqual(json.loads(config.read_text())['version'], 'v2')
+            self.assertEqual((destination / 'header.png').read_bytes(), b'full-logo')
+            self.assertEqual((destination / 'favicon.png').read_bytes(), b'logo')
             before = {path.name: path.read_bytes() for path in destination.iterdir()}
-            with self.assertRaises(FileNotFoundError):
-                sync_brand(config, version='v3')
+            (source / ASSETS['full-logo'][1]).unlink()
+            with self.assertRaisesRegex(ValueError, 'does not match schema'):
+                sync_brand(config)
             self.assertEqual(before, {path.name: path.read_bytes() for path in destination.iterdir()})
-            self.assertEqual(json.loads(config.read_text())['version'], 'v2')
 
     def test_invalid_selections_do_not_create_assets(self):
         with tempfile.TemporaryDirectory() as temporary:
             config = Path(temporary) / 'brand.config.json'
-            for version, header in (('../v1', 'lockup'), ('v1', 'unknown')):
-                config.write_text(json.dumps({'source_root': '../brand', 'version': version, 'header_logo': header}))
-                with self.assertRaises(ValueError):
-                    sync_brand(config)
-                self.assertFalse((config.parent / 'public').exists())
+            config.write_text(json.dumps({'source_root': '../brand/production', 'header_logo': 'unknown'}))
+            with self.assertRaises(ValueError):
+                sync_brand(config)
+            self.assertFalse((config.parent / 'public').exists())
 
 
 if __name__ == '__main__':

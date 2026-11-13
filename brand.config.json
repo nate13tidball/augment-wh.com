@@ -1,5 +1,4 @@
 {
-  "source_root": "../brand",
-  "version": "v1",
-  "header_logo": "lockup"
+  "source_root": "../brand/production",
+  "header_logo": "full-logo"
 }

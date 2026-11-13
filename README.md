@@ -6,111 +6,208 @@ and Python standard-library SMTP backend. No build step or third-party packages.
 Open `public/index.html` directly in a browser for a local preview.
 Form delivery requires the server described below; file previews do not send mail.
 
+## Homepage
+
+The home page uses the Ouros-inspired design: large typography, rounded BESS
+photography, numbered sections, a dark pilot section, and an inquiry form.
+Scroll reveals, word-by-word headings, and animated pilot-scope details are
+documented in [the interaction notes](docs/ouros-interactions.md).
+
+The former home page remains under `/dev/previous-home/`, behind the existing
+Vercel admin login. `/dev/` lists the other protected review pages, including
+the deck, field, memo, and investor concepts. The home page keeps `/api/inquiry`
+and the existing contact script.
+
+## Website review preview
+
+`/dev/site-review/` is a customer-facing rewrite staged under the protected
+development route. `/dev/site-review/investors/` holds a separate investor
+thesis. Neither route changes the production homepage. Both use the approved
+brand assets and existing `/api/inquiry` form flow. Local static preview can
+show the forms but cannot deliver mail without a configured API backend.
+
+The customer page makes site assessment the current conversation and labels
+integration, delivery, and capacity management by their project or planned
+status. It uses no unverified site outcome, deployment schedule, return, or
+capacity guarantee. The investor page uses the 3.5 and 7.8 GWh/year
+restoration-only screening model documented in
+`../pitch_offering/assumptions-and-sources.md`; those figures are not revenue,
+qualified projects, or observed restoration. Verify buyer demand, technical
+scope, deployment timing, site economics, and any guarantee terms before
+publishing stronger claims.
+
+## Scroll motion
+
+The home page uses scroll entrances, word-by-word heading reveals, an expanding
+navigation menu, and animated pilot-scope disclosures. Without JavaScript or
+IntersectionObserver, content remains visible.
+
+`/dev/section-motion/` retains sweep, curtain, and focus treatments for comparison.
+`/dev/scroll-reveal/` preserves the earlier fade-and-rise experiment. Both are
+protected review pages and retain the inquiry endpoint.
+
 ## Brand assets
 
-The business repository's `brand/` folder is the source of logo artwork.
-`brand.config.json` selects `version` (such as `v1`) and `header_logo`
-(`lettermark`, `wordmark`, or `lockup`). `source_root` is relative to this website
-repository and defaults to `../brand` when checked out as a submodule.
+The business repository's `brand/production/` folder is the source of approved
+logo artwork. `brand.config.json` selects `header_logo` (`logo` or `full-logo`).
+`source_root` is relative to this website repository and defaults to
+`../brand/production` when checked out as a submodule.
 
 Run from the website repository after changing the selection or regenerating logos:
 
 ```bash
 python3 scripts/sync_brand.py
-# Select the next complete logo set and save that version in the config:
-python3 scripts/sync_brand.py --version v2
 # For a standalone checkout, supply the location of the business repo's brand folder:
-python3 scripts/sync_brand.py --source-root /path/to/Augment-wh/brand
+python3 scripts/sync_brand.py --source-root /path/to/Augment-wh/brand/production
 ```
 
-Each version must include `lettermark/aa-vN.png`, `wordmark/augment-wh-vN.png`,
-and `lockups/augment-wh-lockup-vN.png`. Missing files fail before overwriting
-deployed assets. The sync copies the selected artwork into `public/assets/brand/`;
-HTML references stable filenames, so switching versions requires no HTML edits.
-The header and footer use the selected format; the favicon uses the lettermark.
-`manifest.json` records the deployed version. Commit the config and copied assets
+Production must include `augment-logo.png` and `augment-full-logo.png`.
+Missing files fail before overwriting deployed assets.
+The sync validates the exact production schema and manifest before copying approved artwork into
+`public/assets/brand/`; HTML references stable filenames.
+The header and footer use the full-name logo with its centered slogan; the favicon uses the compact logo.
+The website must keep these copied files because the submodule is deployed independently and
+cannot read files from its parent repository. They are deployment outputs, not alternate brand
+sources. `manifest.json` records the parent production-manifest hash and each copied asset hash.
+Commit the config and copied assets
 in this website repository, then update its pointer in the business repository.
 GitHub Pages and standalone hosting use the committed copies and do not need
 access to the private business repo. Refresh the browser cache after switching.
 
 ## Inquiry and quote form
 
-The form collects name, reply email, optional company, inquiry type, and project
-details. `POST /api/inquiry` validates inputs and sends a plain-text email to the
+The form collects name, reply email, optional company, and inquiry details.
+`POST /api/inquiry` is served by `api/inquiry.py` on Vercel; it validates inputs and sends a plain-text email to the
 fixed `INQUIRY_TO` address; Reply-To is the visitor's validated address. It does not
 send visitor autoresponders or store inquiries in a database. Failed submissions
-keep form details visible. Success means the SMTP relay accepted the email, not
+keep form details visible. Success means the mail service accepted the email, not
 that final inbox delivery has been verified.
 
-Run `python3 server.py` to serve the site and API on loopback port 8091. Set the
-environment variables listed in `.env.example` in the service manager, including
-the confirmed recipient, an authenticated sender, and an SMTP provider's credentials.
-The script does not automatically read .env files. Keep secrets outside public/.
-SMTP uses verified STARTTLS (587 default) or implicit TLS (`SMTP_TLS=implicit`,
-465 default when SMTP_PORT is unset). Do not assume a Microsoft 365 mailbox permits
-password-based SMTP; use an authorized SMTP relay/account supported by its provider.
+For Microsoft Graph delivery, set `GRAPH_TENANT_ID`, `GRAPH_CLIENT_ID`, and
+`GRAPH_CLIENT_SECRET` in Vercel Production, along with `INQUIRY_FROM` and
+`INQUIRY_TO`. The app requests a Microsoft Graph token using client credentials,
+then calls `/users/{INQUIRY_FROM}/sendMail`. Grant its service principal the
+Exchange Online `Application Mail.Send` role, scoped to the sender mailbox using
+[Application RBAC](https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac).
+Do not add an unscoped Entra `Mail.Send` grant: Microsoft says it would override
+the mailbox scope. Keep the client secret outside Git and `public/`.
+
+Run `python3 server.py` to serve the site and API on loopback port 8091. The
+script does not automatically read .env files. SMTP remains a fallback when no
+Graph variables are set; it uses STARTTLS (587 default) or implicit TLS
+(`SMTP_TLS=implicit`, 465 default). A partial Graph configuration fails explicitly
+instead of falling back to SMTP.
 
 For local form testing set `INQUIRY_ORIGINS=http://127.0.0.1:8091`.
-The production proxy should forward `/api/inquiry` to `http://127.0.0.1:8091`;
-it can serve public/ directly or proxy all traffic to this server. Terminate TLS
-and enforce request/concurrency limits at the reverse proxy. The API has a 32 KiB
-body limit, honeypot, origin checks, field validation, and a process-local limit of
-20 mail attempts per hour. This basic global limit resets on restart and can be
-exhausted by spam; use proxy-level abuse controls for a public launch.
+For a self-hosted deployment, a reverse proxy can forward `/api/inquiry` to the
+local Python server. The Vercel handler uses the shared validation and delivery
+functions in `server.py`. The API has a 32 KiB body
+limit, honeypot, origin checks, field validation, and a process-local limit of 20
+mail attempts per hour. This basic global limit resets on restart and can be
+exhausted by spam; use platform-level abuse controls for a public launch.
 
-Checks: `python3 -m unittest -v test_server.py` (mocked SMTP, no email sent).
-Recipient and real SMTP delivery still need configuration and a live delivery
-test before publishing the form as operational.
+Checks: `python3 -m unittest -v test_server.py` (mocked mail delivery, no email sent).
+Verify Graph credentials, mailbox authorization, and live delivery before
+considering the form operational.
 
 ## Production deployment
 
-**`main` is continuously deployed to the live production website.** Whatever is
-pushed to `main` is what production displays after deployment completes.
+**Vercel is the current production host for augment-wh.com.** The production host is documented as Vercel. The Vercel project and its deployment settings live in the
+Vercel dashboard; this repository currently has no `vercel.json`. Before changing
+deployment behavior, verify the connected Vercel project and its production branch.
 
-Keep design changes on a feature branch for review. Updating `main` is a
-production release; creating a feature branch alone does not change production.
+This repository also has a GitHub Pages workflow that publishes `public/` when
+`main` changes. It is a secondary/legacy deployment path; Vercel is the current
+canonical host per the project owner. GitHub Pages cannot run the Python backend.
 
 ## Hosting handoff
 
 Serve **only `public/`** as the document root. Do not serve the repository root,
-`.git`, or `docs`. All deployed assets are local; no third-party fetches are needed
-to render the page. Configure the web server to return `public/404.html` with an
-HTTP 404 status for missing paths. DNS, TLS, tunnel configuration, system services,
-and deployment are managed separately.
+`.git`, or `docs`. The company presentation demo loads company favicon marks from
+Google's favicon service; the rest of the site's assets are local. Configure the
+web server to return `public/404.html` with an HTTP 404 status for missing paths.
+Vercel's project root/output settings are managed in its dashboard, not this repo.
+`server.py` is a local loopback server; Vercel will not run it as a persistent
+server just because it is present. If the inquiry API is expected to work in
+production, verify that `/api/inquiry` is connected to a Vercel Function or an
+external backend/proxy.
 
-The Pages workflow publishes only public/ on pushes to main. GitHub Pages cannot
-run the Python backend; before enabling the form there, configure and verify a
-hosted email API.
-DNS for augment-wh.com remains owned by the separate hosting task.
+The Pages workflow publishes only `public/` on pushes to `main`; its form cannot
+use the Python backend. Keep this fallback deployment's limitations distinct
+from the Vercel production deployment.
 
 ## Content status
 
 Confirmed company name: **Augment-wh**, with **Aa** as its compact lettermark.
 The website uses the selected brand assets described above. Positioning is based on
-the lifecycle/augmentation proposal in `EMS_Startups`, not its separate
-commissioning-workspace concept. This is an early-stage business page, not a claim
-of deployed software, customers, results, or finished integrations. The 4-6 week
-pilot is labeled proposed and depends on scope and data readiness.
+the company's augmentation work and founder expertise in storage controls,
+deployment, commissioning, and lifecycle engineering. The page describes an
+initial operating-site augmentation study without naming the customer or site. It
+does not claim a deployed software product, guaranteed outcome, or completed project.
 
 ## Contact
 
 The inquiry form sends submissions to the business recipient configured in
 `INQUIRY_TO`. The visitor's validated address is used for replies.
 
+
+## Company presentation demos
+
+The homepage navigation links to the company library at `/presentations/`. `public/presentations/companies.json` is an editable starter index for `/presentations/<slug>/` pages. All listed companies use one shared demo presentation in `presentation.js`; add a company entry and matching folder shell to add a route. Set an entry's optional `presentation` field to an HTML filename in that company's folder (for example, `custom.html`) to use a company-specific presentation instead. The page shows the current date and a clear demo notice; its sample claims do not imply a customer relationship or completed assessment. Company marks currently use site favicons via Google's favicon service, with initials as a fallback. Replace these with approved local logo assets before making a real customer-facing deck.
+
+The starter list spans renewable asset operations, project developers/owners, and storage providers; it is not a claim that every company is a direct NovaSource competitor. Trimark describes controls/services across battery storage and other generation types ([company overview](https://trimarkassoc.com/company/)); NovaSource describes BESS operations and maintenance ([BESS services](https://www.novasourcepower.com/services/battery-energy-storage-systems-bess/)); DESRI describes developing, owning, and operating renewable and storage assets ([DESRI](https://desri.com/)); Plus Power describes developing, owning, and operating standalone battery projects ([company overview](https://www.pluspower.com/about/)).
+
+## Admin access and cookies
+
+The `/dev/` page links to `/dev/login/`. The Vercel Python Function at
+`api/admin.py` validates a PIN on the server and issues a signed admin cookie
+for 30 days. The cookie covers the entire host, persists across tabs and browser
+restarts, and uses Secure, HttpOnly, SameSite=Strict, and the `__Host-` prefix.
+Use the canonical `https://www.augment-wh.com` host consistently: cookies are
+host-specific. Sign out on the login page to clear this browser's cookie.
+
+Set these Production environment variables in Vercel and redeploy:
+
+- `ADMIN_PIN`: Nathan's chosen PIN (4–12 digits).
+- `ADMIN_SESSION_SECRET`: at least 32 random characters, generated with
+  `python3 -c "import secrets; print(secrets.token_urlsafe(48))"`.
+
+Login fails closed until both values are configured. Neither credential belongs
+in Git or public files. Changing the PIN alone does not revoke existing cookies;
+rotate the session secret to revoke all sessions. `GET /api/admin` reports
+`{"admin": true}` for a valid session. Future protected endpoints must call
+`api.admin.is_admin(headers)` before returning protected data or accepting writes.
+Vercel routing middleware in `middleware.js` requires the signed cookie for
+every `/dev` and `/dev/*` request, except the login page and its script. Guests
+redirect to login and return to their requested development page after signing
+in. `/api/analytics` also checks the cookie in the Python handler. Responses use
+private/no-store caching. The main site and presentations remain public.
+The GitHub Pages fallback excludes `/dev/` because it cannot enforce authentication. The static local server and GitHub Pages cannot run
+the login API. Tests use in-memory HTTP handlers without starting a server.
+
+This is a basic shared PIN login. A fixed one-second check delay slows casual
+guessing but is not a distributed rate limit. Use Vercel firewall rate limiting
+before granting this short PIN access to sensitive data or destructive actions.
+
+For a NUC preview, keep the Mac `nuc` connection open and visit
+`http://127.0.0.1:8092/`. The preview uses the local static server.
+
+Checks: `python3 -m unittest -v` and `node test_site_links.mjs` (Node is only used
+for this development check; the website still has no build step).
+
 ## Ouros template adaptation
 
 The `design/ouros-template` branch adapts the saved Ouros Materials starter from
-the Ouros Materials reference: oversized typography,
-rounded hero photography, numbered sections, neutral cards, a dark pilot section,
-and a large contact footer. It now includes scroll entrances, word-by-word heading
+the Ouros Materials reference: oversized typography, rounded hero photography,
+numbered sections, neutral cards, a dark pilot section, and a large contact footer.
+It includes scroll entrances, word-by-word heading
 reveals, an expanding fixed menu, and animated pilot-scope disclosures reconstructed
 from the public Framer source maps. See [interaction evidence and checks](docs/ouros-interactions.md).
-The page uses Augment-wh's existing content, brand
-assets, and licensed BESS photograph. The source reference and screenshots remain
-in a separate design repository.
+The page uses Augment-wh's existing content, brand assets, and licensed BESS photo.
+The source reference and screenshots remain in a separate design repository.
 
-The existing inquiry API and form fields are retained. The single-page layout
-needs no build step or new
+The inquiry form keeps name, email, optional company, and project details.
+The single-page layout needs no build step or new
 dependencies. Preview with `python3 -m http.server 8092 --bind 127.0.0.1 --directory public`
 and open `http://127.0.0.1:8092/` (static preview only; inquiry delivery requires
 the configured Python backend).
@@ -125,8 +222,32 @@ the configured Python backend).
   for a decision-oriented story connecting battery data to action.
 - Original implementation and copy. No competitor source code, branding,
   testimonials, customer logos, or proprietary assets were copied.
-- `public/assets/bess.jpg`: [Reid Gardner BESS by Sig. Chiocciola](https://commons.wikimedia.org/wiki/File:Reid_Gardner_BESS.jpg),
-  [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), downloaded unchanged.
-  This industry-context photograph does not represent an Augment Wh installation.
-
 Keep private research, prospect data, and credentials out of the public directory.
+
+## Development analytics dashboard
+
+`/dev/analytics` displays all-time production visitors/page views and top pages
+from the last seven days using the public [Vercel Web Analytics API](https://vercel.com/docs/analytics/web-analytics-api).
+The read-only proxy is a standard-library Vercel Python Function at `api/analytics.py`.
+It needs the repository root as Vercel's project root, with `public/` as static
+output, so Vercel discovers `api/`. No deployment settings are changed by this code.
+The local Python server and GitHub Pages serve the dashboard shell but do not run
+this Vercel-only proxy. The UI reports a missing/unavailable API explicitly.
+
+Vercel Web Analytics is enabled for the project. Every public HTML page includes
+the standard HTML tracking script at `/_vercel/insights/script.js`, including the
+main site, presentations, and development pages. No npm packages or build step
+are needed. The canonical dashboard URL is `/dev/analytics`; `/dev/analytics/`
+forwards there in the browser. Set these Production environment variables in
+Vercel, then redeploy:
+
+- `ANALYTICS_VERCEL_TOKEN`: Vercel access token authorized for the project.
+- `ANALYTICS_PROJECT_ID`: project ID.
+- `ANALYTICS_TEAM_ID`: team ID for team projects; omit for personal projects.
+
+The dashboard loads automatically and has a refresh button. Admin login is required to view these reports, including direct API requests. The Vercel token stays on the server. The endpoint disables response
+caching and limits queries to the configured project and fixed reports.
+
+Check with `python3 -m unittest -v test_analytics.py` (mocked Vercel, no server or
+real credentials required) and `node test_site_links.mjs`. Live totals require
+configuration and collected traffic; zero traffic is distinct from an API error.

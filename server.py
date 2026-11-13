@@ -1,5 +1,7 @@
-"""Static website and SMTP inquiry endpoint. Run behind an HTTPS reverse proxy."""
+"""Static website and inquiry endpoint. Run behind an HTTPS reverse proxy."""
 import json
+from api.admin import is_admin
+import logging
 import os
 import re
 import smtplib
@@ -9,11 +11,12 @@ from email.message import EmailMessage
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Lock
-from urllib.parse import urlsplit
 import mimetypes
+from urllib.error import HTTPError, URLError
+from urllib.parse import quote, urlencode, urlsplit
+from urllib.request import Request, urlopen
 
 PUBLIC = Path(__file__).resolve().parent / 'public'
-KINDS = {'General inquiry', 'Request a quote', 'Discuss a pilot'}
 LIMITS = {'name': 120, 'email': 254, 'company': 180, 'kind': 40, 'message': 5000, 'website': 200}
 lock = Lock()
 attempts = []
@@ -28,8 +31,12 @@ def validate(data):
         if not isinstance(value, str) or len(value) > limit or '\x00' in value:
             raise ValueError('Please check the length and format of your details.')
         values[key] = value.strip()
-    if not values['name'] or len(values['message']) < 10 or values['kind'] not in KINDS:
-        raise ValueError('Please provide your name, inquiry type, and project details.')
+    if not values['name'] or len(values['message']) < 10:
+        raise ValueError('Please provide your name and inquiry details.')
+    if not values['kind']:
+        values['kind'] = 'Website inquiry'
+    elif values['kind'] not in {'General inquiry', 'Request a quote', 'Discuss augmentation'}:
+        raise ValueError('Invalid inquiry type.')
     if not re.fullmatch(r'[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+', values['email']):
         raise ValueError('Please enter a valid email address.')
     if any(c in values['email'] for c in '\r\n'):
@@ -37,32 +44,129 @@ def validate(data):
     return values
 
 
+def inquiry_body(values):
+    return '\n'.join([
+        'New website inquiry', '', 'Name: ' + values['name'],
+        'Email: ' + values['email'], 'Company: ' + (values['company'] or 'Not provided'),
+        'Type: ' + values['kind'], '', values['message'],
+    ])
+
+
 def send_inquiry(values):
+    if any(os.environ.get(key) for key in ('GRAPH_TENANT_ID', 'GRAPH_CLIENT_ID', 'GRAPH_CLIENT_SECRET')):
+        return send_graph_inquiry(values)
     required = ('SMTP_HOST', 'SMTP_USER', 'SMTP_PASSWORD', 'INQUIRY_FROM', 'INQUIRY_TO')
-    if not all(os.environ.get(key) for key in required):
-        raise RuntimeError('Email delivery is not configured.')
+    missing = [key for key in required if not os.environ.get(key)]
+    if missing:
+        raise RuntimeError('Missing Vercel environment variable(s): ' + ', '.join(missing) + '.')
     message = EmailMessage()
     message['From'] = os.environ['INQUIRY_FROM']
     message['To'] = os.environ['INQUIRY_TO']
     message['Reply-To'] = values['email']
     message['Subject'] = '[Augment Wh] ' + values['kind']
-    message.set_content('\n'.join([
-        'New website inquiry', '', 'Name: ' + values['name'],
-        'Email: ' + values['email'], 'Company: ' + (values['company'] or 'Not provided'),
-        'Type: ' + values['kind'], '', values['message'],
-    ]))
+    message.set_content(inquiry_body(values))
     context = ssl.create_default_context()
-    implicit_tls = os.environ.get('SMTP_TLS', 'starttls') == 'implicit'
+    tls_mode = os.environ.get('SMTP_TLS', 'starttls')
+    if tls_mode not in {'starttls', 'implicit'}:
+        raise RuntimeError('Invalid SMTP_TLS setting. Use "starttls" or "implicit".')
+    implicit_tls = tls_mode == 'implicit'
     client = smtplib.SMTP_SSL if implicit_tls else smtplib.SMTP
     options = {'timeout': 15}
     if implicit_tls:
         options['context'] = context
-    with client(os.environ['SMTP_HOST'], int(os.environ.get('SMTP_PORT', '465' if implicit_tls else '587')), **options) as smtp:
+    try:
+        port = int(os.environ.get('SMTP_PORT') or ('465' if implicit_tls else '587'))
+    except ValueError as error:
+        raise RuntimeError('Invalid SMTP_PORT setting. Use a numeric port.') from error
+    if not 1 <= port <= 65535:
+        raise RuntimeError('Invalid SMTP_PORT setting. Use a port from 1 to 65535.')
+    with client(os.environ['SMTP_HOST'], port, **options) as smtp:
         if not implicit_tls:
             smtp.starttls(context=context)
         smtp.login(os.environ['SMTP_USER'], os.environ['SMTP_PASSWORD'])
         if smtp.send_message(message):
             raise RuntimeError('Recipient refused.')
+
+
+def send_graph_inquiry(values):
+    required = ('GRAPH_TENANT_ID', 'GRAPH_CLIENT_ID', 'GRAPH_CLIENT_SECRET', 'INQUIRY_FROM', 'INQUIRY_TO')
+    missing = [key for key in required if not os.environ.get(key)]
+    if missing:
+        raise RuntimeError('Missing Microsoft Graph environment variable(s): ' + ', '.join(missing) + '.')
+    tenant = os.environ['GRAPH_TENANT_ID']
+    token_request = Request(
+        f'https://login.microsoftonline.com/{quote(tenant, safe="")}/oauth2/v2.0/token',
+        data=urlencode({
+            'client_id': os.environ['GRAPH_CLIENT_ID'],
+            'client_secret': os.environ['GRAPH_CLIENT_SECRET'],
+            'scope': 'https://graph.microsoft.com/.default',
+            'grant_type': 'client_credentials',
+        }).encode(),
+        headers={'Content-Type': 'application/x-www-form-urlencoded'},
+        method='POST',
+    )
+    try:
+        with urlopen(token_request, timeout=10) as response:
+            result = json.load(response)
+    except HTTPError as error:
+        raise RuntimeError(f'Microsoft Graph sign-in failed (HTTP {error.code}). Check the tenant, app ID, and app secret.') from error
+    except URLError as error:
+        raise RuntimeError('Could not connect to Microsoft Graph sign-in.') from error
+    token = result.get('access_token') if isinstance(result, dict) else None
+    if not isinstance(token, str) or not token:
+        raise RuntimeError('Microsoft Graph did not return an access token.')
+
+    body = {'message': {
+        'subject': '[Augment Wh] ' + values['kind'],
+        'body': {'contentType': 'Text', 'content': inquiry_body(values)},
+        'toRecipients': [{'emailAddress': {'address': os.environ['INQUIRY_TO']}}],
+        'replyTo': [{'emailAddress': {'address': values['email']}}],
+    }}
+    mail_request = Request(
+        f'https://graph.microsoft.com/v1.0/users/{quote(os.environ["INQUIRY_FROM"], safe="")}/sendMail',
+        data=json.dumps(body).encode(),
+        headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'},
+        method='POST',
+    )
+    try:
+        with urlopen(mail_request, timeout=10) as response:
+            if response.status != 202:
+                raise RuntimeError(f'Microsoft Graph did not accept the inquiry (HTTP {response.status}).')
+    except HTTPError as error:
+        raise RuntimeError(f'Microsoft Graph rejected the inquiry (HTTP {error.code}). Check Mail.Send permission and mailbox access.') from error
+    except URLError as error:
+        raise RuntimeError('Could not connect to Microsoft Graph mail delivery.') from error
+
+
+def delivery_error(error):
+    """Return actionable mail diagnostics without exposing addresses or SMTP text."""
+    code = getattr(error, 'smtp_code', None)
+    logging.error('Inquiry email delivery failed (%s%s)', type(error).__name__, f', SMTP {code}' if code else '')
+    if isinstance(error, RuntimeError):
+        if str(error) == 'Recipient refused.':
+            return 'The mail server rejected INQUIRY_TO. Check that recipient address.'
+        return str(error)
+    if isinstance(error, smtplib.SMTPAuthenticationError):
+        response = error.smtp_error.decode('utf-8', 'replace') if isinstance(error.smtp_error, bytes) else str(error.smtp_error)
+        response = response.lower()
+        if 'smtpclientauthentication is disabled for the tenant' in response:
+            return 'Microsoft 365 has disabled SMTP AUTH for this organization. Check the configured inquiry delivery method.'
+        if 'smtpclientauthentication is disabled for the mailbox' in response:
+            return 'Microsoft 365 has disabled SMTP AUTH for this mailbox. Check the configured inquiry delivery method.'
+        if 'basic authentication is disabled' in response:
+            return 'Microsoft 365 has disabled password-based SMTP. Check the configured inquiry delivery method.'
+        return 'SMTP authentication failed. Check SMTP_USER, SMTP_PASSWORD, and provider SMTP access.'
+    if isinstance(error, smtplib.SMTPRecipientsRefused):
+        return 'The mail server rejected INQUIRY_TO. Check that recipient address and provider policy.'
+    if isinstance(error, smtplib.SMTPSenderRefused):
+        return 'The mail server rejected INQUIRY_FROM. Use a sender address authorized by your SMTP provider.'
+    if isinstance(error, smtplib.SMTPDataError):
+        return 'The mail server rejected the message. Check sender authorization and provider sending limits.'
+    if isinstance(error, smtplib.SMTPResponseException):
+        return f'The mail server returned SMTP error {error.smtp_code}. Check the SMTP settings and provider logs.'
+    if isinstance(error, (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected, TimeoutError, OSError)):
+        return 'Could not connect securely to the mail server. Check SMTP_HOST, SMTP_PORT, and SMTP_TLS.'
+    return 'Email delivery failed unexpectedly. Check the Vercel function logs for the error type.'
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -87,11 +191,68 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # An explicit public-file list prevents traversal and accidental repo exposure.
         path = urlsplit(self.path).path
+        if (path == '/dev' or path.startswith('/dev/')) and path not in (
+            '/dev/login', '/dev/login/', '/dev/login/index.html', '/dev/login/login.js'
+        ) and not is_admin(self.headers):
+            self.send_response(302)
+            self.send_header('Location', '/dev/login/')
+            self.send_header('Cache-Control', 'private, no-store')
+            self.send_header('Content-Length', '0')
+            self.end_headers()
+            return
+        if path.startswith('/presentations/'):
+            parts = path.removeprefix('/presentations/').strip('/').split('/')
+            companies = json.loads((PUBLIC / 'presentations/companies.json').read_text())
+            company = next((item for item in companies if item['slug'] == parts[0].lower()), None)
+            if company and len(parts) == 1 and not path.endswith('/'):
+                self.send_response(308)
+                self.send_header('Location', f"/presentations/{company['slug']}/")
+                self.send_header('Content-Length', '0')
+                self.end_headers()
+                return
+            if company and len(parts) == 1 and path.endswith('/'):
+                return self.reply(200, (PUBLIC / 'presentations/template.html').read_bytes(), 'text/html; charset=utf-8')
+            custom = company.get('presentation') if company else None
+            custom_path = f"/presentations/{company['slug']}/{custom}" if isinstance(custom, str) and custom and Path(custom).name == custom else None
+            if company and custom_path == path:
+                filename = (PUBLIC / path.lstrip('/')).resolve()
+                if filename.is_relative_to(PUBLIC) and filename.is_file():
+                    content_type = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+                    return self.reply(200, filename.read_bytes(), content_type)
+            if company:
+                return self.reply(404, (PUBLIC / '404.html').read_bytes(), 'text/html; charset=utf-8')
         files = {'/': 'index.html', '/index.html': 'index.html', '/styles.css': 'styles.css',
-                 '/contact.js': 'contact.js', '/interactions.js': 'interactions.js', '/assets/bess.jpg': 'assets/bess.jpg',
+                 '/contact.js': 'contact.js',
+                 '/dev': 'dev/index.html', '/dev/': 'dev/index.html',
+                 '/dev/login': 'dev/login/index.html', '/dev/login/': 'dev/login/index.html',
+                 '/dev/login/index.html': 'dev/login/index.html',
+                 '/dev/login/login.js': 'dev/login/login.js',
+                 '/dev/index.html': 'dev/index.html', '/dev/styles.css': 'dev/styles.css',
+                 '/dev/analytics': 'dev/analytics/index.html', '/dev/analytics/': 'dev/analytics/index.html',
+                 '/dev/analytics/analytics.js': 'dev/analytics/analytics.js',
+                 '/dev/map': 'dev/map/index.html', '/dev/map/': 'dev/map/index.html',
+                 '/dev/map/index.html': 'dev/map/index.html',
+                 '/dev/deck': 'dev/deck/index.html', '/dev/deck/': 'dev/deck/index.html',
+                 '/dev/deck/index.html': 'dev/deck/index.html',
+                 '/dev/previous-home': 'dev/previous-home/index.html',
+                 '/dev/previous-home/': 'dev/previous-home/index.html',
+                 '/dev/previous-home/index.html': 'dev/previous-home/index.html',
+                 '/dev/field': 'dev/field/index.html', '/dev/field/': 'dev/field/index.html',
+                 '/dev/field/index.html': 'dev/field/index.html',
+                 '/dev/memo': 'dev/memo/index.html', '/dev/memo/': 'dev/memo/index.html',
+                 '/dev/memo/index.html': 'dev/memo/index.html',
+                 '/presentations/': 'presentations/index.html',
+                 '/presentations/index.html': 'presentations/index.html',
+                 '/presentations/companies.json': 'presentations/companies.json',
+                 '/presentations/directory.js': 'presentations/directory.js',
+                 '/presentations/presentation.css': 'presentations/presentation.css',
+                 '/presentations/presentation.js': 'presentations/presentation.js',
+                 '/interactions.js': 'interactions.js',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
-        for asset in ('header.png', 'lettermark.png', 'wordmark.png', 'lockup.png', 'favicon.png', 'manifest.json'):
+        for asset in ('header.png', 'logo.png', 'full-logo.png', 'favicon.png', 'manifest.json'):
             files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'
+        for asset in ('homepage.css', 'battery-site-concept.jpeg', 'degraded-capacity-market.png'):
+            files[f'/assets/homepage/{asset}'] = f'assets/homepage/{asset}'
         filename = files.get(path, '404.html')
         content_type = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
         self.reply(200 if path in files else 404, (PUBLIC / filename).read_bytes(), content_type)
@@ -122,8 +283,8 @@ class Handler(BaseHTTPRequestHandler):
             attempts.append(now)
         try:
             send_inquiry(data)
-        except Exception:
-            return self.reply(503, {'error': 'Email delivery is unavailable. Please try again later.'})
+        except Exception as error:
+            return self.reply(503, {'error': delivery_error(error)})
         self.reply(200, {'ok': True})
 
 
