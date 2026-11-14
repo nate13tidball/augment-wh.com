@@ -1,0 +1,47 @@
+/* Development preview for lifetime site modeling; homepage CSS stays untouched. */
+.modeling-page .site-header { grid-template-columns: minmax(0, 1fr) auto auto; }
+.modeling-page .contents-menu { order: 3; }
+.site-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgb(255 255 255 / .7); }
+.site-tabs a { padding: 10px 18px; border-radius: 999px; color: var(--charcoal); font-size: 15px; font-weight: 700; text-decoration: none; }
+.site-tabs a:hover { background: var(--white); }
+.site-tabs a[aria-current="page"] { background: var(--charcoal); color: var(--white); }
+.status-pill { margin-left: 10px; padding: 3px 10px; border: 1px solid #8bcf7b; border-radius: 999px; color: #8bcf7b; letter-spacing: .06em; }
+
+.model-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }
+.model-form fieldset { display: grid; gap: 14px; align-content: start; margin: 0; padding: 24px; border: 0; border-top: 3px solid var(--green); border-radius: 18px; background: var(--white); }
+.model-form legend { float: left; width: 100%; margin-bottom: 6px; padding: 0; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.model-form label { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; color: var(--charcoal); font-size: 15px; font-weight: 700; }
+.model-form label > span { color: var(--gray); font-weight: 400; font-size: 13px; align-self: end; }
+.model-form input:not([type="radio"]), .model-form select { grid-column: 1 / -1; width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--charcoal); font: 16px Arial, Helvetica, sans-serif; }
+.model-form label.choice { display: flex; align-items: center; gap: 10px; font-weight: 400; }
+.model-form label.choice input { accent-color: var(--green); width: 18px; height: 18px; }
+.run-row { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; }
+.run-row .button[disabled] { opacity: .5; cursor: not-allowed; }
+.run-row p { font-size: 15px; }
+
+.results-band { background: var(--white); }
+.chart-placeholder { margin-top: 28px; padding: 24px; border: 1px dashed var(--line); border-radius: 18px; background: var(--paper); }
+.chart-placeholder svg { display: block; width: 100%; height: auto; }
+.chart-placeholder .grid line { stroke: var(--line); stroke-dasharray: 4 6; }
+.chart-placeholder .axis { stroke: var(--gray); }
+.chart-placeholder text { fill: var(--gray); font: 13px Arial, Helvetica, sans-serif; }
+.chart-placeholder .ghost { fill: none; stroke-width: 3; opacity: .35; }
+.chart-placeholder .baseline, .key.baseline { stroke: var(--gray); background: var(--gray); stroke-dasharray: 8 6; }
+.chart-placeholder .augmented, .key.augmented { stroke: var(--green); background: var(--green); }
+.chart-placeholder figcaption { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 14px; font-size: 14px; }
+.key { display: inline-block; width: 18px; height: 3px; margin-right: 8px; vertical-align: middle; }
+.pending { margin-left: auto; font-style: italic; }
+
+.result-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+.result-tiles > div { display: flex; flex-direction: column; justify-content: space-between; min-height: 160px; padding: 24px; border-radius: 18px; background: var(--charcoal); color: #d9d9d9; }
+.modeling-page section:not(.results-band) .result-tiles > div { background: var(--white); color: var(--gray); }
+.result-tiles dt { font-size: 15px; font-weight: 700; }
+.result-tiles dd { color: #8bcf7b; font-size: clamp(42px, 4.6vw, 64px); letter-spacing: -.05em; line-height: 1; }
+.modeling-page section:not(.results-band) .result-tiles dd { color: var(--line); }
+
+@media (max-width: 860px) {
+  .model-form, .result-tiles { grid-template-columns: 1fr; }
+  .modeling-page .site-header { grid-template-columns: minmax(0, 1fr) auto; }
+  .site-tabs { grid-column: 1 / -1; order: 4; justify-self: start; }
+  .pending { margin-left: 0; }
+}

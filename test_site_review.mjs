@@ -20,3 +20,11 @@ assert.doesNotMatch(customer, /\$3bn|\$13bn|GWh\/year|degraded-capacity-market|i
 assert.match(investor, /modeled 2025 restoration volume/);
 assert.match(investor, /not project awards or company revenue/);
 console.log('Review previews have distinct audiences and working contact paths.');
+
+const modeling = read('./public/dev/site-modeling/index.html');
+assert.ok(map.includes('href="/dev/site-modeling/"'), '/dev/site-modeling/ is missing from the dev map');
+assert.match(modeling, /name="robots" content="noindex, nofollow"/);
+assert.match(modeling, /aria-current="page">Site modeling/);
+assert.match(modeling, /<button class="button" type="button" disabled/);
+assert.doesNotMatch(read('./public/index.html'), /site-modeling/);
+console.log('Site modeling tab is a dev-only, non-functional preview.');
