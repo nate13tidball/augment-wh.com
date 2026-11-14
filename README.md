@@ -6,17 +6,28 @@ and Python standard-library SMTP backend. No build step or third-party packages.
 Open `public/index.html` directly in a browser for a local preview.
 Form delivery requires the server described below; file previews do not send mail.
 
-## Homepage
+## Homepage and preserved versions
 
-The home page uses the Ouros-inspired design: large typography, rounded BESS
-photography, numbered sections, a dark pilot section, and an inquiry form.
-Scroll reveals, word-by-word headings, and animated pilot-scope details are
-documented in [the interaction notes](docs/ouros-interactions.md).
+The V3 pitch-deck page is now the homepage at `/`. It describes the controls and
+integration product, battery deployments as needed, capacity guarantees, lead times,
+modeled degradation, team experience, and partnerships with site owners for augmentation design and economic analysis.
+The inquiry form retains `/api/inquiry` and `contact.js`.
 
-The former home page remains under `/dev/previous-home/`, behind the existing
-Vercel admin login. `/dev/` lists the other protected review pages, including
-the deck, field, memo, and investor concepts. The home page keeps `/api/inquiry`
-and the existing contact script.
+The previous homepage is preserved at `/dev/previous-home/`, behind the existing
+admin login on Vercel. `/dev/deck/` retains the working preview. The development
+page tree at `/dev/` lists both, plus the field and memo concepts.
+
+The homepage and deck preview share `public/assets/homepage/homepage.css` and
+images under that same directory. Public assets live outside the protected
+`/dev/` tree and remain available on the GitHub Pages fallback. The prior
+homepage still uses the original `public/styles.css` and scripts.
+
+The page uses approved green, charcoal, and light-gray branding. Text blocks
+stay within 20 words, with aligned statistics, section numbering, and a contents
+bar. The full-width battery-site illustration was supplied by Nathan. Lead-time
+and degraded-capacity dollar figures were supplied/approved by Nathan; the parent
+repository's `pitch_offering/v3-website-content-review.md` retains source and
+editorial context. The dollar figures describe degraded capacity, not service revenue.
 
 ## Website review preview
 
@@ -38,13 +49,20 @@ publishing stronger claims.
 
 ## Scroll motion
 
-The home page uses scroll entrances, word-by-word heading reveals, an expanding
-navigation menu, and animated pilot-scope disclosures. Without JavaScript or
-IntersectionObserver, content remains visible.
+The homepage uses the side sweep from `/dev/section-motion/`.
+Entire sections slide in from alternating sides and replay when scrolling back.
+The hamburger menu offers Pause animations and Play animations; pausing reveals every section.
+This behavior plays even when the device requests reduced motion.
+Without JavaScript or IntersectionObserver, content remains visible.
 
-`/dev/section-motion/` retains sweep, curtain, and focus treatments for comparison.
-`/dev/scroll-reveal/` preserves the earlier fade-and-rise experiment. Both are
-protected review pages and retain the inquiry endpoint.
+`/dev/section-motion/` retains sweep, curtain, and focus for comparison.
+It loads current homepage markup, replays each treatment in both directions, and disables inquiry submission.
+Its own pause button works under reduced motion too.
+
+`/dev/scroll-reveal/` preserves the earlier fade-and-rise experiment.
+It animates individual content blocks once and staggers the offering cards.
+Its default respects reduced motion, while “Enable motion” opts in for the preview.
+The clone shares homepage assets and retains the working inquiry endpoint.
 
 ## Brand assets
 
@@ -198,16 +216,16 @@ for this development check; the website still has no build step).
 ## Ouros template adaptation
 
 The `design/ouros-template` branch adapts the saved Ouros Materials starter from
-the Ouros Materials reference: oversized typography, rounded hero photography,
-numbered sections, neutral cards, a dark pilot section, and a large contact footer.
-It includes scroll entrances, word-by-word heading
+the Ouros Materials reference: oversized typography,
+a technical electrical-diagram hero, numbered sections, neutral cards, a dark engagement section,
+and a large contact footer. It now includes scroll entrances, word-by-word heading
 reveals, an expanding fixed menu, and animated pilot-scope disclosures reconstructed
 from the public Framer source maps. See [interaction evidence and checks](docs/ouros-interactions.md).
-The page uses Augment-wh's existing content, brand assets, and licensed BESS photo.
-The source reference and screenshots remain in a separate design repository.
+The page uses Augment-wh's existing content and brand assets. The source reference
+and screenshots remain in a separate design repository.
 
-The inquiry form keeps name, email, optional company, and project details.
-The single-page layout needs no build step or new
+The inquiry form keeps name, email, optional company, and one inquiry details
+message box. The single-page layout needs no build step or new
 dependencies. Preview with `python3 -m http.server 8092 --bind 127.0.0.1 --directory public`
 and open `http://127.0.0.1:8092/` (static preview only; inquiry delivery requires
 the configured Python backend).

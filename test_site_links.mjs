@@ -60,7 +60,7 @@ const homepage = read('./public/index.html');
 assert.doesNotMatch(homepage, /noindex|(?:src|href)="[^"#]*\/dev\//);
 assert.match(homepage, /id="inquiry-form"/);
 assert.match(homepage, /id="contact"/);
-assert.match(homepage, /src="(?:\/)?contact.js"/);
+assert.match(homepage, /src="\/contact.js"/);
 assert.match(read('./public/dev/previous-home/index.html'), /noindex, nofollow/);
 assert.match(devIndex, /href="\/dev\/previous-home\/"/);
 console.log('Homepage is public with its inquiry form; previous homepage is retained under dev.');

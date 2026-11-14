@@ -150,11 +150,11 @@ def delivery_error(error):
         response = error.smtp_error.decode('utf-8', 'replace') if isinstance(error.smtp_error, bytes) else str(error.smtp_error)
         response = response.lower()
         if 'smtpclientauthentication is disabled for the tenant' in response:
-            return 'Microsoft 365 has disabled SMTP AUTH for this organization. Check the configured inquiry delivery method.'
+            return 'Microsoft 365 has disabled SMTP AUTH for this organization. Please email ntidball@augment-wh.com directly.'
         if 'smtpclientauthentication is disabled for the mailbox' in response:
-            return 'Microsoft 365 has disabled SMTP AUTH for this mailbox. Check the configured inquiry delivery method.'
+            return 'Microsoft 365 has disabled SMTP AUTH for this mailbox. Please email ntidball@augment-wh.com directly.'
         if 'basic authentication is disabled' in response:
-            return 'Microsoft 365 has disabled password-based SMTP. Check the configured inquiry delivery method.'
+            return 'Microsoft 365 has disabled password-based SMTP. Please email ntidball@augment-wh.com directly.'
         return 'SMTP authentication failed. Check SMTP_USER, SMTP_PASSWORD, and provider SMTP access.'
     if isinstance(error, smtplib.SMTPRecipientsRefused):
         return 'The mail server rejected INQUIRY_TO. Check that recipient address and provider policy.'
