@@ -22,6 +22,11 @@ images under that same directory. Public assets live outside the protected
 `/dev/` tree and remain available on the GitHub Pages fallback. The prior
 homepage still uses the original `public/styles.css` and scripts.
 
+The homepage names `assets/homepage/share-card.png` as its preferred search
+preview image through Open Graph and `WebPage.primaryImageOfPage` metadata, and
+allows large image previews. Google chooses whether to show a thumbnail for a
+given result; these signals do not guarantee one.
+
 The page uses approved green, charcoal, and light-gray branding. Text blocks
 stay within 20 words, with aligned statistics, section numbering, and a contents
 bar. The full-width battery-site illustration was supplied by Nathan. Lead-time
