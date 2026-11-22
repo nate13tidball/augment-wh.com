@@ -36,6 +36,11 @@ editorial context. The dollar figures describe degraded capacity, not service re
 
 ## Website review preview
 
+The homepage's “Solution explained” row links to `/solution-explained/`, which plays
+the supplied lifetime site planning animation. Its MP4 and poster are deployment
+copies of `../animations/grid-to-battery-life-zoom-v3/out/` artifacts. The page
+labels its costs, performance, and financial scenarios as illustrative.
+
 `/dev/site-review/` is a customer-facing rewrite staged under the protected
 development route. `/dev/site-review/investors/` holds a separate investor
 thesis. Neither route changes the production homepage. Both use the approved

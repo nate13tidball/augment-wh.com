@@ -58,6 +58,11 @@ console.log('All HTML pages include Vercel tracking once; analytics URL is canon
 
 const homepage = read('./public/index.html');
 assert.doesNotMatch(homepage, /noindex|(?:src|href)="[^"#]*\/dev\//);
+assert.match(homepage, /href="\/solution-explained\/"[^>]*>[\s\S]*?Solution explained/);
+const solutionPage = read('./public/solution-explained/index.html');
+assert.match(solutionPage, /<video controls playsinline/);
+assert.match(solutionPage, /src="\/assets\/solution-explained\/lifetime-site-planning\.mp4"/);
+assert.match(solutionPage, /Illustrative concept and model scenarios only/);
 assert.match(homepage, /id="inquiry-form"/);
 assert.match(homepage, /id="contact"/);
 assert.match(homepage, /src="\/contact.js"/);
