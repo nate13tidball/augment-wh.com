@@ -20,6 +20,7 @@ async function session(data) {
     });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || 'Unable to sign in.');
+    window.dispatchEvent(new Event('site-admin-change'));
     if (result.admin && data?.pin) {
       location.assign(destination);
       return;

@@ -1,0 +1,81 @@
+/* Shared navigation and appearance. Page-specific styles remain independent. */
+:root { --wh-header-height: 131px; --wh-bg: #f4f5f3; --wh-surface: #fff; --wh-raised: #e7eee7; --wh-text: #202220; --wh-muted: #536157; --wh-border: #c7d2c8; --wh-accent: #137c19; }
+html[data-theme="dark"] { --wh-bg: #101512; --wh-surface: #19211c; --wh-raised: #243029; --wh-text: #edf3ed; --wh-muted: #b4c4b8; --wh-border: #45564a; --wh-accent: #80db86; }
+html { scroll-padding-top: calc(var(--wh-header-height) + 20px); }
+body { padding-top: var(--wh-header-height) !important; }
+[id] { scroll-margin-top: calc(var(--wh-header-height) + 20px); }
+/* The common header replaces legacy navigation, leaving masthead content intact. */
+body > .site-header, .site-masthead > .site-header, .topbar, .field-bar, .memo-bar, .concept-bar, .shell > .top { display: none !important; }
+.wh-header, .wh-header * { box-sizing: border-box; }
+.wh-header { transform: translateY(var(--wh-header-offset, 0%)); transition: transform .3s ease-out; }
+@media (prefers-reduced-motion: reduce) { .wh-header { transition: none; } }
+/* Original index-page design with a 30% shorter masthead and full-size menu target. */
+.wh-header { position: fixed; inset: 0 0 auto; z-index: 1000; background: linear-gradient(180deg, #dfe7df 0%, #e8ece8 62%, #efefef 100%); color: #202220; font: 16px/1.5 Arial, Helvetica, sans-serif; letter-spacing: normal; }
+.wh-header .site-header { width: min(1180px, calc(100% - 64px)); margin-inline: auto; padding-block: 11px; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 16px 32px; }
+.wh-header .brand { display: block; width: min(294px, 100%); }
+.wh-header .brand-link { display: block; }
+.wh-header .brand img { display: block; width: 100%; height: auto; }
+.wh-header .menu { position: relative; justify-self: end; }
+.wh-header .menu > summary { display: grid; place-items: center; width: 48px; height: 48px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: #202220; color: #fff; cursor: pointer; list-style: none; }
+.wh-header .menu > summary::-webkit-details-marker { display: none; }
+.wh-header .menu-icon, .wh-header .menu-icon::before, .wh-header .menu-icon::after { display: block; width: 22px; height: 2px; background: currentColor; transition: transform .2s ease, opacity .2s ease; }
+.wh-header .menu-icon { position: relative; }
+.wh-header .menu-icon::before, .wh-header .menu-icon::after { position: absolute; left: 0; content: ''; }
+.wh-header .menu-icon::before { transform: translateY(-7px); }
+.wh-header .menu-icon::after { transform: translateY(7px); }
+.wh-header .menu[open] .menu-icon { background: transparent; }
+.wh-header .menu[open] .menu-icon::before { transform: rotate(45deg); }
+.wh-header .menu[open] .menu-icon::after { transform: rotate(-45deg); }
+.wh-header .wh-menu-panel { position: absolute; top: calc(100% + 12px); right: 0; z-index: 20; width: min(320px, calc(100vw - 40px)); max-height: calc(100dvh - var(--wh-header-height) - 24px); overflow-y: auto; overscroll-behavior: contain; padding: 12px; border: 1px solid var(--wh-border); border-radius: 14px; background: var(--wh-surface); color: var(--wh-text); box-shadow: 0 16px 40px rgb(0 0 0 / .18); }
+.wh-menu-panel nav { position: static; display: grid; margin: 0; padding: 0; border: 0; background: none; color: inherit; width: auto; }
+.wh-menu-panel nav + nav { border-top: 1px solid var(--wh-border); margin-top: 10px; padding-top: 10px; }
+.wh-menu-panel a { display: block; padding: 12px 14px; color: var(--wh-text); text-decoration: none; font-size: 16px; font-weight: 700; }
+.wh-menu-panel a:hover { text-decoration: underline; text-decoration-color: #169e18; }
+.wh-menu-panel nav a + a { border-top: 1px solid var(--wh-border); }
+.wh-menu-panel .wh-menu-heading { margin: 4px 12px; color: var(--wh-muted); font: 700 16px/1.5 Arial, sans-serif; text-transform: uppercase; letter-spacing: .06em; }
+.wh-appearance { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; margin: 16px 0 8px; padding: 10px; border: 1px solid var(--wh-border); border-radius: 8px; }
+.wh-appearance legend { padding: 0 5px; font-weight: 700; color: var(--wh-text); }
+.wh-appearance label { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 5px; font: 16px/1.4 Arial, sans-serif; color: var(--wh-text); cursor: pointer; }
+.wh-appearance input { display: inline-block; width: 17px; height: 17px; margin: 0; padding: 0; accent-color: var(--wh-accent); }
+.wh-menu-panel .wh-motion-toggle { width: 100%; min-height: 44px; padding: 10px; border: 1px solid var(--wh-border); border-radius: 8px; color: var(--wh-text); background: var(--wh-raised); font: 600 16px Arial, sans-serif; cursor: pointer; }
+.wh-header :focus-visible { outline: 3px solid var(--wh-accent); outline-offset: 3px; }
+.wh-menu-panel noscript p { color: var(--wh-muted); font-size: 16px; }
+.skip { z-index: 1100 !important; }
+.motion-toolbar { position: static !important; }
+.memo-rail { top: calc(var(--wh-header-height) + 20px); }
+.wh-motion-paused *, .wh-motion-paused *::before, .wh-motion-paused *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+.wh-motion-paused :is(.reveal-ready, .motion-section, .reveal-word) { opacity: 1 !important; transform: none !important; filter: none !important; }
+.wh-motion-paused .motion-section::after { transform: scaleY(0) !important; }
+/* Adapt both newer and legacy page surfaces without filtering logos, images or video. */
+html[data-theme="dark"] body { background: var(--wh-bg); color: var(--wh-text); }
+html[data-theme="dark"] :is(main, section, article, aside, footer, .site-masthead, .chart-card, .model-details, .chart-header, .year-control, .card, .note, .panel, .stat, .metric, .decision-box, .table-scroll, .motion-toolbar) { background-color: var(--wh-surface); background-image: none; color: var(--wh-text); border-color: var(--wh-border); }
+html[data-theme="dark"] :is(h1, h2, h3, h4, p, dt, dd, li, th, td, label, legend, small, .section-label, .eyebrow, .plot-title, .selected-year-readout, .range-ends, .chart-status, #year-help, .demo-context, .back-link, .kicker, .field-label, .fine-print, .underlink, .text-link, .footer a) { color: var(--wh-text); }
+html[data-theme="dark"] :is(dl > div, th, td, .plot-panel, .section-label) { border-color: var(--wh-border); }
+html[data-theme="dark"] :is(input, textarea, select, button, .button, .pill, .model-nav a, .year-control label span) { background-color: var(--wh-raised); color: var(--wh-text); border-color: var(--wh-border); }
+html[data-theme="dark"] a { color: var(--wh-accent); }
+html[data-theme="dark"] .year-control { box-shadow: 0 0 0 16px var(--wh-surface); }
+html[data-theme="dark"] .legend-swatch.stress { background: #c2cbc4; }
+html[data-theme="dark"] .legend-swatch.history { background: #9bafbd; }
+html[data-theme="dark"] :is(.demo, .badge) { color: #efca78; border-color: #8a7344; }
+html[data-theme="dark"] .wh-header { background: var(--wh-surface); }
+html[data-theme="dark"] .wh-header .brand { background: #e7eee7; border-radius: 6px; }
+html[data-theme="dark"] .wh-header .menu > summary { background: #edf3ed; color: #202220; }
+@media (max-width: 680px) {
+  :root { --wh-header-height: 93px; }
+  .wh-header .site-header { width: calc(100% - 40px); padding-block: 10px; gap: 14px; }
+  .wh-header .site-header .brand { width: min(196px, 100%); }
+  .wh-header .menu > summary { width: 44px; height: 44px; }
+}
+@media print {
+  body { padding-top: 0 !important; }
+  .wh-header { display: none; }
+}
+
+/* Admin navigation stays hidden before verification, including without JavaScript. */
+.wh-header [hidden] { display: none !important; }
+.wh-header .wh-discuss-site { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 18px; border: 1px solid var(--wh-accent); border-radius: 999px; background: var(--wh-accent); color: var(--wh-surface); text-decoration: none; font: 700 16px/1.4 Arial, sans-serif; white-space: nowrap; }
+.wh-header .wh-discuss-site:hover { text-decoration: underline; }
+@media (max-width: 680px) {
+  .wh-header .site-header { gap: 10px; }
+  .wh-header .wh-discuss-site { gap: 5px; padding: 9px 12px; }
+}

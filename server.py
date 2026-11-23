@@ -266,6 +266,10 @@ class Handler(BaseHTTPRequestHandler):
                  '/presentations/presentation.css': 'presentations/presentation.css',
                  '/presentations/presentation.js': 'presentations/presentation.js',
                  '/interactions.js': 'interactions.js',
+                 '/assets/site/site.css': 'assets/site/site.css',
+                 '/assets/site/site.js': 'assets/site/site.js',
+                 '/assets/site/theme.js': 'assets/site/theme.js',
+                 '/assets/site/header-access.js': 'assets/site/header-access.js',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
         for asset in ('header.png', 'logo.png', 'full-logo.png', 'favicon.png', 'manifest.json'):
             files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'
