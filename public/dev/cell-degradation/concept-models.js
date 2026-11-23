@@ -8,7 +8,8 @@
     discount: baseCase.discount_rate * 100, fade: source.model.fade_augment, delay: 0 });
   const sum = values => values.reduce((a, b) => a + b, 0);
 
-  function recovery(age = 5, added = 100, offline = 6) {
+  function recovery(age = 5, added = 100) {
+    const offline = 8; // Fixed annual average offline allowance, separate from SOC imbalance.
     const rated = 400, installed = rated + added;
     const retained = .975 ** age;
     const healthy = installed * retained;

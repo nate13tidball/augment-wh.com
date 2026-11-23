@@ -9,16 +9,17 @@ let checks = 0;
 function check(name, body) { body(); checks++; console.log(`PASS ${name}`); }
 
 check('Augmentation waterfall conserves energy and scales every loss with added units', () => {
-  for (const age of [0, 5, 15]) for (const offline of [0, 6, 15]) {
-    const base = M.recovery(age, 0, offline);
-    const added = M.recovery(age, 100, offline);
+  for (const age of [0, 5, 15]) {
+    const base = M.recovery(age, 0);
+    const added = M.recovery(age, 100);
     near(added.rated + added.added, added.aging + added.imbalance + added.unavailable + added.conversion + added.delivered);
     for (const key of ['aging', 'imbalance', 'unavailable', 'conversion', 'delivered']) near(added[key], base[key] * 1.25);
+    near(added.unavailable, added.installed * added.retained * .08);
     near(added.original, base.delivered);
     near(added.benefit, added.delivered - added.original);
     near(base.benefit, 0);
-    near(added.originalYear0, M.recovery(0, 0, offline).delivered);
-    near(added.originalYear15, M.recovery(15, 0, offline).delivered);
+    near(added.originalYear0, M.recovery(0, 0).delivered);
+    near(added.originalYear15, M.recovery(15, 0).delivered);
     assert.ok(added.originalYear0 > added.originalYear15);
   }
   assert.ok(M.recovery(15, 100).delivered < M.recovery(0, 100).delivered);
@@ -92,7 +93,7 @@ function makeUI(withCharts = true) {
 check('Every populated control updates its output and linked plots', () => {
   const ui = makeUI();
   assert.equal(ui.plots.size, 4);
-  assert.equal(ui.controls.length, 8);
+  assert.equal(ui.controls.length, 7);
   for (const control of ui.controls) {
     const original = control.value;
     ui.change(control.id, control.min);
@@ -113,6 +114,15 @@ check('Every populated control updates its output and linked plots', () => {
   ui.change('finance-cost-scale', 140);
   assert.match(ui.nodes.get('finance-selection').textContent, /Custom/);
   assert.ok(!html.includes('augmentation-timing'));
+  assert.ok(!ui.nodes.has('recovery-offline'));
+  const section = html.slice(html.indexOf('id="capacity-recovery"'), html.indexOf('id="dispatch-replay"'));
+  assert.ok(section.indexOf('id="recovery-0"') < section.indexOf('id="recovery-plot"'));
+  assert.ok(section.indexOf('id="recovery-plot"') < section.indexOf('id="recovery-added"'));
+  for (const age of [0, 1, 15]) {
+    ui.change('recovery-age', age);
+    for (let i = 0; i < 3; i++) assert.equal(ui.nodes.get('recovery-year-' + i).textContent, `Year ${age} after commissioning`);
+    assert.equal(ui.nodes.get('recovery-0').textContent, `${M.recovery(age, 100).delivered.toFixed(1)} MWh`);
+  }
   const before = ui.plots.get('recovery-plot').data[0].y;
   ui.change('recovery-added', 400);
   const after = ui.plots.get('recovery-plot').data[0].y;

@@ -143,27 +143,26 @@
     <section class="section frame model-section concept-section" id="capacity-recovery" aria-labelledby="capacity-recovery-title">
       <div class="section-label"><span>/ Recoverable capacity</span><span>(03)</span></div>
       <div class="concept-heading"><div><p class="eyebrow">Illustrative demo / Invented inputs</p><h2 id="capacity-recovery-title">What reaches the interconnection?</h2></div><a href="#model-navigation">All models ↑</a></div>
-      <p class="concept-intro">Add battery units and age the fleet. Compare interconnection energy against the original site plan.</p>
+      <p class="concept-intro">Annual average available capacity at the interconnection, by year after commissioning. Offline capacity is fixed at 8%.</p>
+      <dl class="concept-metrics recovery-metrics" aria-live="polite"><div><dt>Selected site / AC MWh at POI</dt><dd class="recovery-year" id="recovery-year-0">Year 5 after commissioning</dd><dd id="recovery-0">—</dd></div><div><dt>Original plan / AC MWh at POI</dt><dd class="recovery-year" id="recovery-year-1">Year 5 after commissioning</dd><dd id="recovery-1">—</dd></div><div><dt>Augmentation impact / AC MWh at POI</dt><dd class="recovery-year" id="recovery-year-2">Year 5 after commissioning</dd><dd id="recovery-2">—</dd></div></dl>
       <div class="concept-workspace recovery-workspace">
+        <div class="recovery-plot-scroll" tabindex="0" role="region" aria-label="Energy waterfall; scroll horizontally on smaller screens">
+          <div id="recovery-plot" class="concept-plot" role="img" aria-label="Annual average available capacity: original and added LV energy, losses, and AC MWh at the point of interconnection"></div>
+        </div>
         <div class="concept-controls">
           <div class="concept-control"><label for="recovery-added">Additional installed LV energy<output id="recovery-added-value" for="recovery-added">100 MWh</output></label><input id="recovery-added" type="range" min="0" max="400" step="25" value="100" data-unit=" MWh"><div class="concept-range" aria-hidden="true"><span>0 MWh</span><span>400 MWh</span></div></div>
-          <div class="concept-control"><label for="recovery-age">Site age<output id="recovery-age-value" for="recovery-age">5 years</output></label><input id="recovery-age" type="range" min="0" max="15" step="1" value="5" data-unit=" years"><div class="concept-range" aria-hidden="true"><span>Year 0</span><span>Year 15</span></div></div>
-          <div class="concept-control"><label for="recovery-offline">Healthy capacity offline<output id="recovery-offline-value" for="recovery-offline">6%</output></label><input id="recovery-offline" type="range" min="0" max="15" step="1" value="6" data-unit="%"><div class="concept-range" aria-hidden="true"><span>0%</span><span>15%</span></div></div>
-        </div>
-        <div class="recovery-plot-scroll" tabindex="0" role="region" aria-label="Energy waterfall; scroll horizontally on smaller screens">
-          <div id="recovery-plot" class="concept-plot" role="img" aria-label="Original and added LV energy, shared losses, and three AC energy comparisons at the point of interconnection"></div>
+          <div class="concept-control"><label for="recovery-age">Years after commissioning<output id="recovery-age-value" for="recovery-age">5 years</output></label><input id="recovery-age" type="range" min="0" max="15" step="1" value="5" data-unit=" years"><div class="concept-range" aria-hidden="true"><span>Year 0</span><span>Year 15</span></div></div>
         </div>
       </div>
-      <p class="concept-help recovery-caption">Last three bars: AC energy at the point of interconnection, at the selected site age.</p>
+      <p class="concept-help recovery-caption">Last three bars: annual average available capacity at the point of interconnection, in AC MWh.</p>
       <p class="concept-help recovery-caption" id="recovery-reference-note"></p>
-      <dl class="concept-metrics" aria-live="polite"><div><dt>Selected site / AC MWh at POI</dt><dd id="recovery-0">—</dd></div><div><dt>Original plan / AC MWh at POI</dt><dd id="recovery-1">—</dd></div><div><dt>Augmentation impact / AC MWh at POI</dt><dd id="recovery-2">—</dd></div></dl>
       <details class="concept-assumptions"><summary>Assumptions and what this demo leaves out</summary><ul>
         <li>Original site: 400 MWh LV reference energy. Added units are installed at year 0 and age alongside the original fleet.</li>
         <li>Both cohorts lose 2.5% capacity annually. SOC imbalance makes 8% of their remaining reference energy inaccessible.</li>
-        <li>Offline capacity is a separate, disjoint share of remaining energy. The same selected percentage applies to both cohorts.</li>
+        <li>Annual average offline capacity is fixed at 8% of remaining energy for both cohorts, separate from SOC imbalance.</li>
         <li>Conversion consumes 6% of accessible energy. Aging, imbalance, offline, and conversion losses scale with the combined fleet.</li>
         <li>Original plan means no augmentation at the selected age. Augmentation impact is the difference at the point of interconnection.</li>
-        <li>Dotted year-0 and year-15 references both use the selected offline percentage and the same imbalance and conversion assumptions.</li>
+        <li>Dotted year-0 and year-15 references use the same fixed 8% offline allowance, imbalance, and conversion assumptions.</li>
         <li>This is a full-charge energy screen, not instantaneous SOC. Power, thermal limits, and actual site performance are not evaluated.</li>
       </ul></details>
     </section>

@@ -47,7 +47,7 @@
 }
 
 .recovery-workspace { display: block; }
-.recovery-workspace .concept-controls { grid-template-columns: repeat(3, minmax(0, 1fr)); border-right: 0; border-bottom: 1px solid #d5ddd4; }
+.recovery-workspace .concept-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); border-right: 0; border-bottom: 0; border-top: 1px solid #d5ddd4; }
 .recovery-plot-scroll { overflow-x: auto; padding: 12px 8px; }
 #recovery-plot { min-width: 820px; height: 460px; }
 .recovery-caption { margin-top: 12px; }
@@ -65,3 +65,10 @@
 .finance-table th:first-child { text-align: left; }
 .finance-table thead { background: #f3f5f1; }
 .finance-table tbody tr:last-child { font-weight: 700; }
+
+.recovery-metrics .recovery-year { margin-bottom: 10px; font-size: 16px; font-weight: 400; letter-spacing: normal; }
+#capacity-recovery .concept-metrics dt,
+#capacity-recovery .concept-control label,
+#capacity-recovery .concept-range,
+#capacity-recovery .concept-help,
+#capacity-recovery .concept-assumptions { font-size: 16px; }

@@ -79,7 +79,7 @@ They reuse Plotly and the site palette. No customer records or actual market pri
 
 | Module / anchor | Interactive views |
 | --- | --- |
-| Recoverable capacity / `#capacity-recovery` | Combined-fleet waterfall; added LV MWh, age, offline share, and AC POI comparisons. |
+| Recoverable capacity / `#capacity-recovery` | Combined-fleet waterfall; added LV MWh, age, and annual average AC POI capacity. |
 | Dispatch replay / `#dispatch-replay` | Three dispatch scenarios, one power plot, three augmentation sizes, and daily economics. |
 | Investment economics / `#investment-economics` | V4 animation plan, Low/Base/High presets, annual cash, residual, schedule, and sensitivity map. |
 | Downside risk / `#downside-risk` | 600 reproducible NPV draws around the selected animation scenario, with cost/revenue uncertainty and commissioning delay. |
@@ -118,8 +118,9 @@ DOM/Plotly stubs verify wiring; they do not replace browser visual review.
 
 The energy waterfall adds new LV units as the second bar. Both cohorts are
 assumed installed at year 0, with the same illustrative 2.5% annual decline,
-8% SOC-imbalance loss, selected disjoint offline share, and 6% conversion loss.
-The final three bars are **AC MWh at the POI**: selected site energy, augmentation
+8% SOC-imbalance loss, fixed 8% annual average offline share, and 6% conversion loss.
+The summaries show the selected year after commissioning above the plot; both sliders sit below it.
+The final three bars are **annual average available AC MWh at the POI**: selected site energy, augmentation
 impact, and the original plan without augmentation at the selected age. Dotted
 references on the site-energy bar show the no-addition years 0 and 15, under
 identical operating-loss assumptions. No electrochemical or site backend is called.

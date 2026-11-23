@@ -39,8 +39,9 @@
     line: { color, width: 2.5 }, ...extra });
 
   function updateRecovery() {
-    const r = M.recovery(value('recovery-age'), value('recovery-added'), value('recovery-offline'));
+    const r = M.recovery(value('recovery-age'), value('recovery-added'));
     metric('recovery', [`${r.delivered.toFixed(1)} MWh`, `${r.original.toFixed(1)} MWh`, `+${r.benefit.toFixed(1)} MWh`]);
+    for (let i = 0; i < 3; i++) $('recovery-year-' + i).textContent = `Year ${r.age} after commissioning`;
     const labels = ['Original<br>LV energy', 'Augmented<br>units', 'Cell<br>aging', 'SOC<br>imbalance',
       'Offline<br>capacity', 'Conversion<br>loss', 'Energy at<br>interconnection', 'Augmentation<br>impact', 'Original plan<br>no augmentation'];
     const references = [[r.originalYear0, 'No addition · year 0'], [r.originalYear15, 'No addition · year 15']];
@@ -54,7 +55,7 @@
     }, { type: 'bar', name: 'Point of interconnection comparison', x: labels.slice(7), y: [r.benefit, r.original],
       marker: { color: [C.green, C.gray] }, width: .65, text: [r.benefit, r.original].map(n => n.toFixed(1)),
       textposition: 'outside', cliponaxis: false, hovertemplate: '%{x}<br>%{y:.1f} AC MWh at POI<extra></extra>',
-    }], { showlegend: false, yaxis: { ...axis('Energy (MWh)'), range: [0, r.installed * 1.18] },
+    }], { showlegend: false, yaxis: { ...axis('Annual average available capacity (MWh)'), range: [0, r.installed * 1.18] },
       xaxis: { ...axis(''), type: 'category', categoryorder: 'array', categoryarray: labels, tickfont: { size: 10 } },
       margin: { l: 60, r: 25, t: 65, b: 100 },
       shapes: references.flatMap(([level]) => [
