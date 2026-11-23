@@ -140,7 +140,8 @@ under “Point of interconnection.” No electrochemical or site backend is call
 Dispatch uses `dispatch.js`, `dispatch.css`, and generated `dispatch-data.js`.
 All nine cases have a fixed 100 MW battery/POI, 100% availability, and a 200 MWh
 base battery, expressed as usable AC-discharge-equivalent energy: two hours at
-100 MW from full. Three buttons select 0, 100, or 300 MWh of additions.
+100 MW from full. Three buttons select 0, 50, or 100 MWh of additions (200, 250, or 300 MWh total).
+Selected energy and duration appear beside the controls; daily margins appear inline below the buttons.
 The green curve shows selected **battery meter** power against a persistent dashed gray no-augmentation curve.
 At zero additions, both curves overlap. Solar adds a yellow available-generation curve;
 peak support adds a dashed delivery request. Pricing is shown in text and hover.

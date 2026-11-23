@@ -20,7 +20,7 @@ POWER = 100.
 BASE_ENERGY = 200.  # Usable AC-discharge-equivalent MWh: exactly 2 h at 100 MW.
 ROUND_TRIP = .90
 WEAR = 3.  # Fictional variable cost per MWh discharged at the battery meter.
-ADDITIONS = [0, 100, 300]
+ADDITIONS = [0, 50, 100]
 
 
 def scenarios():

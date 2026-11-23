@@ -214,7 +214,7 @@
     </section>
     <section class="section frame model-section concept-section" id="dispatch-replay" aria-labelledby="dispatch-replay-title">
       <div class="section-label"><span>/ Dispatch replay</span><span>(04)</span></div>
-      <div class="concept-heading"><div><p class="eyebrow">Daily operation / Energy capacity</p><h2 id="dispatch-replay-title">Same megawatts. More hours.</h2></div><a href="#model-navigation">All models ↑</a></div>
+      <div class="concept-heading"><div><p class="eyebrow">Daily operation / Energy capacity</p><h2 id="dispatch-replay-title">Daily dispatch with augmentation.</h2></div><a href="#model-navigation">All models ↑</a></div>
       <p class="concept-intro">Each use case compares baseline dispatch with the selected energy capacity at a fixed 100 MW power rating.</p>
       <div class="dispatch-card">
         <div class="dispatch-scenarios" role="group" aria-label="Dispatch example">
@@ -222,22 +222,25 @@
           <button type="button" id="dispatch-solar" data-scenario="solar" aria-pressed="false">Solar + storage</button>
           <button type="button" id="dispatch-peak" data-scenario="peak" aria-pressed="false">Evening peak support</button>
         </div>
-        <ul class="dispatch-fixed"><li><strong>100 MW</strong> battery power</li><li><strong>100 MW</strong> interconnection</li><li><strong>200 MWh / 2 h</strong> base system</li><li><strong>100%</strong> availability</li></ul>
+        <ul class="dispatch-fixed"><li><strong>100 MW</strong> battery power</li><li><strong>100 MW</strong> interconnection</li><li><strong>200 MWh / 2 h</strong> base system</li></ul>
         <div class="dispatch-description"><p id="dispatch-description">Loading dispatch example…</p><p id="dispatch-price-note"></p></div>
         <div id="dispatch-plot" class="dispatch-plot" role="img" aria-label="Daily battery meter power comparing selected capacity with no augmentation; positive is export, negative is charging"></div>
         <p class="dispatch-sign">Green: selected battery. Dashed gray: no augmentation. Positive power exports; negative power charges.</p>
         <div class="dispatch-augmentation">
-          <div class="dispatch-capacity-heading"><span id="dispatch-capacity-label">Additional installed energy</span><output id="dispatch-augmentation-value" aria-live="polite">+100 MWh · 300 MWh total · 3 hours</output></div>
+          <div class="dispatch-capacity-heading"><span id="dispatch-capacity-label">Additional installed energy</span><output id="dispatch-augmentation-value" aria-live="polite">+50 MWh · 250 MWh total · 2.5 hours</output></div>
           <div class="dispatch-scenarios dispatch-capacity-buttons" role="group" aria-labelledby="dispatch-capacity-label">
             <button type="button" id="dispatch-add-0" data-augmentation="0" aria-pressed="false">No augmentation · +0 MWh</button>
-            <button type="button" id="dispatch-add-1" data-augmentation="1" aria-pressed="true">Low augmentation · +100 MWh</button>
-            <button type="button" id="dispatch-add-2" data-augmentation="2" aria-pressed="false">Over-augmentation · +300 MWh</button>
+            <button type="button" id="dispatch-add-1" data-augmentation="1" aria-pressed="true">Base augmentation · +50 MWh</button>
+            <button type="button" id="dispatch-add-2" data-augmentation="2" aria-pressed="false">Over-augmentation · +100 MWh</button>
           </div>
+          <dl class="dispatch-results" aria-live="polite">
+            <div><dt>Site operating margin / day</dt><dd id="dispatch-1">—</dd></div>
+            <div><dt>Incremental after capacity cost / day</dt><dd id="dispatch-2">—</dd></div>
+          </dl>
           <p id="dispatch-comparison-note" role="status"></p>
           <p>Only MWh changes. Battery power and the interconnection remain fixed at 100 MW.</p>
         </div>
       </div>
-      <dl class="concept-metrics" aria-live="polite"><div><dt>Selected total energy / duration</dt><dd id="dispatch-0">—</dd></div><div><dt>Site operating margin / day</dt><dd id="dispatch-1">—</dd></div><div><dt>Incremental after capacity cost / day</dt><dd id="dispatch-2">—</dd></div></dl>
       <details class="concept-assumptions"><summary>Assumptions and what this demo leaves out</summary><ul>
         <li>Every curve uses invented prices and a fictional site. ERCOT-style describes the example, not historical ERCOT data.</li>
         <li>Each day is optimized with perfect price foresight, 15-minute intervals, and no simultaneous battery charging and discharging.</li>

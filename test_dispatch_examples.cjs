@@ -9,7 +9,7 @@ function check(name, body) { body(); count++; console.log(`PASS ${name}`); }
 
 check('Three examples, three sizes, constant 100 MW and a genuine two-hour base', () => {
   assert.deepEqual(data.scenarios.map(s => s.id), ['ercot', 'solar', 'peak']);
-  assert.deepEqual(data.additions_mwh, [0, 100, 300]);
+  assert.deepEqual(data.additions_mwh, [0, 50, 100]);
   assert.equal(data.availability_pct, 100);
   assert.equal(data.battery_power_mw, 100);
   assert.equal(data.interconnection_mw, 100);
@@ -62,18 +62,17 @@ check('Independent settlement and capacity-cost calculations reconcile', () => {
   }
 });
 
-check('More energy cannot reduce optimized operating margin; capital cost can change the ranking', () => {
+check('More energy increases optimized operating margin and reduces peak-support shortfall', () => {
   for (const s of data.scenarios) {
     assert.ok(s.cases[2].metrics.operating_margin >= s.cases[1].metrics.operating_margin - 1e-5);
     assert.ok(s.cases[1].metrics.operating_margin >= s.cases[0].metrics.operating_margin - 1e-5);
     near(s.cases[0].metrics.incremental_after_capacity_cost, 0);
     assert.notDeepEqual(s.cases[0].battery_mw, s.cases[1].battery_mw);
   }
-  const solar = data.scenarios.find(s => s.id === 'solar');
-  assert.ok(solar.cases[1].metrics.incremental_after_capacity_cost > solar.cases[2].metrics.incremental_after_capacity_cost);
   const peak = data.scenarios.find(s => s.id === 'peak');
   assert.ok(peak.cases[0].metrics.unserved_mwh > 0);
-  near(peak.cases[2].metrics.unserved_mwh, 0);
+  assert.ok(peak.cases[2].metrics.unserved_mwh < peak.cases[1].metrics.unserved_mwh);
+  assert.ok(peak.cases[1].metrics.unserved_mwh < peak.cases[0].metrics.unserved_mwh);
 });
 
 const html = fs.readFileSync('./public/modeling-demos/index.html', 'utf8');
@@ -110,6 +109,9 @@ check('Scenario and capacity buttons compare baseline with selection and update 
   assert.equal((section.match(/id="dispatch-plot"/g) || []).length, 1);
   assert.ok(!section.includes('dispatch-table') && !section.includes('What changes financially?'));
   assert.equal(state.capacityButtons.length, 3);
+  assert.ok(!section.includes('concept-metrics') && !section.includes('availability'));
+  assert.match(section, /Base augmentation · \+50 MWh/);
+  assert.match(section, /Over-augmentation · \+100 MWh/);
   for (const button of state.buttons) {
     button.handlers.click();
     assert.equal(button['aria-pressed'], 'true');
@@ -130,7 +132,9 @@ check('Scenario and capacity buttons compare baseline with selection and update 
       assert.equal(state.capacityButtons.filter(b => b['aria-pressed'] === 'true').length, 1);
       if (index === 0) assert.match(state.nodes.get('dispatch-comparison-note').textContent, /overlap/);
       else assert.notDeepEqual(Array.from(chart.traces[0].y), Array.from(chart.traces[1].y));
-      assert.match(state.nodes.get('dispatch-0').textContent, new RegExp(`${c.capacity_mwh} MWh`));
+      assert.equal(state.nodes.get('dispatch-augmentation-value').textContent, `+${c.added_mwh} MWh · ${c.capacity_mwh} MWh total · ${c.duration_hours} hours`);
+      assert.notEqual(state.nodes.get('dispatch-1').textContent, '');
+      assert.notEqual(state.nodes.get('dispatch-2').textContent, '');
     }
   }
 });

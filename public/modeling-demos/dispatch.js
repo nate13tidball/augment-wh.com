@@ -33,7 +33,6 @@
     $('dispatch-comparison-note').textContent = selectedIndex === 0 ?
       'No augmentation selected: both battery curves overlap.' :
       `Selected +${selected.added_mwh} MWh is compared with the same site without augmentation.`;
-    $('dispatch-0').textContent = `${selected.capacity_mwh} MWh / ${selected.duration_hours} h`;
     $('dispatch-1').textContent = money(m.operating_margin);
     $('dispatch-2').textContent = money(m.incremental_after_capacity_cost);
     $('dispatch-2').dataset.negative = String(m.incremental_after_capacity_cost < 0);
