@@ -43,8 +43,7 @@
     metric('recovery', [`${r.delivered.toFixed(1)} MWh`, `${r.original.toFixed(1)} MWh`, `+${r.benefit.toFixed(1)} MWh`]);
     for (let i = 0; i < 3; i++) $('recovery-year-' + i).textContent = `Year ${r.age} after commissioning`;
     const labels = ['Original<br>LV energy', 'Augmented<br>units', 'Cell<br>aging', 'SOC<br>imbalance',
-      'Offline<br>capacity', 'Conversion<br>loss', 'Energy at<br>interconnection', 'Augmentation<br>impact', 'Original plan<br>no augmentation'];
-    const references = [[r.originalYear0, 'No addition · year 0'], [r.originalYear15, 'No addition · year 15']];
+      'Offline<br>capacity', 'Conversion<br>loss', 'Energy at<br>interconnection', 'Augmentation<br>delta', 'Original plan<br>no augmentation'];
     draw('recovery-plot', [{ type: 'waterfall', orientation: 'v', name: 'Energy chain',
       x: labels.slice(0, 7), measure: ['absolute', 'relative', 'relative', 'relative', 'relative', 'relative', 'total'],
       y: [r.rated, r.added, -r.aging, -r.imbalance, -r.unavailable, -r.conversion, 0],
@@ -52,24 +51,20 @@
       textposition: 'outside', cliponaxis: false,
       decreasing: { marker: { color: C.gray } }, increasing: { marker: { color: C.green } }, totals: { marker: { color: C.ink } },
       connector: { line: { color: '#b8c4b5' } }, hovertemplate: '%{x}<br>%{text} MWh<extra></extra>',
-    }, { type: 'bar', name: 'Point of interconnection comparison', x: labels.slice(7), y: [r.benefit, r.original],
-      marker: { color: [C.green, C.gray] }, width: .65, text: [r.benefit, r.original].map(n => n.toFixed(1)),
+    }, { type: 'bar', name: 'Point of interconnection comparison', x: labels.slice(7), y: [r.benefit, r.original], base: [r.original, 0],
+      marker: { color: [C.green, C.gray] }, width: .65, text: [`+${r.benefit.toFixed(1)}`, r.original.toFixed(1)],
       textposition: 'outside', cliponaxis: false, hovertemplate: '%{x}<br>%{y:.1f} AC MWh at POI<extra></extra>',
     }], { showlegend: false, yaxis: { ...axis('Annual average available capacity (MWh)'), range: [0, r.installed * 1.18] },
       xaxis: { ...axis(''), type: 'category', categoryorder: 'array', categoryarray: labels, tickfont: { size: 10 } },
       margin: { l: 60, r: 25, t: 65, b: 100 },
-      shapes: references.flatMap(([level]) => [
-        { type: 'line', x0: 5.64, x1: 6.36, y0: level, y1: level, line: { color: '#fff', width: 4 } },
-        { type: 'line', x0: 5.64, x1: 6.36, y0: level, y1: level, line: { color: C.ink, width: 2, dash: 'dot' } },
-      ]),
-      annotations: [
-        { x: 7, y: 1.06, yref: 'paper', text: 'Last three bars: point of interconnection · AC MWh',
-          showarrow: false, font: { size: 11, color: C.ink } },
-        ...references.map(([level, label]) => ({ x: 6.4, y: level, text: `${label}<br>${level.toFixed(1)} AC MWh`,
-          xanchor: 'left', yanchor: 'bottom', showarrow: false, bgcolor: 'rgba(255,255,255,.92)', font: { size: 9, color: C.ink } })),
+      shapes: [
+        { type: 'line', x0: 5.65, x1: 8.35, y0: 1.02, y1: 1.02, yref: 'paper', line: { color: C.ink, width: 1.5 } },
+        ...[5.65, 8.35].map(x => ({ type: 'line', x0: x, x1: x, y0: .98, y1: 1.02,
+          yref: 'paper', line: { color: C.ink, width: 1.5 } })),
       ],
+      annotations: [{ x: 7, y: 1.06, yref: 'paper', text: '<b>Point of interconnection</b>',
+        yanchor: 'bottom', showarrow: false, font: { size: 16, color: C.ink } }],
     });
-    $('recovery-reference-note').textContent = `Dotted baselines: year 0, ${r.originalYear0.toFixed(1)} MWh; year 15, ${r.originalYear15.toFixed(1)} MWh. Both assume no augmentation.`;
   }
 
   function updateFinance() {

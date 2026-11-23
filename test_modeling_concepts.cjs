@@ -129,7 +129,21 @@ check('Every populated control updates its output and linked plots', () => {
   assert.equal(after[1], 400);
   assert.ok(after[2] < before[2] && after[3] < before[3] && after[4] < before[4]);
   assert.match(ui.plots.get('recovery-plot').data[0].x[6], /interconnection/);
-  assert.equal(ui.plots.get('recovery-plot').layout.shapes.length, 4);
+  for (const added of [0, 100, 400]) {
+    ui.change('recovery-added', added);
+    const plot = ui.plots.get('recovery-plot'), result = M.recovery(15, added);
+    const comparison = plot.data[1];
+    near(comparison.base[0], result.original);
+    near(comparison.base[0] + comparison.y[0], result.delivered);
+    near(comparison.base[1], 0);
+    near(comparison.y[1], result.original);
+    assert.match(comparison.x[0], /delta/);
+    assert.equal(plot.layout.shapes.length, 3);
+    assert.ok(plot.layout.shapes.every(shape => shape.yref === 'paper' && !shape.line.dash));
+    assert.equal(plot.layout.annotations.length, 1);
+    assert.equal(plot.layout.annotations[0].text, '<b>Point of interconnection</b>');
+  }
+  assert.ok(!ui.nodes.has('recovery-reference-note'));
   ui.change('recovery-age', 0);
   near(ui.plots.get('recovery-plot').data[0].y[2], 0);
 

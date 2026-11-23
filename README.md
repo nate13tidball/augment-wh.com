@@ -121,9 +121,9 @@ assumed installed at year 0, with the same illustrative 2.5% annual decline,
 8% SOC-imbalance loss, fixed 8% annual average offline share, and 6% conversion loss.
 The summaries show the selected year after commissioning above the plot; both sliders sit below it.
 The final three bars are **annual average available AC MWh at the POI**: selected site energy, augmentation
-impact, and the original plan without augmentation at the selected age. Dotted
-references on the site-energy bar show the no-addition years 0 and 15, under
-identical operating-loss assumptions. No electrochemical or site backend is called.
+delta, and the original plan without augmentation at the selected age. The floating delta
+spans original-plan capacity to selected-site capacity. A bracket groups the three bars
+under “Point of interconnection.” No electrochemical or site backend is called.
 
 Dispatch uses `dispatch.js`, `dispatch.css`, and generated `dispatch-data.js`.
 All nine cases have a fixed 100 MW battery/POI, 100% availability, and a 200 MWh
