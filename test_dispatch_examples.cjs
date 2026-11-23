@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const data = require('./public/dev/cell-degradation/dispatch-data.js');
+const data = require('./public/modeling-demos/dispatch-data.js');
 const near = (a, b, tolerance = 1e-4) => assert.ok(Math.abs(a - b) <= tolerance, `${a} != ${b}`);
 const sum = a => a.reduce((x, y) => x + y, 0);
 let count = 0;
@@ -76,8 +76,8 @@ check('More energy cannot reduce optimized operating margin; capital cost can ch
   near(peak.cases[2].metrics.unserved_mwh, 0);
 });
 
-const html = fs.readFileSync('./public/dev/cell-degradation/index.html', 'utf8');
-const script = fs.readFileSync('./public/dev/cell-degradation/dispatch.js', 'utf8');
+const html = fs.readFileSync('./public/modeling-demos/index.html', 'utf8');
+const script = fs.readFileSync('./public/modeling-demos/dispatch.js', 'utf8');
 function ui(charts = true) {
   const nodes = new Map(), buttons = [], plots = [];
   for (const match of html.matchAll(/<[^>]+\bid="([^"]+)"[^>]*>/g)) {

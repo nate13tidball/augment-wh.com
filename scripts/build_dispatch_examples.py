@@ -147,7 +147,7 @@ def build():
 
 if __name__ == '__main__':
     payload = build()
-    target = ROOT / 'public/dev/cell-degradation/dispatch-data.js'
+    target = ROOT / 'public/modeling-demos/dispatch-data.js'
     # A deployment fixture, usable without runtime fetches or a browser solver.
     target.write_text('/* Generated fictional examples; rebuild with scripts/build_dispatch_examples.py. */\n'
                       '(function (root) { const data = ' + json.dumps(payload, separators=(',', ':'), allow_nan=False) + ';\n'

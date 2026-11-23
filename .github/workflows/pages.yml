@@ -23,7 +23,7 @@ jobs:
       - name: Prepare public-only fallback
         run: |
           mkdir pages-public
-          rsync -a --exclude='/dev/' public/ pages-public/
+          rsync -a --exclude='/dev/' --exclude='/modeling-demos/' public/ pages-public/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: pages-public

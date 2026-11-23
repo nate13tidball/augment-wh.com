@@ -81,7 +81,7 @@ async function loadDemo() {
   const status = document.getElementById('chart-status');
   try {
     if (!window.Plotly) throw new Error('Chart library unavailable. Check your internet connection.');
-    const response = await fetch('/dev/cell-degradation/data.json');
+    const response = await fetch('/modeling-demos/data.json');
     if (!response.ok) throw new Error('Model chart data could not be loaded.');
     const source = await response.json();
     const years = source.year_slider_histograms.years;

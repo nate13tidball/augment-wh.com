@@ -94,7 +94,7 @@ class InquiryTests(unittest.TestCase):
                 self.assertEqual(response.status, 200)
                 response.read()
                 conn.close()
-            for path in ('/dev/previous-home/', '/dev/cell-degradation/data.json'):
+            for path in ('/dev/previous-home/', '/modeling-demos', '/modeling-demos/', '/modeling-demos/data.json'):
                 conn = HTTPConnection('127.0.0.1', app.server_port)
                 conn.request('GET', path)
                 response = conn.getresponse()
@@ -114,18 +114,18 @@ class InquiryTests(unittest.TestCase):
                     ('/dev/deck', 'dev/deck/index.html'), ('/dev/deck/', 'dev/deck/index.html'),
                     ('/dev/field', 'dev/field/index.html'), ('/dev/field/', 'dev/field/index.html'),
                     ('/dev/memo', 'dev/memo/index.html'), ('/dev/memo/', 'dev/memo/index.html'),
-                    ('/dev/cell-degradation/', 'dev/cell-degradation/index.html'),
-                    ('/dev/cell-degradation/demo.js', 'dev/cell-degradation/demo.js'),
-                    ('/dev/cell-degradation/data.json', 'dev/cell-degradation/data.json'),
-                    ('/dev/cell-degradation/slider.css', 'dev/cell-degradation/slider.css'),
-                    ('/dev/cell-degradation/market.css', 'dev/cell-degradation/market.css'),
-                    ('/dev/cell-degradation/concept-models.js', 'dev/cell-degradation/concept-models.js'),
-                    ('/dev/cell-degradation/animation-finance-data.js', 'dev/cell-degradation/animation-finance-data.js'),
-                    ('/dev/cell-degradation/concepts.js', 'dev/cell-degradation/concepts.js'),
-                    ('/dev/cell-degradation/concepts.css', 'dev/cell-degradation/concepts.css'),
-                    ('/dev/cell-degradation/dispatch-data.js', 'dev/cell-degradation/dispatch-data.js'),
-                    ('/dev/cell-degradation/dispatch.js', 'dev/cell-degradation/dispatch.js'),
-                    ('/dev/cell-degradation/dispatch.css', 'dev/cell-degradation/dispatch.css'),
+                    ('/modeling-demos/', 'modeling-demos/index.html'),
+                    ('/modeling-demos/demo.js', 'modeling-demos/demo.js'),
+                    ('/modeling-demos/data.json', 'modeling-demos/data.json'),
+                    ('/modeling-demos/slider.css', 'modeling-demos/slider.css'),
+                    ('/modeling-demos/market.css', 'modeling-demos/market.css'),
+                    ('/modeling-demos/concept-models.js', 'modeling-demos/concept-models.js'),
+                    ('/modeling-demos/animation-finance-data.js', 'modeling-demos/animation-finance-data.js'),
+                    ('/modeling-demos/concepts.js', 'modeling-demos/concepts.js'),
+                    ('/modeling-demos/concepts.css', 'modeling-demos/concepts.css'),
+                    ('/modeling-demos/dispatch-data.js', 'modeling-demos/dispatch-data.js'),
+                    ('/modeling-demos/dispatch.js', 'modeling-demos/dispatch.js'),
+                    ('/modeling-demos/dispatch.css', 'modeling-demos/dispatch.css'),
                     ('/dev/site-modeling/', 'dev/site-modeling/index.html'),
                     ('/dev/site-modeling/site-modeling.css', 'dev/site-modeling/site-modeling.css'),
                 ):

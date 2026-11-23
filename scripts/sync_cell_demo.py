@@ -11,7 +11,7 @@ DEFAULT_SOURCE = SITE_ROOT.parent / (
     "modeling/degradation/mechanistic_cell/state_estimation/outputs/"
     "customer_showcase/chart_source.json"
 )
-DESTINATION = SITE_ROOT / "public/dev/cell-degradation/data.json"
+DESTINATION = SITE_ROOT / "public/modeling-demos/data.json"
 
 
 def main() -> None:

@@ -191,7 +191,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # An explicit public-file list prevents traversal and accidental repo exposure.
         path = urlsplit(self.path).path
-        if (path == '/dev' or path.startswith('/dev/')) and path not in (
+        if (path == '/dev' or path.startswith('/dev/') or path == '/modeling-demos' or path.startswith('/modeling-demos/')) and path not in (
             '/dev/login', '/dev/login/', '/dev/login/index.html', '/dev/login/login.js'
         ) and not is_admin(self.headers):
             self.send_response(302)
@@ -245,20 +245,20 @@ class Handler(BaseHTTPRequestHandler):
                  '/dev/site-modeling/': 'dev/site-modeling/index.html',
                  '/dev/site-modeling/index.html': 'dev/site-modeling/index.html',
                  '/dev/site-modeling/site-modeling.css': 'dev/site-modeling/site-modeling.css',
-                 '/dev/cell-degradation': 'dev/cell-degradation/index.html',
-                 '/dev/cell-degradation/': 'dev/cell-degradation/index.html',
-                 '/dev/cell-degradation/index.html': 'dev/cell-degradation/index.html',
-                 '/dev/cell-degradation/slider.css': 'dev/cell-degradation/slider.css',
-                 '/dev/cell-degradation/market.css': 'dev/cell-degradation/market.css',
-                 '/dev/cell-degradation/concept-models.js': 'dev/cell-degradation/concept-models.js',
-                 '/dev/cell-degradation/animation-finance-data.js': 'dev/cell-degradation/animation-finance-data.js',
-                 '/dev/cell-degradation/concepts.js': 'dev/cell-degradation/concepts.js',
-                 '/dev/cell-degradation/concepts.css': 'dev/cell-degradation/concepts.css',
-                 '/dev/cell-degradation/dispatch-data.js': 'dev/cell-degradation/dispatch-data.js',
-                 '/dev/cell-degradation/dispatch.js': 'dev/cell-degradation/dispatch.js',
-                 '/dev/cell-degradation/dispatch.css': 'dev/cell-degradation/dispatch.css',
-                 '/dev/cell-degradation/demo.js': 'dev/cell-degradation/demo.js',
-                 '/dev/cell-degradation/data.json': 'dev/cell-degradation/data.json',
+                 '/modeling-demos': 'modeling-demos/index.html',
+                 '/modeling-demos/': 'modeling-demos/index.html',
+                 '/modeling-demos/index.html': 'modeling-demos/index.html',
+                 '/modeling-demos/slider.css': 'modeling-demos/slider.css',
+                 '/modeling-demos/market.css': 'modeling-demos/market.css',
+                 '/modeling-demos/concept-models.js': 'modeling-demos/concept-models.js',
+                 '/modeling-demos/animation-finance-data.js': 'modeling-demos/animation-finance-data.js',
+                 '/modeling-demos/concepts.js': 'modeling-demos/concepts.js',
+                 '/modeling-demos/concepts.css': 'modeling-demos/concepts.css',
+                 '/modeling-demos/dispatch-data.js': 'modeling-demos/dispatch-data.js',
+                 '/modeling-demos/dispatch.js': 'modeling-demos/dispatch.js',
+                 '/modeling-demos/dispatch.css': 'modeling-demos/dispatch.css',
+                 '/modeling-demos/demo.js': 'modeling-demos/demo.js',
+                 '/modeling-demos/data.json': 'modeling-demos/data.json',
                  '/presentations/': 'presentations/index.html',
                  '/presentations/index.html': 'presentations/index.html',
                  '/presentations/companies.json': 'presentations/companies.json',

@@ -1,5 +1,5 @@
 // Vercel routing middleware runs before serving static development files.
-export const config = { matcher: ['/dev/:path*', '/api/analytics/:path*'] };
+export const config = { matcher: ['/dev/:path*', '/modeling-demos/:path*', '/api/analytics/:path*'] };
 const lifetime = 30 * 24 * 60 * 60;
 const privateHeaders = { 'Cache-Control': 'private, no-store', Vary: 'Cookie' };
 

@@ -27,7 +27,7 @@ def build(source: Path):
                    source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
                    finance_sha256=hashlib.sha256(source.with_name('finance.py').read_bytes()).hexdigest(),
                    spec=spec, references=cases)
-    target = Path(__file__).resolve().parents[1] / 'public/dev/cell-degradation/animation-finance-data.js'
+    target = Path(__file__).resolve().parents[1] / 'public/modeling-demos/animation-finance-data.js'
     target.write_text('/* Generated from the V4 animation model; see scripts/sync_animation_finance.py. */\n'
                       '(function(root) { const data = ' + json.dumps(payload, separators=(',', ':'), allow_nan=False) + ';\n'
                       'if (typeof module !== "undefined" && module.exports) module.exports = data;\n'

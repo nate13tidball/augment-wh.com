@@ -51,10 +51,10 @@ thesis. Neither route changes the production homepage. Both use the approved
 brand assets and existing `/api/inquiry` form flow. Local static preview can
 show the forms but cannot deliver mail without a configured API backend.
 
-`/dev/cell-degradation/` is the protected Site modeling demo. Its first section
+`/modeling-demos/` is the protected Site modeling demo. Its first section
 links the year-selected capacity histogram to the full synthetic cell degradation
 curve. Both views use `state_estimation/outputs/customer_showcase/chart_source.json`
-from the parent repository, copied to `public/dev/cell-degradation/data.json` by
+from the parent repository, copied to `public/modeling-demos/data.json` by
 `python scripts/sync_cell_demo.py`. Refresh that deployment copy after regenerating
 the showcase. The Plotly charts use a versioned CDN bundle and require internet
 access. The histogram's horizontal axis is capacity; the curve's is service year.
@@ -68,13 +68,13 @@ The second demo section, `#us-market`, reuses the homepage's “The operating
 challenge” content, chart, and approved $3bn / $13bn degraded-capacity estimates.
 Its header link jumps to “US grid energy storage market.” The section shares
 the cell module’s neutral background and green accents; market figures remain red. Styles live in
-`public/dev/cell-degradation/market.css`, separate from the cell chart styles.
+`public/modeling-demos/market.css`, separate from the cell chart styles.
 The market estimates are independent of the synthetic cell simulation; their
 source context remains `../pitch_offering/v3-website-content-review.md`.
 
 ### Interactive presentation concepts
 
-Modules 03–06 on `/dev/cell-degradation/` are illustrative presentation examples.
+Modules 03–06 on `/modeling-demos/` are illustrative presentation examples.
 They reuse Plotly and the site palette. No customer records or actual market prices are used.
 
 | Module / anchor | Interactive views |

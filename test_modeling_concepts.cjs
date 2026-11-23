@@ -2,8 +2,8 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const fixture = require('./public/dev/cell-degradation/animation-finance-data.js');
-const M = require('./public/dev/cell-degradation/concept-models.js');
+const fixture = require('./public/modeling-demos/animation-finance-data.js');
+const M = require('./public/modeling-demos/concept-models.js');
 const near = (a, b, tolerance = 1e-6) => assert.ok(Math.abs(a - b) < tolerance, `${a} != ${b}`);
 let checks = 0;
 function check(name, body) { body(); checks++; console.log(`PASS ${name}`); }
@@ -60,8 +60,8 @@ check('Risk is reproducible and responds to cost and delayed campaigns', () => {
   assert.ok(M.risk({}, 50, 3).values.every(Number.isFinite));
 });
 
-const html = fs.readFileSync('./public/dev/cell-degradation/index.html', 'utf8');
-const controller = fs.readFileSync('./public/dev/cell-degradation/concepts.js', 'utf8');
+const html = fs.readFileSync('./public/modeling-demos/index.html', 'utf8');
+const controller = fs.readFileSync('./public/modeling-demos/concepts.js', 'utf8');
 function makeUI(withCharts = true) {
   const nodes = new Map(), controls = [], buttons = [], frames = [], plots = new Map();
   for (const match of html.matchAll(/<[^>]+\bid="([^"]+)"[^>]*>/g)) {
