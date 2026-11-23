@@ -25,10 +25,7 @@ COVER = 13  # slide shown first, before the visitor starts the deck
 START, END = "<!-- solution-deck:start -->", "<!-- solution-deck:end -->"
 
 
-def dwell_ms(notes: list[str]) -> int:
-    """Time on a slide during autoplay: enough to read its notes, never under 6 seconds."""
-    words = sum(len(n.split()) for n in notes)
-    return max(6000, 3000 + words * 220)
+DWELL_MS = 2000  # time on each slide during autoplay
 
 
 def slide_markup(slides: list[dict]) -> str:
@@ -40,7 +37,7 @@ def slide_markup(slides: list[dict]) -> str:
         notes = "".join(f"<li>{html.escape(n)}</li>" for n in s["notes"])
         items.append(
             f'      <li class="deck-slide" id="slide-{i}" role="group" aria-roledescription="slide" '
-            f'aria-label="{i} of {total}" data-dwell="{dwell_ms(s["notes"])}">\n'
+            f'aria-label="{i} of {total}" data-dwell="{DWELL_MS}">\n'
             f'        <img src="/assets/solution-explained/slides/{name}" width="1920" height="1080" '
             f'alt="{html.escape(s["alt"], quote=True)}" loading="{loading}" decoding="async">\n'
             f'        <ul class="deck-notes" aria-label="Speaker notes">{notes}</ul>\n'

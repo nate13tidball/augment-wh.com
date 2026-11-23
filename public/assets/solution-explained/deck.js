@@ -76,7 +76,7 @@
     if (playing && visible && !document.hidden) {
       if (last !== null) elapsed += now - last;
       last = now;
-      const dwell = Number(slides[index].dataset.dwell) || 7000;
+      const dwell = Number(slides[index].dataset.dwell) || 2000;
       segments[index].firstChild.style.width = `${Math.min(100, (elapsed / dwell) * 100)}%`;
       if (elapsed >= dwell) {
         if (index === slides.length - 1) setPlaying(false);  // stop on the last slide
