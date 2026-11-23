@@ -113,6 +113,11 @@ class InquiryTests(unittest.TestCase):
                     ('/dev/deck', 'dev/deck/index.html'), ('/dev/deck/', 'dev/deck/index.html'),
                     ('/dev/field', 'dev/field/index.html'), ('/dev/field/', 'dev/field/index.html'),
                     ('/dev/memo', 'dev/memo/index.html'), ('/dev/memo/', 'dev/memo/index.html'),
+                    ('/dev/cell-degradation/', 'dev/cell-degradation/index.html'),
+                    ('/dev/cell-degradation/year-slider.html', 'dev/cell-degradation/year-slider.html'),
+                    ('/dev/cell-degradation/slider.css', 'dev/cell-degradation/slider.css'),
+                    ('/dev/site-modeling/', 'dev/site-modeling/index.html'),
+                    ('/dev/site-modeling/site-modeling.css', 'dev/site-modeling/site-modeling.css'),
                 ):
                     conn = HTTPConnection('127.0.0.1', app.server_port)
                     conn.request('GET', path)

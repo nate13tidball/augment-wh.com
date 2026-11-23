@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#202220">
+  <title>Cell degradation example | Augment-wh</title>
+  <link rel="icon" href="/assets/brand/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/assets/homepage/homepage.css">
+  <link rel="stylesheet" href="/dev/cell-degradation/slider.css">
+</head>
+<body class="cell-demo-page">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="site-masthead">
+    <header class="site-header frame">
+      <a class="brand brand-link" href="/" aria-label="Augment-wh home"><img src="/assets/brand/full-logo.png" alt="Augment-wh" width="884" height="326"></a>
+      <nav class="demo-nav" aria-label="Site sections">
+        <a href="/dev/site-modeling/">Site modeling</a>
+        <a href="/dev/">Page tree</a>
+      </nav>
+    </header>
+  </div>
+  <main id="main">
+    <section class="hero" aria-labelledby="demo-title">
+      <div class="frame">
+        <p class="eyebrow">Cell modeling example / In development</p>
+        <h1 id="demo-title">How capacity outcomes change with age.</h1>
+        <p class="hero-lede">Move the service-year slider to compare two illustrative operating scenarios.</p>
+      </div>
+    </section>
+    <section class="section frame" aria-labelledby="chart-title">
+      <div class="section-label"><span>/ Capacity outcomes</span><span>(01)</span></div>
+      <h2 id="chart-title">Explore the simulated draws.</h2>
+      <p class="section-intro">The chart starts at year 10. Select years 3–13 below the histogram.</p>
+      <div class="chart-scroll" role="region" aria-label="Scrollable capacity histogram" tabindex="0">
+        <iframe title="Interactive cell capacity histogram by service year" src="/dev/cell-degradation/year-slider.html" loading="eager"></iframe>
+      </div>
+      <p class="chart-note">Synthetic representative cell; 400 draws per scenario. Bars count model draws, not observed cells.</p>
+      <p class="chart-note">Ranges depend on illustrative assumptions. They are not calibrated probabilities or site-level forecasts.</p>
+    </section>
+  </main>
+  <footer class="site-footer frame">
+    <p>Cell degradation modeling preview</p>
+    <a href="/dev/">Page tree</a>
+  </footer>
+</body>
+</html>
