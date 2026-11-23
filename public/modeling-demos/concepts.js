@@ -84,7 +84,7 @@
         ['Year-15 residual value', r.residual, C.pale]].map(([name, values, color]) => ({
         type: 'bar', name, x: r.years, y: values.map(v => v / 1e6), marker: { color }, hovertemplate: hover })),
       line('Cumulative total incl. residual', r.years, r.cumulative.map(v => v / 1e6), C.ink, { hovertemplate: hover }),
-    ], { xaxis: { ...axis('Plan year'), dtick: 3, range: [-.5, 15.5] },
+    ], { xaxis: { ...axis('Plan year'), tick0: 3, dtick: 3, range: [3, 15.5] },
       yaxis: axis('Incremental nominal value ($m)'), barmode: 'relative', bargap: .32,
       margin: { l: 70, r: 22, t: 25, b: 205 },
       legend: { orientation: 'h', x: 0, y: -.3, yanchor: 'top', font: { size: 16 } } });
