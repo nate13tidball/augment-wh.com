@@ -1,6 +1,6 @@
 // Basic checks for removed personal contact pathways.
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 const read = path => readFileSync(new URL(path, import.meta.url), 'utf8');
 assert.doesNotMatch(read('./public/index.html'), /nathan|tidball|linkedin|meeting|calendar|mailto:/i);
@@ -58,10 +58,16 @@ console.log('All HTML pages include Vercel tracking once; analytics URL is canon
 
 const homepage = read('./public/index.html');
 assert.doesNotMatch(homepage, /noindex|(?:src|href)="[^"#]*\/dev\//);
-assert.match(homepage, /href="\/solution-explained\/"[^>]*>[\s\S]*?Solution explained/);
+assert.match(homepage, /href="\/solution-explained\/"[^>]*>[\s\S]*?Technical solution/);
 const solutionPage = read('./public/solution-explained/index.html');
-assert.match(solutionPage, /<video controls playsinline/);
-assert.match(solutionPage, /src="\/assets\/solution-explained\/lifetime-site-planning\.mp4"/);
+assert.match(solutionPage, /class="solution-deck"/);
+assert.match(solutionPage, /src="\/assets\/solution-explained\/deck\.js"/);
+const deckSlides = [...solutionPage.matchAll(/src="(\/assets\/solution-explained\/slides\/slide-\d{2}\.(?:gif|png))"/g)];
+assert.equal(deckSlides.length, 14);
+for (const [, src] of deckSlides) assert.ok(existsSync(`./public${src}`), `missing ${src}`);
+assert.equal((solutionPage.match(/<ul class="deck-notes"/g) || []).length, 14);
+assert.match(solutionPage, /data-cover="13"/);
+assert.match(homepage, /href="\/solution-explained\/"[^>]*>\s*<img src="\/assets\/solution-explained\/slides\/slide-13\.png"/);
 assert.match(solutionPage, /Illustrative concept and model scenarios only/);
 assert.match(homepage, /id="inquiry-form"/);
 assert.match(homepage, /id="contact"/);

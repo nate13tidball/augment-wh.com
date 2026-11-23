@@ -79,6 +79,13 @@ h2 { max-width: 1060px; margin: 18px 0 24px; font-size: clamp(42px, 5.4vw, 72px)
 .solution-link > span:first-child { font-size: clamp(24px, 3vw, 34px); font-weight: 700; letter-spacing: -.035em; }
 .solution-link > span:last-child { font-size: 15px; font-weight: 700; }
 .solution-link:hover { color: var(--green); background: var(--paper); }
+.solution-feature { display: grid; gap: 18px; padding: 22px 0; }
+.solution-feature img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); }
+.solution-feature > .solution-feature-text { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.solution-feature-text > span:first-child { font-size: clamp(24px, 3vw, 34px); font-weight: 700; letter-spacing: -.035em; }
+.solution-feature-text > span:last-child { font-size: 15px; font-weight: 700; }
+.solution-feature:hover { background: transparent; }
+.solution-feature:hover img { border-color: var(--green); }
 .solution-page { min-height: 100vh; background: var(--paper); }
 .solution-page main { padding-block: clamp(44px, 6vw, 76px); }
 .solution-page h1 { max-width: none; margin: 0 0 20px; color: var(--charcoal); font-size: clamp(42px, 6vw, 76px); }
