@@ -9,7 +9,7 @@
 .market-challenge strong { color: var(--charcoal); }
 .market-module .degradation-evidence { max-width: 1100px; }
 .market-module .plot-image img { width: 100%; margin-inline: 0; }
-.market-notes { display: grid; gap: 10px; max-width: 900px; margin-top: 24px; padding-left: 20px; border-left: 3px solid var(--green); font-size: 14px; }
+.market-notes { display: grid; gap: 10px; max-width: 900px; margin-top: 24px; padding-left: 20px; border-left: 3px solid var(--green); font-size: 16px; }
 .market-notes a { width: fit-content; color: var(--charcoal); font-weight: 700; }
 @media (max-width: 680px) {
   .market-module .market-totals { grid-template-columns: 1fr; gap: 20px; }

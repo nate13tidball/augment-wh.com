@@ -5,8 +5,16 @@ const palette = {
 };
 
 const chartConfig = { responsive: true, displayModeBar: false, scrollZoom: false };
-const commonFont = { family: 'Arial, Helvetica, sans-serif', color: '#5c5c5c', size: 12 };
+const commonFont = { family: 'Arial, Helvetica, sans-serif', color: '#5c5c5c', size: 16 };
 const commonMargin = { l: 68, r: 38 };
+
+function chartTheme() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  palette.stress = dark ? '#c2cbc4' : '#5c5c5c';
+  palette.history = dark ? '#9bafbd' : '#60717b';
+  return { paper_bgcolor: dark ? '#19211c' : '#fff', plot_bgcolor: dark ? '#19211c' : '#fff',
+    font: { ...commonFont, color: dark ? '#edf3ed' : '#5c5c5c' } };
+}
 
 function histogramShares(source, scenario, index) {
   const samples = source.year_slider_histograms.scenarios[scenario];
@@ -42,16 +50,16 @@ function medianMarkers(source, index) {
 function curveTraces(source) {
   const checks = source.history;
   const traces = [{
-    type: 'scatter', mode: 'lines+markers', name: 'Illustrative operating history',
+    type: 'scatter', mode: 'lines+markers', name: 'Modeled operating history',
     x: checks.map(point => point.service_year),
     y: checks.map(point => point.capacity_pct_nominal),
     line: { color: palette.history, width: 1.5 },
     marker: { color: '#fff', line: { color: palette.history, width: 1.5 }, size: 6 },
-    hovertemplate: 'Year %{x:.1f}<br>%{y:.1f}% capacity<extra>Illustrative operating history</extra>',
+    hovertemplate: 'Year %{x:.1f}<br>%{y:.1f}% capacity<extra>Modeled operating history</extra>',
   }];
   for (const item of [
     { scenario: 'central', name: 'Baseline duty', color: palette.baseline, fill: 'rgba(22,158,24,.16)' },
-    { scenario: 'conservative', name: 'Higher stress', color: palette.stress, fill: 'rgba(92,92,92,.14)' },
+    { scenario: 'conservative', name: 'Higher stress', color: palette.stress, fill: document.documentElement.dataset.theme === 'dark' ? 'rgba(194,203,196,.18)' : 'rgba(92,92,92,.14)' },
   ]) {
     const points = source.forecasts[item.scenario].points;
     const x = points.map(point => point.service_year);
@@ -71,7 +79,7 @@ function curveTraces(source) {
 function curveShapes(year) {
   return [
     { type: 'line', x0: year, x1: year, y0: 0, y1: 1, yref: 'paper',
-      line: { color: '#202220', width: 2, dash: 'dot' } },
+      line: { color: document.documentElement.dataset.theme === 'dark' ? '#edf3ed' : '#202220', width: 2, dash: 'dot' } },
     { type: 'line', x0: 0, x1: 13, y0: 80, y1: 80,
       line: { color: '#9aa59a', width: 1, dash: 'dot' } },
   ];
@@ -80,7 +88,7 @@ function curveShapes(year) {
 async function loadDemo() {
   const status = document.getElementById('chart-status');
   try {
-    if (!window.Plotly) throw new Error('Chart library unavailable. Check your internet connection.');
+    if (!window.Plotly) throw new Error('Chart library unavailable. Reconnect and reload to retry.');
     const response = await fetch('/modeling-demos/data.json');
     if (!response.ok) throw new Error('Model chart data could not be loaded.');
     const source = await response.json();
@@ -102,10 +110,11 @@ async function loadDemo() {
     control.style.marginLeft = `${commonMargin.l}px`;
     control.style.marginRight = `${commonMargin.r}px`;
     document.querySelector('.year-track').style.marginLeft = `${100 * years[0] / endYear}%`;
+    const theme = chartTheme();
     await Promise.all([
       Plotly.newPlot(histogram, histogramTraces(source, initialIndex), {
         font: commonFont, margin: { ...commonMargin, t: 42, b: 42, autoexpand: false },
-        barmode: 'overlay', paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+        barmode: 'overlay', ...theme,
         xaxis: { title: { text: 'Capacity retained (%)', standoff: 10 },
           range: [source.year_slider_histograms.bin_edges.at(-1), source.year_slider_histograms.bin_edges[0]],
           showgrid: false, zeroline: false, fixedrange: true },
@@ -117,9 +126,9 @@ async function loadDemo() {
       }, chartConfig),
       Plotly.newPlot(curve, curveTraces(source), {
         font: commonFont, margin: { ...commonMargin, t: 42, b: 52, autoexpand: false },
-        paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+        ...theme,
         xaxis: { title: { text: 'Service year', standoff: 10 },
-          range: [0, endYear], dtick: 1, showgrid: false, zeroline: false, fixedrange: true },
+          range: [0, endYear], dtick: 3, showgrid: false, zeroline: false, fixedrange: true },
         yaxis: { title: { text: 'Capacity retained (%)', standoff: 10 },
           range: [50, 105], showgrid: false, zeroline: false, fixedrange: true },
         legend: { orientation: 'h', y: 1.28, x: 0 },
@@ -127,6 +136,23 @@ async function loadDemo() {
       }, chartConfig),
     ]);
     status.textContent = 'Histogram heights show the share of model draws per capacity bin. These frequencies do not measure certainty.';
+
+    window.addEventListener('site-theme-change', async () => {
+      const theme = chartTheme();
+      const year = Number(slider.value);
+      const index = years.indexOf(year);
+      try {
+        await Promise.all([
+          Plotly.relayout(histogram, { ...theme, shapes: medianMarkers(source, index) }),
+          Plotly.relayout(curve, { ...theme, shapes: curveShapes(year, endYear) }),
+          Plotly.restyle(histogram, { 'marker.color': [palette.baseline, palette.stress] }, [0, 1]),
+          Plotly.restyle(curve, { 'line.color': [palette.history, palette.baseline, palette.stress] }, [0, 3, 6]),
+          Plotly.restyle(curve, { 'marker.line.color': palette.history }, [0]),
+          Plotly.restyle(curve, { fillcolor: document.documentElement.dataset.theme === 'dark'
+            ? 'rgba(194,203,196,.18)' : 'rgba(92,92,92,.14)' }, [5]),
+        ]);
+      } catch { status.textContent = 'Chart appearance could not update. Reload to apply the selected theme.'; }
+    });
 
     let pendingYear = null;
     let updating = false;

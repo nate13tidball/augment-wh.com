@@ -63,7 +63,7 @@ check('Risk is reproducible and responds to cost and delayed campaigns', () => {
 const html = fs.readFileSync('./public/modeling-demos/index.html', 'utf8');
 const controller = fs.readFileSync('./public/modeling-demos/concepts.js', 'utf8');
 function makeUI(withCharts = true) {
-  const nodes = new Map(), controls = [], buttons = [], frames = [], plots = new Map();
+  const nodes = new Map(), controls = [], buttons = [], frames = [], plots = new Map(), events = {};
   for (const match of html.matchAll(/<[^>]+\bid="([^"]+)"[^>]*>/g)) {
     const tag = match[0], id = match[1];
     const node = { id, hidden: /\shidden(?:\s|>)/.test(tag), textContent: '', dataset: {}, setAttribute(k, v) { this[k] = v; }, handlers: {},
@@ -80,7 +80,8 @@ function makeUI(withCharts = true) {
     nodes.set(id, node);
   }
   const context = { DemoConcepts: M, AnimationFinance: fixture, console,
-    document: { getElementById(id) { assert.ok(nodes.has(id), id); return nodes.get(id); }, querySelectorAll: selector => selector === '[data-finance-case]' ? buttons : controls },
+    window: { addEventListener(name, fn) { events[name] = fn; } },
+    document: { documentElement: { dataset: { theme: 'light' } }, getElementById(id) { assert.ok(nodes.has(id), id); return nodes.get(id); }, querySelectorAll: selector => selector === '[data-finance-case]' ? buttons : controls },
     requestAnimationFrame: fn => frames.push(fn),
   };
   if (withCharts) context.Plotly = { react(element, data, layout) { plots.set(element.id, { data, layout }); return Promise.resolve(); } };
@@ -88,7 +89,7 @@ function makeUI(withCharts = true) {
   const flush = () => { while (frames.length) frames.shift()(); };
   const change = (id, v) => { const node = nodes.get(id); node.value = String(v); node.handlers.input(); flush(); };
   flush();
-  return { nodes, controls, plots, change, click(id) { nodes.get(id).handlers.click(); flush(); } };
+  return { nodes, controls, plots, change, theme(value) { context.document.documentElement.dataset.theme = value; events['site-theme-change'](); flush(); }, click(id) { nodes.get(id).handlers.click(); flush(); } };
 }
 check('Every populated control updates its output and linked plots', () => {
   const ui = makeUI();
@@ -154,6 +155,22 @@ check('Every populated control updates its output and linked plots', () => {
   near(ui.plots.get('recovery-plot').data[0].y[2], 0);
 
 });
+check('Chart appearance follows the theme without changing capacity or financial results', () => {
+  const ui = makeUI(); ui.change('recovery-age', 12); ui.click('finance-high');
+  const capacity = ui.nodes.get('recovery-0').textContent, npv = ui.nodes.get('finance-0').textContent;
+  for (const theme of ['dark', 'light']) {
+    ui.theme(theme);
+    for (const {layout} of ui.plots.values()) {
+      assert.equal(layout.font.color, theme === 'dark' ? '#edf3ed' : '#202220');
+      assert.ok(layout.font.size >= 16 && layout.xaxis.title.font.size >= 16);
+    }
+    assert.ok(ui.plots.get('recovery-plot').layout.xaxis.tickfont.size >= 16);
+    assert.equal(ui.nodes.get('recovery-0').textContent, capacity);
+    assert.equal(ui.nodes.get('finance-0').textContent, npv);
+    assert.equal(ui.plots.size, 2);
+  }
+});
+
 check('CDN failure still leaves controls and financial summaries usable', () => {
   const ui = makeUI(false);
   assert.match(ui.nodes.get('concept-status').textContent, /unavailable/);

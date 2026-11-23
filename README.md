@@ -108,6 +108,8 @@ Verify from this repository:
 ```bash
 node test_modeling_concepts.cjs
 node test_dispatch_examples.cjs
+node test_cell_presentation.mjs
+~/.venvs/augment-wh/bin/python -m unittest test_modeling_page
 ~/.venvs/augment-wh/bin/python -m unittest test_server
 ```
 

@@ -116,7 +116,7 @@
         </div>
         <div class="duty-details">
           <h3>Two utilization profiles</h3>
-          <div class="table-scroll"><table>
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Cell utilization comparison"><table>
             <thead><tr><th scope="col">Assumption</th><th scope="col">Baseline duty</th><th scope="col">Higher stress</th></tr></thead>
             <tbody>
               <tr><th scope="row">Cycling</th><td>240 EFC/year</td><td>340 EFC/year</td></tr>
@@ -131,7 +131,7 @@
         </div>
       </div>
       <div class="model-caveats">
-        <p>We can model other cells and duties with matching data and parameters. New chemistries need a compatible, validated model.</p>
+        <p>Other cells and utilization profiles require matching data and parameters. New chemistries need a compatible, validated model.</p>
         <p>The current screening CLI supports configured LFP and NMC cells. This page shows one synthetic LFP case.</p>
         <p>Bars show each bin’s share of model draws. Shaded P10–P90 bands are conditional scenario ranges, not calibrated confidence intervals.</p>
         <p>This cell example is not a site or fleet forecast. It does not attribute loss to specific electrochemical reactions.</p>
@@ -163,7 +163,7 @@
         <div class="market-notes">
           <p>These estimates value degraded capacity. They do not represent service revenue or a pipeline of qualified projects.</p>
           <p>This fleet outlook is separate from the synthetic cell example above.</p>
-          <a href="/#problem">View the homepage’s operating challenge ↗</a>
+          <a href="/#infrastructure">View site infrastructure constraints ↗</a>
         </div>
       </div>
     </section>
@@ -262,9 +262,9 @@
       <div class="concept-workspace"><div class="concept-controls"><p class="control-caption">600 synthetic draws / Four-addition site plan</p><div class="concept-control"><label for="risk-spread">Cost and revenue range<output id="risk-spread-value" for="risk-spread">25%</output></label><input id="risk-spread" type="range" min="0" max="50" step="5" value="25" data-unit="%"><div class="concept-range" aria-hidden="true"><span>0%</span><span>50%</span></div></div><div class="concept-control"><label for="risk-delay">Commissioning delay<output id="risk-delay-value" for="risk-delay">0 years</output></label><input id="risk-delay" type="range" min="0" max="3" step="1" value="0" data-unit=" years"><div class="concept-range" aria-hidden="true"><span>0 years</span><span>3 years</span></div></div><p class="concept-help">Change the economics above to shift this distribution. The end date stays fixed when commissioning is delayed.</p></div><div class="concept-visual"><div id="risk-plot" class="concept-plot" role="img" aria-label="Distribution of fictional incremental NPV outcomes with P10, median, P90 and zero reference"></div></div></div>
       <dl class="concept-metrics" aria-live="polite"><div><dt>P10 NPV</dt><dd id="risk-0">—</dd></div><div><dt>Median NPV</dt><dd id="risk-1">—</dd></div><div><dt>P90 NPV</dt><dd id="risk-2">—</dd></div><div><dt>Draws with positive NPV</dt><dd id="risk-3">—</dd></div></dl>
 
-      <details class="concept-assumptions"><summary>Assumptions and what this demo leaves out</summary><ul><li>Independent triangular cost and revenue multipliers span the selected ± range, centered on your finance inputs.</li><li>Added-cohort annual decline is sampled between 0.5% and 2%, with a 1% mode.</li><li>Delay shifts all four additions. Campaigns after year 15 are excluded; no purchase commitments are assumed.</li><li>Draw shares and percentiles describe invented scenarios. They are not calibrated probabilities or investment recommendations.</li><li>The site plan’s residual-value convention is retained. Correlated risks, outages, market qualification, and real price forecasts are not sampled.</li></ul></details>
+      <details class="concept-assumptions"><summary>Assumptions and what this demo leaves out</summary><ul><li>Independent triangular cost and revenue multipliers span the selected ± range, centered on the selected finance inputs.</li><li>Added-cohort annual decline is sampled between 0.5% and 2%, with a 1% mode.</li><li>Delay shifts all four additions. Campaigns after year 15 are excluded; no purchase commitments are assumed.</li><li>Draw shares and percentiles describe invented scenarios. They are not calibrated probabilities or investment recommendations.</li><li>The site plan’s residual-value convention is retained. Correlated risks, outages, market qualification, and real price forecasts are not sampled.</li></ul></details>
     </section>
   </main>
-  <footer class="site-footer frame"><p>Site modeling demo</p><a href="/dev/">Page tree</a></footer>
+  <footer class="site-footer frame"><p>Site modeling demo</p><a class="button" href="/#contact">Discuss site <span aria-hidden="true">↗</span></a></footer>
 </body>
 </html>

@@ -79,7 +79,7 @@ check('More energy cannot reduce optimized operating margin; capital cost can ch
 const html = fs.readFileSync('./public/modeling-demos/index.html', 'utf8');
 const script = fs.readFileSync('./public/modeling-demos/dispatch.js', 'utf8');
 function ui(charts = true) {
-  const nodes = new Map(), buttons = [], capacityButtons = [], plots = [];
+  const nodes = new Map(), buttons = [], capacityButtons = [], plots = [], events = {};
   for (const match of html.matchAll(/<[^>]+\bid="([^"]+)"[^>]*>/g)) {
     const [tag, id] = match;
     const node = { id, textContent: '', innerHTML: '', dataset: {}, handlers: {},
@@ -93,11 +93,12 @@ function ui(charts = true) {
     nodes.set(id, node);
   }
   const context = { DispatchExamples: data,
-    document: { getElementById(id) { assert.ok(nodes.has(id), id); return nodes.get(id); }, querySelectorAll: selector => selector === '[data-scenario]' ? buttons : capacityButtons },
+    window: { addEventListener(name, fn) { events[name] = fn; } },
+    document: { documentElement: { dataset: { theme: 'light' } }, getElementById(id) { assert.ok(nodes.has(id), id); return nodes.get(id); }, querySelectorAll: selector => selector === '[data-scenario]' ? buttons : capacityButtons },
   };
   if (charts) context.Plotly = { react(node, traces, layout) { plots.push({ node, traces, layout }); return Promise.resolve(); } };
   vm.runInNewContext(script, context);
-  return { nodes, buttons, capacityButtons, plots, change(value) {
+  return { nodes, buttons, capacityButtons, plots, theme(value) { context.document.documentElement.dataset.theme = value; events['site-theme-change'](); }, change(value) {
     capacityButtons[value].handlers.click();
   } };
 }
@@ -131,6 +132,19 @@ check('Scenario and capacity buttons compare baseline with selection and update 
       else assert.notDeepEqual(Array.from(chart.traces[0].y), Array.from(chart.traces[1].y));
       assert.match(state.nodes.get('dispatch-0').textContent, new RegExp(`${c.capacity_mwh} MWh`));
     }
+  }
+});
+
+check('Theme changes preserve dispatch selection, values, and readable labels', () => {
+  const state = ui(); state.buttons[1].handlers.click(); state.change(2);
+  const before = state.plots.at(-1), metric = state.nodes.get('dispatch-1').textContent;
+  for (const theme of ['dark', 'light']) {
+    state.theme(theme); const after = state.plots.at(-1);
+    assert.equal(after.layout.font.color, theme === 'dark' ? '#edf3ed' : '#202220');
+    assert.ok(after.layout.font.size >= 16 && after.layout.legend.font.size >= 16);
+    assert.deepEqual(after.traces.map(t => Array.from(t.y)), before.traces.map(t => Array.from(t.y)));
+    assert.equal(state.capacityButtons[2]['aria-pressed'], 'true');
+    assert.equal(state.nodes.get('dispatch-1').textContent, metric);
   }
 });
 

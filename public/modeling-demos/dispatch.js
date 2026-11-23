@@ -12,9 +12,16 @@
   let scenarioId = 'ercot';
   const money = n => `${n < -.005 ? '−' : ''}$${Math.abs(n).toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
   const times = data.hours.map(h => `${String(Math.floor(h)).padStart(2, '0')}:${h % 1 === 0 ? '00' : String(Math.round(h % 1 * 60))}`);
-  const axis = title => ({ title: { text: title, font: { size: 16 } }, gridcolor: '#e2e8e1', fixedrange: true, automargin: true });
+  const palette = {};
+  function syncPalette() {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    Object.assign(palette, { ink: dark ? '#edf3ed' : '#202220', gray: dark ? '#b4c4b8' : '#69766e',
+      grid: dark ? '#45564a' : '#e2e8e1', solar: dark ? '#f2cf53' : '#9c7600' });
+  }
+  const axis = title => ({ title: { text: title, font: { size: 16 } }, gridcolor: palette.grid, fixedrange: true, automargin: true });
 
   function render() {
+    syncPalette();
     const scenario = data.scenarios.find(s => s.id === scenarioId);
     const selected = scenario.cases[selectedIndex], baseline = scenario.cases[0], m = selected.metrics;
     buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.scenario === scenarioId)));
@@ -44,31 +51,32 @@
     });
     const traces = [
       trace(`Battery · selected +${selected.added_mwh} MWh`, selected.battery_mw, '#169e18'),
-      trace('Battery · no augmentation', baseline.battery_mw, '#69766e', 'dash'),
+      trace('Battery · no augmentation', baseline.battery_mw, palette.gray, 'dash'),
     ];
     if (scenario.id === 'solar') {
-      traces.push(trace('Available solar generation', scenario.solar_available_mw, '#c99b00'));
+      traces.push(trace('Available solar generation', scenario.solar_available_mw, palette.solar));
     }
-    if (scenario.id === 'peak') traces.push(trace('Peak-support request', scenario.request_mw, '#798477', 'dash'));
+    if (scenario.id === 'peak') traces.push(trace('Peak-support request', scenario.request_mw, palette.gray, 'dash'));
     const window = scenario.window;
     globalThis.Plotly.react($('dispatch-plot'), traces, {
       autosize: true, paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
-      font: { family: 'Arial, Helvetica, sans-serif', color: '#202220', size: 16 },
+      font: { family: 'Arial, Helvetica, sans-serif', color: palette.ink, size: 16 },
       margin: { l: 66, r: 24, t: 45, b: 135 },
       legend: { orientation: 'h', x: 0, y: -.28, yanchor: 'top', font: { size: 16 }, itemclick: false, itemdoubleclick: false }, hovermode: 'x unified',
       xaxis: { ...axis('Hour of day'), range: [0, 24], tickvals: [0, 4, 8, 12, 16, 20, 24], ticktext: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'] },
-      yaxis: { ...axis('Meter power (MW)'), range: [-110, scenario.id === 'solar' ? 170 : 115], zeroline: true, zerolinecolor: '#778773', zerolinewidth: 1.5 },
+      yaxis: { ...axis('Meter power (MW)'), range: [-110, scenario.id === 'solar' ? 170 : 115], zeroline: true, zerolinecolor: palette.gray, zerolinewidth: 1.5 },
       shapes: [
         { type: 'rect', x0: window[0], x1: window[1], y0: 0, y1: 1, yref: 'paper', fillcolor: 'rgba(22,158,24,.055)', line: { width: 0 }, layer: 'below' },
         { type: 'line', x0: 0, x1: 24, y0: 100, y1: 100, line: { color: '#a9b8a5', width: 1, dash: 'dot' }, layer: 'below' },
       ],
       annotations: [{ x: (window[0] + window[1]) / 2, y: 1.02, yref: 'paper', text: scenario.window_label,
-        showarrow: false, font: { size: 16, color: '#566950' } }],
+        showarrow: false, font: { size: 16, color: palette.gray } }],
     }, { responsive: true, displayModeBar: false, scrollZoom: false }).catch(() => {
       $('dispatch-description').textContent = 'The power chart could not render. Summary metrics remain available; reload to retry.';
     });
   }
   buttons.forEach(button => button.addEventListener('click', () => { scenarioId = button.dataset.scenario; render(); }));
   capacityButtons.forEach(button => button.addEventListener('click', () => { selectedIndex = Number(button.dataset.augmentation); render(); }));
+  window.addEventListener('site-theme-change', render);
   render();
 })();
