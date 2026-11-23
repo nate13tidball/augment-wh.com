@@ -43,14 +43,15 @@
     }
     const x = [...data.hours, 24];
     const extra = [...times.map((time, i) => [time, scenario.prices[i]]), ['24:00', scenario.prices.at(-1)]];
-    const trace = (name, values, color, dash = 'solid') => ({
+    const trace = (name, values, color, dash = 'solid', width = 2.8) => ({
       type: 'scatter', mode: 'lines', name, x, y: [...values, values.at(-1)], customdata: extra,
-      line: { color, width: 2.8, shape: 'hv', dash },
+      line: { color, width, shape: 'hv', dash },
       hovertemplate: '%{customdata[0]}<br>%{y:.1f} MW<br>Energy price: $%{customdata[1]:.0f}/MWh<extra>%{fullData.name}</extra>',
     });
     const traces = [
-      trace(`Battery · selected +${selected.added_mwh} MWh`, selected.battery_mw, '#169e18'),
-      trace('Battery · no augmentation', baseline.battery_mw, palette.gray, 'dash'),
+      // Draw the wide baseline first so equal values retain visible gray edges.
+      trace('Battery · no augmentation', baseline.battery_mw, palette.gray, 'solid', 8),
+      trace(`Battery · selected +${selected.added_mwh} MWh`, selected.battery_mw, '#169e18', 'solid', 3),
     ];
     if (scenario.id === 'solar') {
       traces.push(trace('Available solar generation', scenario.solar_available_mw, palette.solar));
