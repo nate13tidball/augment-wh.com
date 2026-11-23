@@ -36,10 +36,14 @@ editorial context. The dollar figures describe degraded capacity, not service re
 
 ## Website review preview
 
-The homepage's “Solution explained” row links to `/solution-explained/`, which plays
-the supplied lifetime site planning animation. Its MP4 and poster are deployment
-copies of `../animations/grid-to-battery-life-zoom-v3/out/` artifacts. The page
-labels its costs, performance, and financial scenarios as illustrative.
+The homepage's “Solution explained” row links to `/solution-explained/`, a slideshow
+of the lifetime site planning deck. Slides advance on their own while in view; visitors
+can pause, step with Back/Next, the dots, arrow keys or a swipe. Each slide carries
+short speaker-note bullets. Moving slides are looping GIFs; stills are PNGs.
+Run `python3 scripts/sync_solution_deck.py` after rebuilding the parent repository's
+`../animations/grid-to-battery-life-zoom-v4/out/deck/` (`animations/svgframes/deck.py`).
+It copies the slides and rewrites the marked slide list. Without JavaScript the slides
+stack in order. The page labels its costs, performance, and financial scenarios as illustrative.
 
 `/dev/site-review/` is a customer-facing rewrite staged under the protected
 development route. `/dev/site-review/investors/` holds a separate investor

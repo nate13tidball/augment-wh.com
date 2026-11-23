@@ -1,0 +1,78 @@
+/* Technical solution: slideshow with big controls under the image and speaker notes below. */
+.solution-page h1.solution-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .35em; margin-bottom: 28px; }
+.solution-title > span:last-child { color: var(--green); }
+.solution-title > span[aria-hidden] { color: var(--line); font-weight: 400; }
+.solution-deck { display: grid; gap: 14px; }
+.deck-slides { margin: 0; padding: 0; list-style: none; display: grid; gap: 28px; }
+.deck-slide { position: relative; display: grid; gap: 16px; container-type: inline-size; }
+.deck-slide img {
+  display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 12px;
+  background: var(--paper); border: 1px solid var(--line);
+}
+.deck-notes {
+  margin: 0; padding: 18px 22px 18px 40px; display: grid; gap: 6px; border-radius: 12px;
+  background: var(--white); color: var(--charcoal); font-size: 18px; line-height: 1.5;
+}
+.deck-notes li::marker { color: var(--green); }
+
+/* Slideshow mode (JavaScript on): one slide at a time. */
+.solution-deck.is-live .deck-slides { display: block; }
+.solution-deck.is-live .deck-slide { display: none; }
+.solution-deck.is-live .deck-slide.is-current { display: grid; }
+.solution-deck.is-live .deck-slide img { cursor: pointer; }
+
+/* Cover: the opening slide with a play pill set in the chart's open space; the first interaction starts slide 1. */
+.deck-cover {
+  position: absolute; left: 78%; top: calc(52cqw * 9 / 16); transform: translate(-50%, -50%); display: inline-flex; align-items: center;
+  gap: .6em; padding: .7em 1.3em; border: 0; border-radius: 999px; cursor: pointer; white-space: nowrap;
+  background: var(--green); color: var(--white); font: inherit; font-size: clamp(13px, 1.9vw, 22px); font-weight: 700;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .22);
+}
+.deck-cover-icon { width: 0; height: 0; border-style: solid; border-width: .5em 0 .5em .85em; border-color: transparent transparent transparent currentColor; }
+.deck-cover:hover { filter: brightness(1.08); }
+.solution-deck.is-started .deck-cover { display: none; }
+
+/* Controls */
+.deck-controls { display: grid; gap: 14px; }
+.deck-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.deck-buttons button {
+  font: inherit; font-size: 18px; font-weight: 700; color: var(--charcoal); background: var(--white);
+  border: 2px solid var(--line); border-radius: 999px; padding: 12px 24px; min-height: 52px; cursor: pointer;
+}
+.deck-buttons button:hover { border-color: var(--green); color: var(--green); }
+.deck-buttons .deck-play {
+  display: inline-flex; align-items: center; gap: 12px; min-width: 150px; justify-content: center;
+  background: var(--green); border-color: var(--green); color: var(--white);
+}
+.deck-buttons .deck-play:hover { color: var(--white); filter: brightness(1.08); }
+.deck-play-icon { width: 0; height: 0; border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent currentColor; }
+.solution-deck.is-playing .deck-play-icon { width: 14px; height: 18px; border: 0; border-inline: 5px solid currentColor; }
+.deck-count { margin-left: auto; font-size: 22px; font-weight: 800; color: var(--charcoal); font-variant-numeric: tabular-nums; }
+.deck-track { display: flex; gap: 6px; }
+.deck-segment {
+  flex: 1 1 0; min-width: 0; height: 28px; padding: 0; border: 0; background: transparent; cursor: pointer;
+  display: flex; align-items: center;
+}
+.deck-segment::before { content: none; }
+.deck-segment { position: relative; }
+.deck-segment::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 12px; margin-top: -6px; border-radius: 6px;
+  background: var(--line); z-index: 0;
+}
+.deck-segment > span {
+  position: relative; z-index: 1; display: block; height: 12px; width: 0; border-radius: 6px; background: var(--green);
+}
+.deck-segment[aria-current="true"]::after { background: #9fd49f; outline: 2px solid var(--green); outline-offset: 1px; }
+.deck-segment:hover::after { background: #9fd49f; }
+.deck-buttons button:focus-visible, .deck-segment:focus-visible, .deck-cover:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+@media (max-width: 760px) {
+  .deck-notes { font-size: 16px; padding: 14px 16px 14px 34px; }
+  .deck-buttons { gap: 8px; }
+  .deck-buttons button { font-size: 16px; padding: 10px 16px; min-height: 46px; }
+  .deck-buttons .deck-play { min-width: 112px; }
+  .deck-count { font-size: 18px; }
+  .deck-track { gap: 3px; }
+}
+@media (max-width: 560px) {
+  .deck-cover { left: 70%; }
+}
