@@ -66,7 +66,7 @@ function makeUI(withCharts = true) {
   const nodes = new Map(), controls = [], buttons = [], frames = [], plots = new Map();
   for (const match of html.matchAll(/<[^>]+\bid="([^"]+)"[^>]*>/g)) {
     const tag = match[0], id = match[1];
-    const node = { id, textContent: '', dataset: {}, setAttribute(k, v) { this[k] = v; }, handlers: {},
+    const node = { id, hidden: /\shidden(?:\s|>)/.test(tag), textContent: '', dataset: {}, setAttribute(k, v) { this[k] = v; }, handlers: {},
       addEventListener(k, fn) { this.handlers[k] = fn; },
       parentElement: { querySelectorAll() { return [{}, {}]; } } };
     if (tag.startsWith('<input') && id !== 'service-year' && !id.startsWith('dispatch-')) {
@@ -92,7 +92,7 @@ function makeUI(withCharts = true) {
 }
 check('Every populated control updates its output and linked plots', () => {
   const ui = makeUI();
-  assert.equal(ui.plots.size, 4);
+  assert.equal(ui.plots.size, 2);
   assert.equal(ui.controls.length, 7);
   for (const control of ui.controls) {
     const original = control.value;
@@ -101,11 +101,17 @@ check('Every populated control updates its output and linked plots', () => {
     ui.change(control.id, control.max);
     ui.change(control.id, original);
   }
-  const oldNPV = ui.nodes.get('finance-0').textContent, oldRisk = ui.nodes.get('risk-1').textContent;
+  const oldNPV = ui.nodes.get('finance-0').textContent;
   ui.click('finance-low');
   assert.equal(ui.nodes.get('finance-0').dataset.negative, 'true');
   assert.notEqual(oldNPV, ui.nodes.get('finance-0').textContent);
-  assert.notEqual(oldRisk, ui.nodes.get('risk-1').textContent);
+  assert.equal(ui.nodes.get('downside-risk').hidden, true);
+  assert.ok(!ui.plots.has('risk-plot'));
+  assert.ok(!html.includes('href="#downside-risk"'));
+  for (const id of ['finance-ledger-body', 'finance-schedule-body', 'finance-scenarios-body', 'finance-verdict', 'economics-map']) assert.ok(!ui.nodes.has(id));
+  assert.doesNotMatch(html, /illustrative/i);
+  assert.match(html, /href="\/solution-explained\/">View solution animation/);
+  assert.doesNotMatch(ui.nodes.get('finance-selection').textContent, /animation/i);
   ui.click('finance-high');
   assert.equal(ui.nodes.get('finance-revenue').value, '45');
   assert.equal(ui.nodes.get('finance-discount').value, '6');

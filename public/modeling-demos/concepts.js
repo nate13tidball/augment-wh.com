@@ -80,40 +80,14 @@
       line('Cumulative total incl. residual', r.years, r.cumulative.map(v => v / 1e6), C.ink, { hovertemplate: hover }),
     ], { xaxis: { ...axis('Plan year'), dtick: 1, range: [-.5, 15.5] },
       yaxis: axis('Incremental nominal value ($m)'), barmode: 'relative', bargap: .32 });
-    $('finance-ledger-body').innerHTML = [
-      ['Added operating profit', r.operatingPV], ['Augmentation investment', -r.capexPV],
-      ['NPV before residual', r.npvWithoutResidual], ['Year-15 residual value', r.residualPV],
-      ['NPV including residual', r.npv],
-    ].map(([label, amount]) => `<tr><th scope="row">${label}</th><td>${million(amount)}</td></tr>`).join('');
-    $('finance-schedule-body').innerHTML = r.blocks.map(b => `<tr><th scope="row">${b.id}</th><td>${b.year}</td><td>${b.vendor} · ${b.gen}</td><td>${(b.kwh / 1000).toFixed(2)}</td><td>$${b.unitCost.toFixed(0)}</td><td>${million(b.capex)}</td></tr>`).join('');
-    $('finance-scenarios-body').innerHTML = globalThis.AnimationFinance.references.map((c, i) => {
-      const scenario = M.source.finance.scenarios[i];
-      return `<tr><th scope="row">${c.name}</th><td>$${scenario.revenue_per_kwh_yr}</td><td>${percent(scenario.discount_rate * 100)}</td><td>${percent(c.added_capex_pct)}</td><td>${percent(c.profit_uplift_pct)}</td><td>${percent(c.irr_pct)}</td><td>${million(c.npv)}</td></tr>`;
-    }).join('');
     const selected = M.source.finance.scenarios.find(c => c.revenue_per_kwh_yr === o.revenue && c.discount_rate * 100 === o.discount && o.costScale === 100);
     document.querySelectorAll('[data-finance-case]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.financeCase === selected?.name)));
-    $('finance-selection').textContent = selected ? `${selected.name} animation case selected` : 'Custom sensitivity selected';
-    const prices = Array.from({ length: 15 }, (_, i) => 70 + i * 5);
-    const revenues = Array.from({ length: 21 }, (_, i) => 15 + i * 2);
-    const z = revenues.map(revenue => prices.map(costScale => M.finance({ ...o, costScale, revenue }, false).npv / 1e6));
-    const colorLimit = Math.max(1, ...z.flat().map(Math.abs));
-    draw('economics-map', [
-      { type: 'heatmap', name: 'Incremental NPV', x: prices, y: revenues, z,
-        zmin: -colorLimit, zmax: colorLimit, colorscale: [[0, '#cbd3c8'], [.5, '#f3f5f1'], [1, '#169e18']],
-        colorbar: { title: { text: 'NPV ($m)' }, thickness: 12, len: .9 },
-        hovertemplate: '%{x}% of animation cost<br>$%{y}/usable kWh-year revenue<br>NPV: $%{z:.2f}m<extra></extra>' },
-      { type: 'scatter', mode: 'markers', name: 'Selected inputs', x: [o.costScale], y: [o.revenue],
-        marker: { symbol: 'circle-open', size: 17, color: C.ink, line: { width: 3 } },
-        hovertemplate: `Selected inputs<br>NPV: ${million(r.npv)}<extra></extra>` },
-      { type: 'contour', x: prices, y: revenues, z, contours: { start: 0, end: 0, size: 1, coloring: 'none', showlabels: true },
-        line: { color: C.ink, width: 1.5 }, showscale: false, showlegend: false, hoverinfo: 'skip' },
-    ], { xaxis: { ...axis('Installed cost vs. animation (%)'), range: [67.5, 142.5], dtick: 10 },
-      yaxis: { ...axis('Revenue ($/usable kWh-year)'), range: [14, 56], dtick: 10 },
-      margin: { l: 65, r: 70, t: 45, b: 55 }, legend: { orientation: 'h', x: 0, y: 1.13 } });
-    $('finance-verdict').textContent = `Residual contributes ${million(r.residualPV)} in present value. NPV without that credit: ${million(r.npvWithoutResidual)}.`;
+    $('finance-selection').textContent = selected ? `${selected.name} case selected` : 'Custom sensitivity selected';
+
   }
 
   function updateRisk() {
+    if ($('downside-risk').hidden) return;
     const o = readPlan(), r = M.risk(o, value('risk-spread'), value('risk-delay'));
     metric('risk', [[million(r.p10), r.p10 < 0], [million(r.median), r.median < 0],
       [million(r.p90), r.p90 < 0], `${(r.positive * 100).toFixed(0)}%`]);

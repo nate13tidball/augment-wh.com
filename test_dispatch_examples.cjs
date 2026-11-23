@@ -79,7 +79,7 @@ check('More energy cannot reduce optimized operating margin; capital cost can ch
 const html = fs.readFileSync('./public/modeling-demos/index.html', 'utf8');
 const script = fs.readFileSync('./public/modeling-demos/dispatch.js', 'utf8');
 function ui(charts = true) {
-  const nodes = new Map(), buttons = [], plots = [];
+  const nodes = new Map(), buttons = [], capacityButtons = [], plots = [];
   for (const match of html.matchAll(/<[^>]+\bid="([^"]+)"[^>]*>/g)) {
     const [tag, id] = match;
     const node = { id, textContent: '', innerHTML: '', dataset: {}, handlers: {},
@@ -87,25 +87,28 @@ function ui(charts = true) {
     if (tag.includes('data-scenario=')) {
       node.dataset.scenario = tag.match(/data-scenario="([^"]+)"/)[1]; buttons.push(node);
     }
-    if (id === 'dispatch-augmentation') node.value = '1';
+    if (tag.includes('data-augmentation=')) {
+      node.dataset.augmentation = tag.match(/data-augmentation="([^"]+)"/)[1]; capacityButtons.push(node);
+    }
     nodes.set(id, node);
   }
   const context = { DispatchExamples: data,
-    document: { getElementById(id) { assert.ok(nodes.has(id), id); return nodes.get(id); }, querySelectorAll: () => buttons },
+    document: { getElementById(id) { assert.ok(nodes.has(id), id); return nodes.get(id); }, querySelectorAll: selector => selector === '[data-scenario]' ? buttons : capacityButtons },
   };
   if (charts) context.Plotly = { react(node, traces, layout) { plots.push({ node, traces, layout }); return Promise.resolve(); } };
   vm.runInNewContext(script, context);
-  return { nodes, buttons, plots, change(value) {
-    const input = nodes.get('dispatch-augmentation'); input.value = String(value); input.handlers.input();
+  return { nodes, buttons, capacityButtons, plots, change(value) {
+    capacityButtons[value].handlers.click();
   } };
 }
 
-check('Scenario buttons and one three-stop slider update chart, table, and summaries together', () => {
+check('Scenario and capacity buttons compare baseline with selection and update summaries', () => {
   const state = ui();
   const section = html.split('id="dispatch-replay"')[1].split('</section>')[0];
-  assert.equal((section.match(/type="range"/g) || []).length, 1);
+  assert.equal((section.match(/type="range"/g) || []).length, 0);
   assert.equal((section.match(/id="dispatch-plot"/g) || []).length, 1);
-  assert.ok(!section.includes('storage-plot') && !section.includes('Inspect hour'));
+  assert.ok(!section.includes('dispatch-table') && !section.includes('What changes financially?'));
+  assert.equal(state.capacityButtons.length, 3);
   for (const button of state.buttons) {
     button.handlers.click();
     assert.equal(button['aria-pressed'], 'true');
@@ -115,22 +118,27 @@ check('Scenario buttons and one three-stop slider update chart, table, and summa
       state.change(index);
       const chart = state.plots.at(-1), c = s.cases[index];
       assert.equal(chart.node.id, 'dispatch-plot');
-      assert.equal(chart.traces.length, s.id === 'solar' ? 3 : s.id === 'peak' ? 2 : 1);
+      assert.equal(chart.traces.length, s.id === 'ercot' ? 2 : 3);
       assert.deepEqual(Array.from(chart.traces[0].y).slice(0, 96), c.battery_mw);
       assert.equal(chart.traces[0].line.color, '#169e18');
-      assert.match(state.nodes.get('dispatch-augmentation')['aria-valuetext'], new RegExp(`${c.capacity_mwh} MWh total`));
-      assert.ok(state.nodes.get('dispatch-table-caption').textContent.includes(s.label));
-      assert.match(state.nodes.get('dispatch-table-body').innerHTML, /Site operating margin/);
+      assert.deepEqual(Array.from(chart.traces[1].y).slice(0, 96), s.cases[0].battery_mw);
+      assert.equal(chart.traces[1].line.dash, 'dash');
+      assert.match(chart.traces[1].name, /no augmentation/);
+      if (s.id === 'solar') assert.deepEqual(Array.from(chart.traces[2].y).slice(0, 96), s.solar_available_mw);
+      assert.equal(state.capacityButtons[index]['aria-pressed'], 'true');
+      assert.equal(state.capacityButtons.filter(b => b['aria-pressed'] === 'true').length, 1);
+      if (index === 0) assert.match(state.nodes.get('dispatch-comparison-note').textContent, /overlap/);
+      else assert.notDeepEqual(Array.from(chart.traces[0].y), Array.from(chart.traces[1].y));
       assert.match(state.nodes.get('dispatch-0').textContent, new RegExp(`${c.capacity_mwh} MWh`));
     }
   }
 });
 
-check('Missing chart library preserves scenario selection and financial breakdown', () => {
+check('Missing chart library preserves scenario and capacity selection and summary metrics', () => {
   const state = ui(false);
   state.buttons[1].handlers.click(); state.change(0);
   assert.match(state.nodes.get('dispatch-plot').textContent, /Chart library unavailable/);
-  assert.match(state.nodes.get('dispatch-table-caption').textContent, /Solar/);
+  assert.match(state.nodes.get('dispatch-description').textContent, /solar/);
   assert.equal(state.nodes.get('dispatch-2').textContent, '$0');
 });
 console.log(`${count} dispatch checks passed.`);

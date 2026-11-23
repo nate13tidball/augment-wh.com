@@ -72,3 +72,6 @@
 #capacity-recovery .concept-range,
 #capacity-recovery .concept-help,
 #capacity-recovery .concept-assumptions { font-size: 16px; }
+
+/* Keep the retained risk module out of the presentation and accessibility tree. */
+#downside-risk[hidden] { display: none !important; }

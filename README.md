@@ -74,21 +74,21 @@ source context remains `../pitch_offering/v3-website-content-review.md`.
 
 ### Interactive presentation concepts
 
-Modules 03–06 on `/modeling-demos/` are illustrative presentation examples.
+Modules 03–05 on `/modeling-demos/` are presentation examples. Downside risk is retained but hidden, including its navigation links.
 They reuse Plotly and the site palette. No customer records or actual market prices are used.
 
 | Module / anchor | Interactive views |
 | --- | --- |
 | Recoverable capacity / `#capacity-recovery` | Combined-fleet waterfall; added LV MWh, age, and annual average AC POI capacity. |
-| Dispatch replay / `#dispatch-replay` | Three dispatch scenarios, one power plot, three augmentation sizes, and daily economics. |
-| Investment economics / `#investment-economics` | V4 animation plan, Low/Base/High presets, annual cash, residual, schedule, and sensitivity map. |
-| Downside risk / `#downside-risk` | 600 reproducible NPV draws around the selected animation scenario, with cost/revenue uncertainty and commissioning delay. |
+| Dispatch replay / `#dispatch-replay` | Three scenarios and three capacity buttons; selected battery dispatch overlays the no-augmentation baseline, with summary metrics. |
+| Investment economics / `#investment-economics` | Low/Base/High presets, annual cash-flow plot, four return metrics, and a solution-page link. |
+| Downside risk / `#downside-risk` | Hidden; its calculations and source remain available for future work. |
 
 Economics uses `animations/grid-to-battery-life-zoom-v4/site_plan_model.json` from the parent repository.
 The 100 MWh original site adds 43.5 MWh across years 4, 7, 10, and 14.
 Block sizes are fractions of one of three legacy blocks. Revenue is per usable kWh-year, not dispatch MWh.
 Annual calculations match the animation's `finance.py`, including installation-year income, inflation, O&M, and year-15 straight-line residual value.
-Residual is an illustrative unused-life valuation, not contracted cash; the UI shows NPV with and without it.
+Residual is an illustrative unused-life valuation, not contracted cash; the displayed return metrics include it.
 Original capital is a sunk baseline. No tax, debt, dispatch constraints, or decommissioning cost is modeled.
 
 `animation-finance-data.js` stores exact source inputs, source hashes, and Python-generated reference cash flows and metrics.
@@ -99,7 +99,7 @@ Refresh explicitly when the animation source changes:
 ```
 
 `concept-models.js` contains deterministic calculations; `concepts.js` binds controls and plots; `concepts.css` scopes the layout.
-Risk shares the selected economics inputs and shifts all four campaigns by the selected delay.
+Risk calculations remain available but do not run while the section is hidden.
 Campaigns beyond year 15 are excluded. Independent triangular distributions are illustrative, not calibrated probabilities.
 Recovery and daily dispatch remain separate examples and do not feed annual finance.
 
@@ -128,9 +128,9 @@ under “Point of interconnection.” No electrochemical or site backend is call
 Dispatch uses `dispatch.js`, `dispatch.css`, and generated `dispatch-data.js`.
 All nine cases have a fixed 100 MW battery/POI, 100% availability, and a 200 MWh
 base battery, expressed as usable AC-discharge-equivalent energy: two hours at
-100 MW from full. Additions are 0, 100, and 300 MWh. The one slider selects among
-these cases. The green curve is signed **battery meter** power, not site export.
-Solar uses a yellow actual-generation curve and a dotted combined POI curve;
+100 MW from full. Three buttons select 0, 100, or 300 MWh of additions.
+The green curve shows selected **battery meter** power against a persistent dashed gray no-augmentation curve.
+At zero additions, both curves overlap. Solar adds a yellow available-generation curve;
 peak support adds a dashed delivery request. Pricing is shown in text and hover.
 
 `scripts/build_dispatch_examples.py` uses the installed SciPy/HiGHS MILP solver
@@ -142,7 +142,7 @@ charge/discharge, battery power, shared POI power, and solar-only charging in th
 solar case. This is perfect-foresight scheduling of invented tariffs, not actual
 ERCOT data, qualified market participation, or a production dispatch optimizer.
 
-The economics table compares all sizes and highlights the selection. Energy sales,
+Three summary metrics show selected capacity, daily operating margin, and incremental contribution after allocated capacity cost. Energy sales,
 grid purchases (negative at negative prices), event credit, variable cost, operating
 margin, and baseline-relative margin reconcile to the optimizer's objective. Solar
 settles at the combined POI, so foregone solar sales are included. Added capital is
