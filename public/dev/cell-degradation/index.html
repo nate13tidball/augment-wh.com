@@ -5,44 +5,260 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#202220">
-  <title>Cell degradation example | Augment-wh</title>
+  <title>Site modeling demo | Augment-wh</title>
   <link rel="icon" href="/assets/brand/favicon.png" type="image/png">
   <link rel="stylesheet" href="/assets/homepage/homepage.css">
   <link rel="stylesheet" href="/dev/cell-degradation/slider.css">
+  <link rel="stylesheet" href="/dev/cell-degradation/market.css">
+  <script defer src="https://cdn.plot.ly/plotly-4.1.1.min.js" integrity="sha256-O24V1F27f8pb0glCkelh3cVHLNiHAJ5gCaVtq2aNch8=" crossorigin="anonymous"></script>
+  <script defer src="/dev/cell-degradation/demo.js"></script>
+  <link rel="stylesheet" href="/dev/cell-degradation/concepts.css">
+  <script defer src="/dev/cell-degradation/animation-finance-data.js"></script>
+  <script defer src="/dev/cell-degradation/concept-models.js"></script>
+  <script defer src="/dev/cell-degradation/concepts.js"></script>
+  <link rel="stylesheet" href="/dev/cell-degradation/dispatch.css">
+  <script defer src="/dev/cell-degradation/dispatch-data.js"></script>
+  <script defer src="/dev/cell-degradation/dispatch.js"></script>
 </head>
-<body class="cell-demo-page">
+<body class="model-demo-page">
   <a class="skip" href="#main">Skip to content</a>
-  <div class="site-masthead">
-    <header class="site-header frame">
+  <header class="site-masthead">
+    <div class="site-header frame">
       <a class="brand brand-link" href="/" aria-label="Augment-wh home"><img src="/assets/brand/full-logo.png" alt="Augment-wh" width="884" height="326"></a>
-      <nav class="demo-nav" aria-label="Site sections">
-        <a href="/dev/site-modeling/">Site modeling</a>
-        <a href="/dev/">Page tree</a>
-      </nav>
-    </header>
-  </div>
+      <a class="back-link" href="/dev/">Page tree ↗</a>
+    </div>
+    <div class="demo-heading frame">
+      <p class="eyebrow">Interactive modeling / In development</p>
+      <h1>Site modeling demo.</h1>
+      <p>Explore how cell aging, site performance, and project economics can inform augmentation decisions.</p>
+      <p class="demo-context">Explore cell aging, the US storage market, and four interactive site investment concepts.</p>
+    </div>
+    <nav class="model-nav frame" id="model-navigation" aria-label="Model sections">
+      <a href="#cell-degradation"><span>01</span> Cell degradation</a>
+      <a href="#us-market"><span>02</span> US grid energy storage market</a>
+      <a href="#capacity-recovery"><span>03</span> Recoverable capacity</a>
+      <a href="#dispatch-replay"><span>04</span> Dispatch replay</a>
+      <a href="#investment-economics"><span>05</span> Investment economics</a>
+      <a href="#downside-risk"><span>06</span> Downside risk</a>
+    </nav>
+  </header>
   <main id="main">
-    <section class="hero" aria-labelledby="demo-title">
-      <div class="frame">
-        <p class="eyebrow">Cell modeling example / In development</p>
-        <h1 id="demo-title">How capacity outcomes change with age.</h1>
-        <p class="hero-lede">Move the service-year slider to compare two illustrative operating scenarios.</p>
+    <section class="section frame model-section" id="cell-degradation" aria-labelledby="cell-title">
+      <div class="section-label"><span>/ Cell degradation</span><span>(01)</span></div>
+      <div class="section-heading">
+        <div><p class="eyebrow">Synthetic representative cell / LFP graphite</p><h2 id="cell-title">See capacity change over time.</h2></div>
+        <p>Explore 400 model draws per scenario for a 280 Ah prismatic LFP/graphite cell.</p>
+      </div>
+      <p class="section-intro">Three years of synthetic history anchor two future duty scenarios through service year 13.</p>
+      <div class="chart-card" aria-labelledby="chart-heading">
+        <div class="chart-header">
+          <div><p class="eyebrow">Linked views</p><h3 id="chart-heading">Selected year: <output id="selected-year" for="service-year">10</output></h3></div>
+          <p>Top: simulated capacity outcomes. Bottom: full history and projected capacity curves.</p>
+        </div>
+        <h4 class="plot-title" id="histogram-title">Monte Carlo degradation histogram</h4>
+        <div id="histogram" class="chart" role="img" aria-labelledby="histogram-title"></div>
+        <h4 class="plot-title" id="retention-title">Lifetime capacity retention chart</h4>
+        <div id="degradation-curve" class="chart" role="img" aria-labelledby="retention-title"></div>
+        <div class="year-control">
+          <label for="service-year">Service year</label>
+          <div class="year-track">
+            <input id="service-year" type="range" min="3" max="13" step="1" value="10">
+            <div class="range-ends" aria-hidden="true"><span>Year 3</span><span>Year 13</span></div>
+          </div>
+        </div>
+        <p id="chart-status" class="chart-status" role="status">Loading the model example…</p>
+      </div>
+      <div class="model-details">
+        <div class="cell-details">
+          <h3>What this cell represents</h3>
+          <dl>
+            <div><dt>Chemistry and format</dt><dd>280 Ah prismatic LFP/graphite cell</dd></div>
+            <div><dt>Rated energy</dt><dd>896 Wh at 3.2 V reference mean voltage</dd></div>
+            <div><dt>Reference test</dt><dd>0.1 C discharge at 25 °C, from 3.65 V to 2.5 V</dd></div>
+            <div><dt>Evidence</dt><dd>Synthetic telemetry and quarterly reference checks for years 0–3</dd></div>
+            <div><dt>Screening model</dt><dd>Calendar aging and weighted discharge cycling, conditioned on synthetic capacity checks</dd></div>
+            <div><dt>Forecast</dt><dd>Years 3–13; 400 conditional Monte Carlo draws per scenario</dd></div>
+          </dl>
+        </div>
+        <div class="duty-details">
+          <h3>Two utilization profiles</h3>
+          <div class="table-scroll"><table>
+            <thead><tr><th scope="col">Assumption</th><th scope="col">Baseline duty</th><th scope="col">Higher stress</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Cycling</th><td>240 EFC/year</td><td>340 EFC/year</td></tr>
+              <tr><th scope="row">Cycle depth</th><td>75%</td><td>90%</td></tr>
+              <tr><th scope="row">Mean SOC</th><td>52%</td><td>70%</td></tr>
+              <tr><th scope="row">Charge rate</th><td>0.45 C</td><td>0.70 C</td></tr>
+              <tr><th scope="row">Mean temperature</th><td>25 °C</td><td>32 °C</td></tr>
+              <tr><th scope="row">Seasonal swing</th><td>±7 °C</td><td>±8 °C</td></tr>
+            </tbody>
+          </table></div>
+          <p>Each scenario also samples future duty variation: 8% for baseline and 12% for higher stress.</p>
+        </div>
+      </div>
+      <div class="model-caveats">
+        <p>We can model other cells and duties with matching data and parameters. New chemistries need a compatible, validated model.</p>
+        <p>The current screening CLI supports configured LFP and NMC cells. This page shows one synthetic LFP case.</p>
+        <p>Bars show each bin’s share of model draws. Shaded P10–P90 bands are conditional scenario ranges, not calibrated confidence intervals.</p>
+        <p>This cell example is not a site or fleet forecast. It does not attribute loss to specific electrochemical reactions.</p>
       </div>
     </section>
-    <section class="section frame" aria-labelledby="chart-title">
-      <div class="section-label"><span>/ Capacity outcomes</span><span>(01)</span></div>
-      <h2 id="chart-title">Explore the simulated draws.</h2>
-      <p class="section-intro">The chart starts at year 10. Select years 3–13 below the histogram.</p>
-      <div class="chart-scroll" role="region" aria-label="Scrollable capacity histogram" tabindex="0">
-        <iframe title="Interactive cell capacity histogram by service year" src="/dev/cell-degradation/year-slider.html" loading="eager"></iframe>
+    <section class="model-section market-module" id="us-market" aria-labelledby="market-title">
+      <div class="section frame">
+        <div class="section-label"><span>/ US grid energy storage market</span><span>(02)</span></div>
+        <p class="eyebrow">Fleet scale / Capacity opportunity</p>
+        <h2 id="market-title">US grid energy storage market.</h2>
+        <p class="market-intro">Explore how battery aging creates a growing need to restore capacity across the U.S. grid.</p>
+        <h3 class="market-challenge"><span>Site availability is <strong>suffering.</strong></span><span>Interconnections are <strong>underutilized.</strong></span></h3>
+        <dl class="problem-list">
+          <div><dt>State-of-charge imbalance</dt><dd>Uneven charge levels create curtailed system limits.</dd></div>
+          <div><dt>Service outages</dt><dd>Sites experience longer or more frequent outages for module or HVAC maintenance.</dd></div>
+          <div><dt>Battery degradation</dt><dd>The market model assumes approximately 2% annual degradation.</dd></div>
+        </dl>
+        <figure class="degradation-evidence">
+          <figcaption>
+            <p class="eyebrow">U.S. grid / Modeled degraded capacity</p>
+            <ul class="market-totals">
+              <li><strong>$3bn</strong><span>Degraded capacity / 2027</span></li>
+              <li><strong>$13bn</strong><span>Degraded capacity / 2037</span></li>
+              <li><strong>~16%</strong><span>Annual growth / 2027–2037</span></li>
+            </ul>
+          </figcaption>
+          <div class="plot-image"><img src="/assets/homepage/degraded-capacity-market.png" alt="U.S. battery fleet capacity and modeled degradation through 2037." width="2399" height="1350" loading="lazy"></div>
+        </figure>
+        <div class="market-notes">
+          <p>These estimates value degraded capacity. They do not represent service revenue or a pipeline of qualified projects.</p>
+          <p>This fleet outlook is separate from the synthetic cell example above.</p>
+          <a href="/#problem">View the homepage’s operating challenge ↗</a>
+        </div>
       </div>
-      <p class="chart-note">Synthetic representative cell; 400 draws per scenario. Bars count model draws, not observed cells.</p>
-      <p class="chart-note">Ranges depend on illustrative assumptions. They are not calibrated probabilities or site-level forecasts.</p>
+    </section>
+    <aside class="concept-notice frame" aria-label="About the modeling demos">
+      <p class="eyebrow">Four customer decisions / Presentation prototypes</p>
+      <p>Modules 03–06 use illustrative inputs. Investment economics uses the V4 animation’s site plan; the others remain presentation prototypes.</p>
+      <p>Economics and risk share the animation’s four-addition plan. Capacity recovery and dispatch remain separate examples.</p>
+      <p id="concept-status" role="status">Loading interactive concepts…</p>
+      <noscript>Enable JavaScript to explore the interactive examples.</noscript>
+    </aside>
+    <section class="section frame model-section concept-section" id="capacity-recovery" aria-labelledby="capacity-recovery-title">
+      <div class="section-label"><span>/ Recoverable capacity</span><span>(03)</span></div>
+      <div class="concept-heading"><div><p class="eyebrow">Illustrative demo / Invented inputs</p><h2 id="capacity-recovery-title">What reaches the interconnection?</h2></div><a href="#model-navigation">All models ↑</a></div>
+      <p class="concept-intro">Add battery units and age the fleet. Compare interconnection energy against the original site plan.</p>
+      <div class="concept-workspace recovery-workspace">
+        <div class="concept-controls">
+          <div class="concept-control"><label for="recovery-added">Additional installed LV energy<output id="recovery-added-value" for="recovery-added">100 MWh</output></label><input id="recovery-added" type="range" min="0" max="400" step="25" value="100" data-unit=" MWh"><div class="concept-range" aria-hidden="true"><span>0 MWh</span><span>400 MWh</span></div></div>
+          <div class="concept-control"><label for="recovery-age">Site age<output id="recovery-age-value" for="recovery-age">5 years</output></label><input id="recovery-age" type="range" min="0" max="15" step="1" value="5" data-unit=" years"><div class="concept-range" aria-hidden="true"><span>Year 0</span><span>Year 15</span></div></div>
+          <div class="concept-control"><label for="recovery-offline">Healthy capacity offline<output id="recovery-offline-value" for="recovery-offline">6%</output></label><input id="recovery-offline" type="range" min="0" max="15" step="1" value="6" data-unit="%"><div class="concept-range" aria-hidden="true"><span>0%</span><span>15%</span></div></div>
+        </div>
+        <div class="recovery-plot-scroll" tabindex="0" role="region" aria-label="Energy waterfall; scroll horizontally on smaller screens">
+          <div id="recovery-plot" class="concept-plot" role="img" aria-label="Original and added LV energy, shared losses, and three AC energy comparisons at the point of interconnection"></div>
+        </div>
+      </div>
+      <p class="concept-help recovery-caption">Last three bars: AC energy at the point of interconnection, at the selected site age.</p>
+      <p class="concept-help recovery-caption" id="recovery-reference-note"></p>
+      <dl class="concept-metrics" aria-live="polite"><div><dt>Selected site / AC MWh at POI</dt><dd id="recovery-0">—</dd></div><div><dt>Original plan / AC MWh at POI</dt><dd id="recovery-1">—</dd></div><div><dt>Augmentation impact / AC MWh at POI</dt><dd id="recovery-2">—</dd></div></dl>
+      <details class="concept-assumptions"><summary>Assumptions and what this demo leaves out</summary><ul>
+        <li>Original site: 400 MWh LV reference energy. Added units are installed at year 0 and age alongside the original fleet.</li>
+        <li>Both cohorts lose 2.5% capacity annually. SOC imbalance makes 8% of their remaining reference energy inaccessible.</li>
+        <li>Offline capacity is a separate, disjoint share of remaining energy. The same selected percentage applies to both cohorts.</li>
+        <li>Conversion consumes 6% of accessible energy. Aging, imbalance, offline, and conversion losses scale with the combined fleet.</li>
+        <li>Original plan means no augmentation at the selected age. Augmentation impact is the difference at the point of interconnection.</li>
+        <li>Dotted year-0 and year-15 references both use the selected offline percentage and the same imbalance and conversion assumptions.</li>
+        <li>This is a full-charge energy screen, not instantaneous SOC. Power, thermal limits, and actual site performance are not evaluated.</li>
+      </ul></details>
+    </section>
+    <section class="section frame model-section concept-section" id="dispatch-replay" aria-labelledby="dispatch-replay-title">
+      <div class="section-label"><span>/ Dispatch replay</span><span>(04)</span></div>
+      <div class="concept-heading"><div><p class="eyebrow">Illustrative dispatch / Invented prices</p><h2 id="dispatch-replay-title">Same megawatts. More hours.</h2></div><a href="#model-navigation">All models ↑</a></div>
+      <p class="concept-intro">Choose a use case, then add energy capacity to see how the battery’s daily dispatch and economics change.</p>
+      <div class="dispatch-card">
+        <div class="dispatch-scenarios" role="group" aria-label="Dispatch example">
+          <button type="button" id="dispatch-ercot" data-scenario="ercot" aria-pressed="true">ERCOT-style arbitrage</button>
+          <button type="button" id="dispatch-solar" data-scenario="solar" aria-pressed="false">Solar + storage</button>
+          <button type="button" id="dispatch-peak" data-scenario="peak" aria-pressed="false">Evening peak support</button>
+        </div>
+        <ul class="dispatch-fixed"><li><strong>100 MW</strong> battery power</li><li><strong>100 MW</strong> interconnection</li><li><strong>200 MWh / 2 h</strong> base system</li><li><strong>100%</strong> availability</li></ul>
+        <div class="dispatch-description"><p id="dispatch-description">Loading dispatch example…</p><p id="dispatch-price-note"></p></div>
+        <div id="dispatch-plot" class="dispatch-plot" role="img" aria-label="Daily battery meter power; positive is export, negative is charging"></div>
+        <p class="dispatch-sign">Green: battery meter power. Above zero = discharge/export; below zero = charging/import.</p>
+        <div class="dispatch-augmentation">
+          <label for="dispatch-augmentation">Additional installed energy<output id="dispatch-augmentation-value" for="dispatch-augmentation">+100 MWh · 300 MWh total · 3 hours</output></label>
+          <input id="dispatch-augmentation" type="range" min="0" max="2" step="1" value="1" aria-valuetext="100 MWh added; 300 MWh total; 3 hours">
+          <div class="dispatch-stops" aria-hidden="true"><span>No augmentation<strong>+0 MWh</strong></span><span>Low augmentation<strong>+100 MWh</strong></span><span>Over-augmentation<strong>+300 MWh</strong></span></div>
+          <p>Only MWh changes. Battery power and the interconnection remain fixed at 100 MW.</p>
+        </div>
+      </div>
+      <dl class="concept-metrics" aria-live="polite"><div><dt>Selected total energy / duration</dt><dd id="dispatch-0">—</dd></div><div><dt>Site operating margin / day</dt><dd id="dispatch-1">—</dd></div><div><dt>Incremental after capacity cost / day</dt><dd id="dispatch-2">—</dd></div></dl>
+      <div class="dispatch-breakdown">
+        <h3>What changes financially?</h3>
+        <p>Compare all three sizes on the same invented day. The selected column follows the slider.</p>
+        <div class="dispatch-table-scroll" tabindex="0" role="region" aria-label="Dispatch economics comparison, scroll horizontally on smaller screens">
+          <table id="dispatch-table"><caption id="dispatch-table-caption">Daily operating and augmentation cost comparison</caption><thead id="dispatch-table-head"></thead><tbody id="dispatch-table-body"></tbody></table>
+        </div>
+        <p>¹ Allocated capital recovery and maintenance for added units. One day’s earnings do not establish annual profitability.</p>
+        <p class="dispatch-insight" id="dispatch-insight" role="status"></p>
+        <p id="dispatch-lesson" class="dispatch-sign"></p>
+      </div>
+      <details class="concept-assumptions"><summary>Assumptions and what this demo leaves out</summary><ul>
+        <li>Every curve uses invented prices and a fictional site. ERCOT-style describes the example, not historical ERCOT data.</li>
+        <li>Each day is optimized with perfect price foresight, 15-minute intervals, and no simultaneous battery charging and discharging.</li>
+        <li>Usable capacity is AC-discharge-equivalent MWh. The base battery can deliver 100 MW for two hours from full.</li>
+        <li>Round-trip efficiency is 90%. Storage starts and ends empty; no initial energy is supplied for free.</li>
+        <li>Battery charging and discharging each have a 100 MW limit. Combined site export never exceeds 100 MW.</li>
+        <li>Solar is capped at 150 MW generation. Solar-only charging and curtailment are allowed; grid charging is disabled.</li>
+        <li>Other scenarios allow up to 100 MW grid import. Peak support earns the displayed fictional delivery credit.</li>
+        <li>Operating margin equals export receipts minus grid purchases and battery variable cost, plus any peak-delivery credit.</li>
+        <li>Battery variable cost is $3 per MWh discharged. Negative-price grid purchases appear as a credit, not a positive cost.</li>
+        <li>Added capacity costs $140/kWh installed and $4/kWh-year maintenance. Capital recovery assumes 8% over 15 years.</li>
+        <li>Daily capacity cost allocates annualized capital and maintenance over 365 days; it does not annualize this day’s earnings.</li>
+        <li>Existing fixed costs cancel in incremental comparisons. Taxes, replacement, terminal costs, market qualification, and actual investment returns are excluded.</li>
+      </ul></details>
+    </section>
+    <section class="section frame model-section concept-section" id="investment-economics" aria-labelledby="investment-economics-title">
+      <div class="section-label"><span>/ Investment economics</span><span>(05)</span></div>
+      <div class="concept-heading"><div><p class="eyebrow">V4 lifetime site plan / Illustrative animation scenario</p><h2 id="investment-economics-title">What does the lifetime site plan return?</h2></div><a href="#model-navigation">All models ↑</a></div>
+      <p class="concept-intro">The animation’s 100 MWh site adds four battery cohorts across 15 years. Compare its financial cases and sensitivities.</p>
+      <div class="dispatch-scenarios finance-presets" role="group" aria-label="Animation financial scenario">
+        <button type="button" id="finance-low" data-finance-case="Low" aria-pressed="false">Low · $25/kWh-year · 10%</button>
+        <button type="button" id="finance-base" data-finance-case="Base" aria-pressed="true">Base · $35/kWh-year · 8%</button>
+        <button type="button" id="finance-high" data-finance-case="High" aria-pressed="false">High · $45/kWh-year · 6%</button>
+      </div>
+      <p class="finance-selection" id="finance-selection" role="status">Base animation case selected</p>
+      <div class="concept-workspace"><div class="concept-controls">
+        <p class="control-caption">Fixed additions: years 4, 7, 10, and 14. Adjust financial assumptions below.</p>
+        <div class="concept-control"><label for="finance-revenue">Revenue per usable kWh-year<output id="finance-revenue-value" for="finance-revenue">35 $/kWh-year</output></label><input id="finance-revenue" type="range" min="15" max="55" step="1" value="35" data-unit=" $/kWh-year"><div class="concept-range" aria-hidden="true"><span>$15</span><span>$55</span></div></div>
+        <div class="concept-control"><label for="finance-cost-scale">Installed cost vs. animation<output id="finance-cost-scale-value" for="finance-cost-scale">100%</output></label><input id="finance-cost-scale" type="range" min="70" max="140" step="5" value="100" data-unit="%"><div class="concept-range" aria-hidden="true"><span>70%</span><span>140%</span></div></div>
+        <div class="concept-control"><label for="finance-discount">Nominal discount rate<output id="finance-discount-value" for="finance-discount">8%</output></label><input id="finance-discount" type="range" min="4" max="14" step="1" value="8" data-unit="%"><div class="concept-range" aria-hidden="true"><span>4%</span><span>14%</span></div></div>
+      </div><div class="concept-visual"><div id="finance-plot" class="concept-plot" role="img" aria-label="Annual incremental operating cash, investment, terminal value, and cumulative total for the animation plan"></div></div></div>
+      <dl class="concept-metrics" aria-live="polite"><div><dt>Incremental NPV / incl. residual</dt><dd id="finance-0">—</dd></div><div><dt>Added capital / PV vs. original cost</dt><dd id="finance-1">—</dd></div><div><dt>Added profit + residual / PV uplift</dt><dd id="finance-2">—</dd></div><div><dt>Augmentation IRR / incl. residual</dt><dd id="finance-3">—</dd></div></dl>
+      <div class="finance-ledger"><h3>What makes up the return?</h3><div class="dispatch-table-scroll" tabindex="0" role="region" aria-label="Investment value breakdown"><table class="finance-table"><caption>Selected assumptions · discounted to year 0</caption><thead><tr><th scope="col">Component</th><th scope="col">Present value</th></tr></thead><tbody id="finance-ledger-body"></tbody></table></div></div>
+      <div class="finance-ledger"><h3>The four additions from the animation</h3><p>Block sizes divide by three legacy blocks. Total additions are 43.5 MWh, not 130.5 MWh.</p><div class="dispatch-table-scroll" tabindex="0" role="region" aria-label="Animation augmentation schedule"><table class="finance-table"><caption>Installed costs follow the selected multiplier; nominal costs include inflation.</caption><thead><tr><th scope="col">Addition</th><th scope="col">Year</th><th scope="col">Equipment</th><th scope="col">Added MWh</th><th scope="col">Today’s $/kWh</th><th scope="col">Nominal spend</th></tr></thead><tbody id="finance-schedule-body"></tbody></table></div></div>
+      <div class="finance-ledger"><h3>Animation scenario comparison</h3><p>These three reference cases retain the animation’s original inputs. Sliders change the selected analysis above.</p><div class="dispatch-table-scroll" tabindex="0" role="region" aria-label="Original animation financial cases"><table class="finance-table"><caption>V4 source cases · unmodified costs · residual value included</caption><thead><tr><th scope="col">Scenario</th><th scope="col">Revenue / kWh-year</th><th scope="col">Discount</th><th scope="col">Added capital</th><th scope="col">Added profit + residual</th><th scope="col">IRR</th><th scope="col">Incremental NPV</th></tr></thead><tbody id="finance-scenarios-body"></tbody></table></div></div>
+      <div class="concept-map"><h3>Where does this plan cross zero?</h3><p>Vary installed costs and annual capacity revenue while holding the animation’s four additions fixed.</p><div id="economics-map" class="concept-plot" role="img" aria-label="Animation plan NPV sensitivity to installed cost multiplier and annual revenue per usable kWh"></div></div>
+      <p class="concept-verdict" id="finance-verdict" role="status"></p>
+      <details class="concept-assumptions"><summary>Animation assumptions and financial conventions</summary><ul>
+        <li>Source: V4 animation’s site_plan_model.json and finance.py. This remains an illustrative model, not site data.</li>
+        <li>Original nameplate is 100,000 kWh across three legacy blocks. Initial installed cost is $300/kWh, or $30 million.</li>
+        <li>Legacy capacity declines 2% annually; added cohorts decline 1%. Revenue follows usable capacity, not installed nameplate.</li>
+        <li>Gen 2 costs $210/kWh; Gen 3 costs $147/kWh in today’s dollars, before the selected sensitivity multiplier.</li>
+        <li>Installed costs, revenue, and $8/kWh-year O&M inflate 2.5% annually. O&M applies to installed augmentation capacity.</li>
+        <li>The animation books installation spending and a full year’s added operating income in the same integer year.</li>
+        <li>Year 15 credits unused block life using inflated generation cost and straight-line remaining life over 15 years.</li>
+        <li>Residual value is a terminal valuation assumption, not contracted sale proceeds. The breakdown also shows NPV without this credit.</li>
+        <li>Added capital compares discounted augmentation spend with original installed cost. Added profit includes residual value, matching the animation.</li>
+        <li>No dispatch constraints, charging-cost settlement, outage costs, taxes, or debt are added to this source scenario.</li>
+      </ul></details>
+    </section>
+    <section class="section frame model-section concept-section" id="downside-risk" aria-labelledby="downside-risk-title">
+      <div class="section-label"><span>/ Downside risk</span><span>(06)</span></div>
+      <div class="concept-heading"><div><p class="eyebrow">Illustrative demo / Invented inputs</p><h2 id="downside-risk-title">How much room is there for disappointment?</h2></div><a href="#model-navigation">All models ↑</a></div>
+      <p class="concept-intro">Stress the same investment with invented cost, revenue, and degradation variation. Compare outcomes when commissioning slips.</p>
+      <div class="concept-workspace"><div class="concept-controls"><p class="control-caption">600 synthetic draws / Animation’s four-addition plan</p><div class="concept-control"><label for="risk-spread">Cost and revenue range<output id="risk-spread-value" for="risk-spread">25%</output></label><input id="risk-spread" type="range" min="0" max="50" step="5" value="25" data-unit="%"><div class="concept-range" aria-hidden="true"><span>0%</span><span>50%</span></div></div><div class="concept-control"><label for="risk-delay">Commissioning delay<output id="risk-delay-value" for="risk-delay">0 years</output></label><input id="risk-delay" type="range" min="0" max="3" step="1" value="0" data-unit=" years"><div class="concept-range" aria-hidden="true"><span>0 years</span><span>3 years</span></div></div><p class="concept-help">Change the economics above to shift this distribution. The end date stays fixed when commissioning is delayed.</p></div><div class="concept-visual"><div id="risk-plot" class="concept-plot" role="img" aria-label="Distribution of fictional incremental NPV outcomes with P10, median, P90 and zero reference"></div></div></div>
+      <dl class="concept-metrics" aria-live="polite"><div><dt>P10 NPV</dt><dd id="risk-0">—</dd></div><div><dt>Median NPV</dt><dd id="risk-1">—</dd></div><div><dt>P90 NPV</dt><dd id="risk-2">—</dd></div><div><dt>Draws with positive NPV</dt><dd id="risk-3">—</dd></div></dl>
+
+      <details class="concept-assumptions"><summary>Assumptions and what this demo leaves out</summary><ul><li>Independent triangular cost and revenue multipliers span the selected ± range, centered on your finance inputs.</li><li>Added-cohort annual decline is sampled between 0.5% and 2%, with the animation’s 1% mode.</li><li>Delay shifts all four additions. Campaigns after year 15 are excluded; no purchase commitments are assumed.</li><li>Draw shares and percentiles describe invented scenarios. They are not calibrated probabilities or investment recommendations.</li><li>The animation’s residual-value convention is retained. Correlated risks, outages, market qualification, and real price forecasts are not sampled.</li></ul></details>
     </section>
   </main>
-  <footer class="site-footer frame">
-    <p>Cell degradation modeling preview</p>
-    <a href="/dev/">Page tree</a>
-  </footer>
+  <footer class="site-footer frame"><p>Site modeling demo</p><a href="/dev/">Page tree</a></footer>
 </body>
 </html>

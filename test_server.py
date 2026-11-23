@@ -94,13 +94,14 @@ class InquiryTests(unittest.TestCase):
                 self.assertEqual(response.status, 200)
                 response.read()
                 conn.close()
-            conn = HTTPConnection('127.0.0.1', app.server_port)
-            conn.request('GET', '/dev/previous-home/')
-            response = conn.getresponse()
-            self.assertEqual(response.status, 302)
-            self.assertEqual(response.getheader('Location'), '/dev/login/')
-            response.read()
-            conn.close()
+            for path in ('/dev/previous-home/', '/dev/cell-degradation/data.json'):
+                conn = HTTPConnection('127.0.0.1', app.server_port)
+                conn.request('GET', path)
+                response = conn.getresponse()
+                self.assertEqual(response.status, 302)
+                self.assertEqual(response.getheader('Location'), '/dev/login/')
+                response.read()
+                conn.close()
             with patch.object(server, 'is_admin', return_value=True):
                 for path, filename in (
                     ('/assets/homepage/homepage.css', 'assets/homepage/homepage.css'),
@@ -114,8 +115,17 @@ class InquiryTests(unittest.TestCase):
                     ('/dev/field', 'dev/field/index.html'), ('/dev/field/', 'dev/field/index.html'),
                     ('/dev/memo', 'dev/memo/index.html'), ('/dev/memo/', 'dev/memo/index.html'),
                     ('/dev/cell-degradation/', 'dev/cell-degradation/index.html'),
-                    ('/dev/cell-degradation/year-slider.html', 'dev/cell-degradation/year-slider.html'),
+                    ('/dev/cell-degradation/demo.js', 'dev/cell-degradation/demo.js'),
+                    ('/dev/cell-degradation/data.json', 'dev/cell-degradation/data.json'),
                     ('/dev/cell-degradation/slider.css', 'dev/cell-degradation/slider.css'),
+                    ('/dev/cell-degradation/market.css', 'dev/cell-degradation/market.css'),
+                    ('/dev/cell-degradation/concept-models.js', 'dev/cell-degradation/concept-models.js'),
+                    ('/dev/cell-degradation/animation-finance-data.js', 'dev/cell-degradation/animation-finance-data.js'),
+                    ('/dev/cell-degradation/concepts.js', 'dev/cell-degradation/concepts.js'),
+                    ('/dev/cell-degradation/concepts.css', 'dev/cell-degradation/concepts.css'),
+                    ('/dev/cell-degradation/dispatch-data.js', 'dev/cell-degradation/dispatch-data.js'),
+                    ('/dev/cell-degradation/dispatch.js', 'dev/cell-degradation/dispatch.js'),
+                    ('/dev/cell-degradation/dispatch.css', 'dev/cell-degradation/dispatch.css'),
                     ('/dev/site-modeling/', 'dev/site-modeling/index.html'),
                     ('/dev/site-modeling/site-modeling.css', 'dev/site-modeling/site-modeling.css'),
                 ):

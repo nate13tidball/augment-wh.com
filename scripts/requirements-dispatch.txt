@@ -1,0 +1,2 @@
+# Optional fixture generator only; the deployed demo has no Python runtime dependency.
+scipy==1.18.1

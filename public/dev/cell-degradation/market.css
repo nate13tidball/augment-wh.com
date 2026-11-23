@@ -1,0 +1,17 @@
+.model-nav { flex-wrap: wrap; }
+.market-module { --risk: #a42c24; border-top: 1px solid #d5ddd4; }
+.market-module .problem-list dt { color: var(--charcoal); }
+.market-module .problem-list > div { border-top-color: var(--green); }
+.market-module #market-title { max-width: 900px; color: var(--charcoal); }
+.market-intro { max-width: 740px; font-size: clamp(18px, 2vw, 22px); }
+.market-challenge { margin: 36px 0 24px; color: var(--gray); font-size: clamp(24px, 3vw, 36px); line-height: 1.25; letter-spacing: -.025em; }
+.market-challenge span { display: block; }
+.market-challenge strong { color: var(--charcoal); }
+.market-module .degradation-evidence { max-width: 1100px; }
+.market-module .plot-image img { width: 100%; margin-inline: 0; }
+.market-notes { display: grid; gap: 10px; max-width: 900px; margin-top: 24px; padding-left: 20px; border-left: 3px solid var(--green); font-size: 14px; }
+.market-notes a { width: fit-content; color: var(--charcoal); font-weight: 700; }
+@media (max-width: 680px) {
+  .market-module .market-totals { grid-template-columns: 1fr; gap: 20px; }
+  .market-module .market-totals li { grid-template-columns: 90px 1fr; align-items: center; gap: 16px; }
+}
