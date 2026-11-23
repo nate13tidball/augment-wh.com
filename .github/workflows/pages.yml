@@ -1,10 +1,11 @@
-name: Deploy website
+name: Deploy GitHub Pages fallback
 on:
   push:
     branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 concurrency:
@@ -15,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
@@ -25,8 +26,36 @@ jobs:
           mkdir pages-public
           rsync -a --exclude='/dev/' --exclude='/modeling-demos/' public/ pages-public/
       - uses: actions/upload-pages-artifact@v3
+        id: upload
         with:
           path: pages-public
+      - name: Wait for uploaded artifact visibility
+        timeout-minutes: 2
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact_id }}
+        run: |
+          for attempt in {1..12}; do
+            if ids=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?per_page=100" \
+              --jq '.artifacts[] | select(.name == "github-pages" and .expired == false) | .id') \
+              && [[ "$ids" == "$ARTIFACT_ID" && -n "$ARTIFACT_ID" ]]; then
+              echo "Uploaded Pages artifact is visible."
+              exit 0
+            fi
+            echo "Artifact not yet visible (attempt $attempt/12)."
+            if [[ "$attempt" -lt 12 ]]; then sleep 5; fi
+          done
+          echo "::error::Uploaded Pages artifact did not become visible within one minute."
+          exit 1
       - name: Deploy
         id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      # The deployment action uses a separate artifact service, which may also lag.
+      - name: Wait before deployment retry
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 10
+      - name: Retry deployment once
+        id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4

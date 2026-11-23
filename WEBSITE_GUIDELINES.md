@@ -59,3 +59,9 @@ node test_site_links.mjs
 ```
 
 For visible changes, check desktop and mobile layouts, menu keyboard behavior, cross-page theme persistence, and theme-aware charts through the connected browser when available. Report any browser verification blocker accurately. The static preview serves only `public/`; API behavior is checked separately. Existing publishing authorization and any explicit local-only iteration instructions remain governed by AGENTS.md and the active request.
+
+After publishing, check both Vercel and the GitHub Pages fallback workflow for the
+pushed commit. A completed push or successful Vercel status alone is insufficient.
+Use README.md's deployment verification and recovery commands; inspect failed-step
+logs before changing application code. Keep transient artifact retries bounded,
+retain failure on the final attempt, and never publish protected routes to Pages.

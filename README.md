@@ -276,9 +276,49 @@ considering the form operational.
 Vercel dashboard; this repository currently has no `vercel.json`. Before changing
 deployment behavior, verify the connected Vercel project and its production branch.
 
-This repository also has a GitHub Pages workflow that publishes `public/` when
-`main` changes. It is a secondary/legacy deployment path; Vercel is the current
+The **Deploy GitHub Pages fallback** workflow publishes a public-only copy of
+`public/` when `main` changes, excluding `/dev/` and `/modeling-demos/`. It is a secondary/legacy deployment path; Vercel is the current
 canonical host per the project owner. GitHub Pages cannot run the Python backend.
+
+### Deployment verification and recovery
+
+After every push, inspect the exact pushed commit rather than only the latest run:
+
+```bash
+revision=$(git rev-parse HEAD)
+git ls-remote origin refs/heads/main
+gh api "repos/nate13tidball/augment-wh.com/commits/$revision/status" --jq '.statuses[] | {context,state,description}'
+gh run list --commit "$revision" --json databaseId,workflowName,status,conclusion
+# For an in-progress Pages run, use its returned ID:
+gh run watch RUN_ID --exit-status
+```
+
+Verify the intended live URL too. A login redirect confirms the route's access gate,
+not its authenticated page content. Report Vercel, Pages, and browser verification
+separately when any remains pending or blocked.
+
+For failed Actions runs, inspect the failed step before editing site code:
+
+```bash
+gh run view RUN_ID --log-failed
+# If that produces no log, obtain the job ID and retrieve its full log:
+gh run view RUN_ID --json jobs
+gh api repos/nate13tidball/augment-wh.com/actions/jobs/JOB_ID/logs
+```
+
+An upload can succeed before deployment's artifact lookup sees it. If logs show
+successful upload followed by `No artifacts named "github-pages"`, check the
+artifact ID/name and both hosting statuses first; this does not indicate a page
+build error. The workflow now waits up to one minute for the exact uploaded artifact
+to appear and retries deployment once after ten seconds. A second deployment failure
+still fails the job. This mitigates transient service failures; it cannot guarantee
+GitHub availability. Keep `actions: read`, `pages: write`, and `id-token: write`, the
+matching artifact name, serialized deployment concurrency, and protected-route exclusions.
+
+If the bounded retry is exhausted, inspect the new log. A missing or expired
+artifact requires a fresh upload. Rerun the current revision's full workflow, not
+an obsolete failed revision that could roll the fallback site back. Do not hide
+persistent failures with `continue-on-error` on the final deployment attempt.
 
 ## Hosting handoff
 
@@ -292,8 +332,8 @@ server just because it is present. If the inquiry API is expected to work in
 production, verify that `/api/inquiry` is connected to a Vercel Function or an
 external backend/proxy.
 
-The Pages workflow publishes only `public/` on pushes to `main`; its form cannot
-use the Python backend. Keep this fallback deployment's limitations distinct
+The Pages fallback cannot run the Python backend or enforce admin authentication.
+Keep protected routes excluded from its artifact and keep its status distinct
 from the Vercel production deployment.
 
 ## Content status
