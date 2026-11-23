@@ -105,6 +105,9 @@ class InquiryTests(unittest.TestCase):
             with patch.object(server, 'is_admin', return_value=True):
                 for path, filename in (
                     ('/assets/homepage/homepage.css', 'assets/homepage/homepage.css'),
+                    ('/assets/site/site.css', 'assets/site/site.css'),
+                    ('/assets/site/site.js', 'assets/site/site.js'),
+                    ('/assets/site/theme.js', 'assets/site/theme.js'),
                     ('/assets/homepage/battery-site-concept.jpeg', 'assets/homepage/battery-site-concept.jpeg'),
                     ('/assets/homepage/degraded-capacity-market.png', 'assets/homepage/degraded-capacity-market.png'),
                     ('/dev/previous-home/', 'dev/previous-home/index.html'),

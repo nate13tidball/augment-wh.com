@@ -8,13 +8,7 @@ if (sweepHome && 'IntersectionObserver' in window) {
     entries.forEach(entry => entry.target.classList.toggle('sweep-visible', entry.isIntersecting));
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
   sections.forEach(section => observer.observe(section));
-  const toggle = document.querySelector('#home-motion-toggle');
-  toggle.parentElement.hidden = false;
-  toggle.addEventListener('click', () => {
-    const paused = document.documentElement.classList.toggle('sweep-paused');
-    toggle.textContent = paused ? 'Play animations' : 'Pause animations';
-    toggle.closest('.menu').open = false;
-  });
+  // Shared site.js owns the persistent animation preference and menu control.
 }
 const statement = document.querySelector('.statement');
 if (statement && !reducedMotion.matches && 'IntersectionObserver' in window) {

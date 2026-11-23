@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#202220">
-  <title>Site modeling demo | Augment-wh</title>
+  <title>Technical modeling demo | Augment-wh</title>
   <link rel="icon" href="/assets/brand/favicon.png" type="image/png">
   <link rel="stylesheet" href="/assets/homepage/homepage.css">
   <link rel="stylesheet" href="/modeling-demos/slider.css">
-  <link rel="stylesheet" href="/modeling-demos/market.css">
   <script defer src="https://cdn.plot.ly/plotly-4.1.1.min.js" integrity="sha256-O24V1F27f8pb0glCkelh3cVHLNiHAJ5gCaVtq2aNch8=" crossorigin="anonymous"></script>
   <script defer src="/modeling-demos/demo.js"></script>
+<link rel="stylesheet" href="/modeling-demos/market.css">
   <link rel="stylesheet" href="/modeling-demos/concepts.css">
   <script defer src="/modeling-demos/animation-finance-data.js"></script>
   <script defer src="/modeling-demos/concept-models.js"></script>
@@ -19,6 +19,10 @@
   <link rel="stylesheet" href="/modeling-demos/dispatch.css">
   <script defer src="/modeling-demos/dispatch-data.js"></script>
   <script defer src="/modeling-demos/dispatch.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 <!-- shared-site-assets:start -->
   <script src="/assets/site/theme.js"></script>
   <link rel="stylesheet" href="/assets/site/site.css">
@@ -64,7 +68,7 @@
     </div>
     <div class="demo-heading frame">
       <p class="eyebrow">Interactive modeling / In development</p>
-      <h1>Site modeling demo.</h1>
+      <h1>Technical modeling demo.</h1>
       <p>Explore how cell aging, site performance, and project economics can inform augmentation decisions.</p>
       <p class="demo-context">Explore cell aging, the US storage market, and three interactive site investment concepts.</p>
     </div>
@@ -80,61 +84,74 @@
     <section class="section frame model-section" id="cell-degradation" aria-labelledby="cell-title">
       <div class="section-label"><span>/ Cell degradation</span><span>(01)</span></div>
       <div class="section-heading">
-        <div><p class="eyebrow">Synthetic representative cell / LFP graphite</p><h2 id="cell-title">See capacity change over time.</h2></div>
-        <p>Explore 400 model draws per scenario for a 280 Ah prismatic LFP/graphite cell.</p>
+        <div><p class="eyebrow">Cell degradation / LFP graphite</p><h2 id="cell-title">Advanced life time modeling</h2></div>
+        <p>Explore a Monte Carlo simulation of a 280 Ah prismatic LFP/graphite cell: 400 simulated lifetimes per utilization profile.</p>
       </div>
-      <p class="section-intro">Three years of synthetic history anchor two future duty scenarios through service year 13.</p>
+      <p class="section-intro">The operating history anchors three future duty scenarios through service year 25.</p>
       <div class="chart-card" aria-labelledby="chart-heading">
         <div class="chart-header">
-          <div><p class="eyebrow">Linked views</p><h3 id="chart-heading">Selected year: <output id="selected-year" for="service-year">10</output></h3></div>
-          <p>Top: simulated capacity outcomes. Bottom: full history and projected capacity curves.</p>
+          <div><p class="eyebrow">400 simulated lifetimes per scenario</p><h3 id="chart-heading">Monte Carlo lifetime simulation</h3>
+            <p class="simulation-description">Monte Carlo simulation samples uncertain cell parameters and future utilization to produce a range of possible capacity outcomes.</p></div>
+          <p class="selected-year-readout">Selected year <output id="selected-year" for="service-year">10</output></p>
         </div>
-        <h4 class="plot-title" id="histogram-title">Monte Carlo degradation histogram</h4>
-        <div id="histogram" class="chart" role="img" aria-labelledby="histogram-title"></div>
-        <h4 class="plot-title" id="retention-title">Lifetime capacity retention chart</h4>
-        <div id="degradation-curve" class="chart" role="img" aria-labelledby="retention-title"></div>
+        <div class="cell-comparison-control">
+          <label for="cell-comparison">Compare baseline duty with</label>
+          <select id="cell-comparison" aria-controls="histogram degradation-curve">
+            <option value="conservative">Higher stress</option>
+            <option value="hot_low_usage">Hotter / lower usage</option>
+          </select>
+        </div>
+        <div class="plot-panel">
+          <h4 class="plot-title" id="histogram-title">Monte Carlo degradation histogram</h4>
+          <ul class="plot-legend" aria-label="Histogram legend">
+            <li><span class="legend-swatch baseline" aria-hidden="true"></span>Baseline duty</li>
+            <li><span class="legend-swatch stress" aria-hidden="true"></span><span id="histogram-comparison-label">Higher stress</span></li>
+          </ul>
+          <div id="histogram" class="chart" role="img" aria-labelledby="histogram-title"></div>
+        </div>
+        <div class="plot-panel">
+          <h4 class="plot-title" id="retention-title">Lifetime capacity retention chart</h4>
+          <ul class="plot-legend" aria-label="Capacity retention legend">
+            <li><span class="legend-swatch history" aria-hidden="true"></span>Modeled operating history</li>
+            <li><span class="legend-swatch baseline" aria-hidden="true"></span>Baseline duty</li>
+            <li><span class="legend-swatch stress" aria-hidden="true"></span><span id="curve-comparison-label">Higher stress</span></li>
+          </ul>
+          <div id="degradation-curve" class="chart" role="img" aria-labelledby="retention-title"></div>
+        </div>
         <div class="year-control">
-          <label for="service-year">Service year</label>
+          <label for="service-year">Service year <span>↔ Drag to explore</span></label>
+          <p id="year-help">Move the slider to update both charts.</p>
           <div class="year-track">
-            <input id="service-year" type="range" min="3" max="13" step="1" value="10">
-            <div class="range-ends" aria-hidden="true"><span>Year 3</span><span>Year 13</span></div>
+            <input id="service-year" type="range" min="3" max="25" step="1" value="10" aria-describedby="year-help">
+            <div class="range-ends" aria-hidden="true"><span>Year 3</span><span>Year 25</span></div>
           </div>
         </div>
         <p id="chart-status" class="chart-status" role="status">Loading the model example…</p>
       </div>
-      <div class="model-details">
-        <div class="cell-details">
-          <h3>What this cell represents</h3>
-          <dl>
-            <div><dt>Chemistry and format</dt><dd>280 Ah prismatic LFP/graphite cell</dd></div>
-            <div><dt>Rated energy</dt><dd>896 Wh at 3.2 V reference mean voltage</dd></div>
-            <div><dt>Reference test</dt><dd>0.1 C discharge at 25 °C, from 3.65 V to 2.5 V</dd></div>
-            <div><dt>Evidence</dt><dd>Synthetic telemetry and quarterly reference checks for years 0–3</dd></div>
-            <div><dt>Screening model</dt><dd>Calendar aging and weighted discharge cycling, conditioned on synthetic capacity checks</dd></div>
-            <div><dt>Forecast</dt><dd>Years 3–13; 400 conditional Monte Carlo draws per scenario</dd></div>
-          </dl>
-        </div>
-        <div class="duty-details">
-          <h3>Two utilization profiles</h3>
+      <div class="model-details duty-details" aria-labelledby="configuration-title">
+        <h3 id="configuration-title">Cell configuration &amp; utilization</h3>
+        <ul class="cell-summary">
+          <li><strong>Cell:</strong> 280 Ah prismatic LFP/graphite, rated at 896 Wh.</li>
+          <li><strong>Duration:</strong> 3.5 hours; higher stress uses full rated power. Hotter / lower usage combines elevated temperature with lighter cycling.</li>
+          <li><strong>Monte Carlo:</strong> 400 simulated lifetimes per profile, projected through year 25.</li>
+        </ul>
           <div class="table-scroll" tabindex="0" role="region" aria-label="Cell utilization comparison"><table>
-            <thead><tr><th scope="col">Assumption</th><th scope="col">Baseline duty</th><th scope="col">Higher stress</th></tr></thead>
+            <thead><tr><th scope="col">Assumption</th><th scope="col">Baseline duty</th><th scope="col">Higher stress</th><th scope="col">Hotter / lower usage</th></tr></thead>
             <tbody>
-              <tr><th scope="row">Cycling</th><td>240 EFC/year</td><td>340 EFC/year</td></tr>
-              <tr><th scope="row">Cycle depth</th><td>75%</td><td>90%</td></tr>
-              <tr><th scope="row">Mean SOC</th><td>52%</td><td>70%</td></tr>
-              <tr><th scope="row">Charge rate</th><td>0.45 C</td><td>0.70 C</td></tr>
-              <tr><th scope="row">Mean temperature</th><td>25 °C</td><td>32 °C</td></tr>
-              <tr><th scope="row">Seasonal swing</th><td>±7 °C</td><td>±8 °C</td></tr>
+              <tr><th scope="row">Cycling</th><td>240 EFC/year</td><td>340 EFC/year</td><td>120 EFC/year</td></tr>
+              <tr><th scope="row">Cycle depth</th><td>75%</td><td>100%</td><td>50%</td></tr>
+              <tr><th scope="row">Mean SOC</th><td>52%</td><td>70%</td><td>52%</td></tr>
+              <tr><th scope="row">Charge rate</th><td>0.20 C</td><td>0.286 C</td><td>0.20 C</td></tr>
+              <tr><th scope="row">Mean temperature</th><td>25 °C</td><td>32 °C</td><td>35 °C</td></tr>
+              <tr><th scope="row">Seasonal swing</th><td>±7 °C</td><td>±8 °C</td><td>±7 °C</td></tr>
+              <tr><th scope="row">Future duty variation</th><td>8%</td><td>12%</td><td>8%</td></tr>
             </tbody>
           </table></div>
-          <p>Each scenario also samples future duty variation: 8% for baseline and 12% for higher stress.</p>
-        </div>
       </div>
-      <div class="model-caveats">
-        <p>Other cells and utilization profiles require matching data and parameters. New chemistries need a compatible, validated model.</p>
-        <p>The current screening CLI supports configured LFP and NMC cells. This page shows one synthetic LFP case.</p>
-        <p>Bars show each bin’s share of model draws. Shaded P10–P90 bands are conditional scenario ranges, not calibrated confidence intervals.</p>
-        <p>This cell example is not a site or fleet forecast. It does not attribute loss to specific electrochemical reactions.</p>
+      <div class="model-contact">
+        <h3>Explore a site-specific model.</h3>
+        <p>Augment-wh can discuss site modeling, partnerships, and investment opportunities.</p>
+        <a class="button" href="/#contact">Contact Augment-wh <span aria-hidden="true">↗</span></a>
       </div>
     </section>
     <section class="model-section market-module" id="us-market" aria-labelledby="market-title">
@@ -265,6 +282,6 @@
       <details class="concept-assumptions"><summary>Assumptions and what this demo leaves out</summary><ul><li>Independent triangular cost and revenue multipliers span the selected ± range, centered on the selected finance inputs.</li><li>Added-cohort annual decline is sampled between 0.5% and 2%, with a 1% mode.</li><li>Delay shifts all four additions. Campaigns after year 15 are excluded; no purchase commitments are assumed.</li><li>Draw shares and percentiles describe invented scenarios. They are not calibrated probabilities or investment recommendations.</li><li>The site plan’s residual-value convention is retained. Correlated risks, outages, market qualification, and real price forecasts are not sampled.</li></ul></details>
     </section>
   </main>
-  <footer class="site-footer frame"><p>Site modeling demo</p><a class="button" href="/#contact">Discuss site <span aria-hidden="true">↗</span></a></footer>
+  <footer class="site-footer frame"><p>Technical modeling demo</p><a class="button" href="/#contact">Discuss site <span aria-hidden="true">↗</span></a></footer>
 </body>
 </html>

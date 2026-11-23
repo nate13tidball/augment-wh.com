@@ -1,5 +1,7 @@
 # Augment Wh
 
+**Website editing entry point:** [WEBSITE_GUIDELINES.md](WEBSITE_GUIDELINES.md) covers shared navigation, dark mode, third-person copy, and verification.
+
 Business website for augment-wh.com. HTML/CSS with a small inquiry form script
 and Python standard-library SMTP backend. No build step or third-party packages.
 
@@ -51,17 +53,25 @@ thesis. Neither route changes the production homepage. Both use the approved
 brand assets and existing `/api/inquiry` form flow. Local static preview can
 show the forms but cannot deliver mail without a configured API backend.
 
-`/modeling-demos/` is the protected Site modeling demo. Its first section
+`/modeling-demos/` is the protected Technical modeling demo, linked from the homepage approach section. Its first section
 links the year-selected capacity histogram to the full synthetic cell degradation
-curve. Both views use `state_estimation/outputs/customer_showcase/chart_source.json`
-from the parent repository, copied to `public/modeling-demos/data.json` by
+curve. Both views use `state_estimation/outputs/customer_showcase_25_year/chart_source.json`
+from the parent repository, expanded into `public/modeling-demos/data.json` by
 `python scripts/sync_cell_demo.py`. Refresh that deployment copy after regenerating
-the showcase. The Plotly charts use a versioned CDN bundle and require internet
-access. The histogram's horizontal axis is capacity; the curve's is service year.
-The histogram runs from higher to lower retained capacity and displays each bin's
-share of scenario draws on a 0–100% scale, not calibrated certainty. The slider
+the showcase. The sync script also forecasts a hotter, lower-usage profile from the
+same cutoff snapshot: 35 °C mean, 120 EFC/year, 50% cycle depth, 52% mean SOC,
+0.20 C, ±7 °C seasonal swing, and 8% duty variation. Both charts compare baseline
+against either higher stress or hotter / lower usage; all three remain in the table.
+The Plotly charts use a versioned CDN bundle and require internet
+access. The histogram's horizontal axis is capacity degraded (100 minus retained capacity);
+the curve's is service year.
+The histogram runs from lower to higher degradation and displays each bin's
+share of scenario draws in two-point bins. Its vertical percentage scale follows
+the selected year's peak, without changing draws or narrowing uncertainty. The slider
 sits below the retention curve; its thumb follows the same horizontal year scale,
-including the curve's years 0–3 of history before the selectable forecast. The
+including the curve's years 0–3 of history before the selectable years 3–25.
+The 3.5-hour configuration uses 0.20 C baseline and 0.286 C higher-cycling duty.
+Monthly synthetic checks include explicit 3.0 Ah measurement noise. The
 example is a representative cell, not a site forecast or validated confidence range.
 
 The second demo section, `#us-market`, reuses the homepage's “The operating
@@ -181,8 +191,8 @@ publishing stronger claims.
 
 The homepage uses the side sweep from `/dev/section-motion/`.
 Entire sections slide in from alternating sides and replay when scrolling back.
-The hamburger menu offers Pause animations and Play animations; pausing reveals every section.
-This behavior plays even when the device requests reduced motion.
+The shared hamburger menu offers Pause animations and Play animations; pausing reveals every section.
+The saved animation preference applies across pages, with reduced motion respected by default.
 Without JavaScript or IntersectionObserver, content remains visible.
 
 `/dev/section-motion/` retains sweep, curtain, and focus for comparison.

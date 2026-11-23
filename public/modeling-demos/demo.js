@@ -4,6 +4,8 @@ const palette = {
   history: '#60717b',
 };
 
+const comparisonNames = { conservative: 'Higher stress', hot_low_usage: 'Hotter / lower usage' };
+
 const chartConfig = { responsive: true, displayModeBar: false, scrollZoom: false };
 const commonFont = { family: 'Arial, Helvetica, sans-serif', color: '#5c5c5c', size: 16 };
 const commonMargin = { l: 68, r: 38 };
@@ -21,33 +23,39 @@ function histogramShares(source, scenario, index) {
   return samples.counts[index].map(count => count / samples.draw_count);
 }
 
-function histogramTraces(source, index) {
+function histogramYRange(source, index, comparison) {
+  const peak = Math.max(...histogramShares(source, 'central', index),
+    ...histogramShares(source, comparison, index));
+  return [0, Math.min(1, Math.ceil(peak * 1.15 * 20) / 20)];
+}
+
+function histogramTraces(source, index, comparison) {
   const bins = source.year_slider_histograms.bin_edges;
-  const x = bins.slice(0, -1).map((edge, i) => (edge + bins[i + 1]) / 2);
+  const x = bins.slice(0, -1).map((edge, i) => 100 - (edge + bins[i + 1]) / 2);
   return [
     { name: 'Baseline duty', color: palette.baseline, scenario: 'central' },
-    { name: 'Higher stress', color: palette.stress, scenario: 'conservative' },
+    { name: comparisonNames[comparison], color: palette.stress, scenario: comparison },
   ].map(item => ({
     type: 'bar', name: item.name, x,
     y: histogramShares(source, item.scenario, index),
     width: source.year_slider_histograms.bin_width * .88,
     marker: { color: item.color }, opacity: .48,
-    hovertemplate: `${item.name}<br>%{x:.1f}% capacity<br>%{y:.1%} of model draws in this bin<extra></extra>`,
+    hovertemplate: `${item.name}<br>%{x:.1f}% capacity degraded<br>%{y:.1%} of model draws in this bin<extra></extra>`,
   }));
 }
 
-function medianMarkers(source, index) {
+function medianMarkers(source, index, comparison) {
   return [
     { scenario: 'central', color: palette.baseline },
-    { scenario: 'conservative', color: palette.stress },
+    { scenario: comparison, color: palette.stress },
   ].map(item => {
-    const median = source.year_slider_histograms.scenarios[item.scenario].medians[index];
+    const median = 100 - source.year_slider_histograms.scenarios[item.scenario].medians[index];
     return { type: 'line', x0: median, x1: median, y0: 0, y1: 1,
       yref: 'paper', line: { color: item.color, width: 2.5 } };
   });
 }
 
-function curveTraces(source) {
+function curveTraces(source, comparison) {
   const checks = source.history;
   const traces = [{
     type: 'scatter', mode: 'lines+markers', name: 'Modeled operating history',
@@ -59,7 +67,8 @@ function curveTraces(source) {
   }];
   for (const item of [
     { scenario: 'central', name: 'Baseline duty', color: palette.baseline, fill: 'rgba(22,158,24,.16)' },
-    { scenario: 'conservative', name: 'Higher stress', color: palette.stress, fill: document.documentElement.dataset.theme === 'dark' ? 'rgba(194,203,196,.18)' : 'rgba(92,92,92,.14)' },
+    { scenario: comparison, name: comparisonNames[comparison], color: palette.stress,
+      fill: document.documentElement.dataset.theme === 'dark' ? 'rgba(194,203,196,.18)' : 'rgba(92,92,92,.14)' },
   ]) {
     const points = source.forecasts[item.scenario].points;
     const x = points.map(point => point.service_year);
@@ -76,11 +85,11 @@ function curveTraces(source) {
   return traces;
 }
 
-function curveShapes(year) {
+function curveShapes(year, endYear) {
   return [
     { type: 'line', x0: year, x1: year, y0: 0, y1: 1, yref: 'paper',
       line: { color: document.documentElement.dataset.theme === 'dark' ? '#edf3ed' : '#202220', width: 2, dash: 'dot' } },
-    { type: 'line', x0: 0, x1: 13, y0: 80, y1: 80,
+    { type: 'line', x0: 0, x1: endYear, y0: 80, y1: 80,
       line: { color: '#9aa59a', width: 1, dash: 'dot' } },
   ];
 }
@@ -95,15 +104,22 @@ async function loadDemo() {
     const years = source.year_slider_histograms.years;
     if (source.label !== 'synthetic representative-cell demonstration; no customer records' ||
         source.chemistry !== 'LFP' || source.draw_count !== 400 ||
-        years.length !== 11 || years[0] !== 3 || years.at(-1) !== 13) {
+        years.length !== 23 || years.some((year, i) => year !== i + 3)) {
       throw new Error('Model chart data does not match this example.');
     }
     const histogram = document.getElementById('histogram');
     const curve = document.getElementById('degradation-curve');
     const slider = document.getElementById('service-year');
     const output = document.getElementById('selected-year');
+    const selector = document.getElementById('cell-comparison');
+    let comparison = 'conservative';
+    selector.value = comparison;
     const initialIndex = years.indexOf(Number(slider.value));
     const endYear = years.at(-1);
+    slider.max = String(endYear);
+    const capacityValues = Object.values(source.forecasts).flatMap(scenario =>
+      scenario.points.flatMap(point => [point.p10, point.p90]));
+    const capacityFloor = Math.max(0, Math.floor((Math.min(...capacityValues) - 5) / 10) * 10);
     // The curve includes history from year zero; the selectable forecast starts at year three.
     // Match both plot margins and the range thumb's center to that same year scale.
     const control = document.querySelector('.year-control');
@@ -112,38 +128,37 @@ async function loadDemo() {
     document.querySelector('.year-track').style.marginLeft = `${100 * years[0] / endYear}%`;
     const theme = chartTheme();
     await Promise.all([
-      Plotly.newPlot(histogram, histogramTraces(source, initialIndex), {
-        font: commonFont, margin: { ...commonMargin, t: 42, b: 42, autoexpand: false },
+      Plotly.newPlot(histogram, histogramTraces(source, initialIndex, comparison), {
+        font: commonFont, margin: { ...commonMargin, t: 12, b: 42, autoexpand: false },
         barmode: 'overlay', ...theme,
-        xaxis: { title: { text: 'Capacity retained (%)', standoff: 10 },
-          range: [source.year_slider_histograms.bin_edges.at(-1), source.year_slider_histograms.bin_edges[0]],
+        xaxis: { title: { text: 'Capacity degraded (%)', standoff: 10 },
+          range: [100 - source.year_slider_histograms.bin_edges.at(-1), 100 - source.year_slider_histograms.bin_edges[0]],
           showgrid: false, zeroline: false, fixedrange: true },
         yaxis: { title: { text: 'Share of model draws (%)', standoff: 10 },
-          range: [0, 1], tickformat: '.0%', dtick: .25,
+          range: histogramYRange(source, initialIndex, comparison), tickformat: '.0%', nticks: 5,
           showgrid: false, zeroline: false, fixedrange: true },
-        legend: { orientation: 'h', y: 1.22, x: 0 },
-        shapes: medianMarkers(source, initialIndex),
+        showlegend: false,
+        shapes: medianMarkers(source, initialIndex, comparison),
       }, chartConfig),
-      Plotly.newPlot(curve, curveTraces(source), {
-        font: commonFont, margin: { ...commonMargin, t: 42, b: 52, autoexpand: false },
+      Plotly.newPlot(curve, curveTraces(source, comparison), {
+        font: commonFont, margin: { ...commonMargin, t: 12, b: 52, autoexpand: false },
         ...theme,
         xaxis: { title: { text: 'Service year', standoff: 10 },
-          range: [0, endYear], dtick: 3, showgrid: false, zeroline: false, fixedrange: true },
+          range: [0, endYear], dtick: 5, showgrid: false, zeroline: false, fixedrange: true },
         yaxis: { title: { text: 'Capacity retained (%)', standoff: 10 },
-          range: [50, 105], showgrid: false, zeroline: false, fixedrange: true },
-        legend: { orientation: 'h', y: 1.28, x: 0 },
-        shapes: curveShapes(Number(slider.value)),
+          range: [capacityFloor, 105], showgrid: false, zeroline: false, fixedrange: true },
+        showlegend: false,
+        shapes: curveShapes(Number(slider.value), endYear),
       }, chartConfig),
     ]);
-    status.textContent = 'Histogram heights show the share of model draws per capacity bin. These frequencies do not measure certainty.';
-
+    status.textContent = '';
     window.addEventListener('site-theme-change', async () => {
       const theme = chartTheme();
       const year = Number(slider.value);
       const index = years.indexOf(year);
       try {
         await Promise.all([
-          Plotly.relayout(histogram, { ...theme, shapes: medianMarkers(source, index) }),
+          Plotly.relayout(histogram, { ...theme, shapes: medianMarkers(source, index, comparison) }),
           Plotly.relayout(curve, { ...theme, shapes: curveShapes(year, endYear) }),
           Plotly.restyle(histogram, { 'marker.color': [palette.baseline, palette.stress] }, [0, 1]),
           Plotly.restyle(curve, { 'line.color': [palette.history, palette.baseline, palette.stress] }, [0, 3, 6]),
@@ -163,15 +178,25 @@ async function loadDemo() {
         while (pendingYear !== null) {
           const year = pendingYear;
           pendingYear = null;
+          const selectedComparison = comparison;
+          const name = comparisonNames[selectedComparison];
           const index = years.indexOf(year);
           if (index < 0) continue;
           output.value = String(year);
           await Plotly.restyle(histogram, { y: [
             histogramShares(source, 'central', index),
-            histogramShares(source, 'conservative', index),
+            histogramShares(source, selectedComparison, index),
           ] }, [0, 1]);
-          await Plotly.relayout(histogram, { shapes: medianMarkers(source, index) });
-          await Plotly.relayout(curve, { shapes: curveShapes(year) });
+          await Plotly.restyle(histogram, { name,
+            hovertemplate: `${name}<br>%{x:.1f}% capacity degraded<br>%{y:.1%} of model draws in this bin<extra></extra>` }, [1]);
+          await Plotly.relayout(histogram, { shapes: medianMarkers(source, index, selectedComparison),
+            'yaxis.range': histogramYRange(source, index, selectedComparison) });
+          const points = source.forecasts[selectedComparison].points;
+          await Plotly.restyle(curve, { y: ['p10', 'p90', 'median'].map(key => points.map(point => point[key])) }, [4, 5, 6]);
+          await Plotly.restyle(curve, { name, hovertemplate: 'Year %{x:.0f}<br>Median %{y:.1f}%<extra>' + name + '</extra>' }, [6]);
+          document.getElementById('histogram-comparison-label').textContent = name;
+          document.getElementById('curve-comparison-label').textContent = name;
+          await Plotly.relayout(curve, { shapes: curveShapes(year, endYear) });
         }
       } catch (error) {
         status.textContent = error.message || 'The chart could not update.';
@@ -179,6 +204,12 @@ async function loadDemo() {
         updating = false;
       }
     }
+    selector.addEventListener('change', () => {
+      if (!Object.hasOwn(comparisonNames, selector.value)) return;
+      comparison = selector.value;
+      pendingYear = Number(slider.value);
+      void update();
+    });
     slider.addEventListener('input', () => {
       pendingYear = Number(slider.value);
       output.value = slider.value;

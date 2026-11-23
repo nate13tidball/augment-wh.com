@@ -36,7 +36,8 @@ class ModelingPageSmoke(unittest.TestCase):
         self.assertEqual(len(self.page.ids), len(set(self.page.ids)))
         for link in self.page.links:
             url = urlsplit(link)
-            if url.scheme or url.netloc:
+            # Vercel injects this platform asset; the public-only local server does not.
+            if url.scheme or url.netloc or url.path == '/_vercel/insights/script.js':
                 continue
             target = PUBLIC / url.path.lstrip('/') if url.path else PUBLIC / 'modeling-demos/index.html'
             if target.is_dir():

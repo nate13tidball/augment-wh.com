@@ -150,11 +150,11 @@ def delivery_error(error):
         response = error.smtp_error.decode('utf-8', 'replace') if isinstance(error.smtp_error, bytes) else str(error.smtp_error)
         response = response.lower()
         if 'smtpclientauthentication is disabled for the tenant' in response:
-            return 'Microsoft 365 has disabled SMTP AUTH for this organization. Please email ntidball@augment-wh.com directly.'
+            return 'Microsoft 365 has disabled SMTP AUTH for this organization. Please try again later.'
         if 'smtpclientauthentication is disabled for the mailbox' in response:
-            return 'Microsoft 365 has disabled SMTP AUTH for this mailbox. Please email ntidball@augment-wh.com directly.'
+            return 'Microsoft 365 has disabled SMTP AUTH for this mailbox. Please try again later.'
         if 'basic authentication is disabled' in response:
-            return 'Microsoft 365 has disabled password-based SMTP. Please email ntidball@augment-wh.com directly.'
+            return 'Microsoft 365 has disabled password-based SMTP. Please try again later.'
         return 'SMTP authentication failed. Check SMTP_USER, SMTP_PASSWORD, and provider SMTP access.'
     if isinstance(error, smtplib.SMTPRecipientsRefused):
         return 'The mail server rejected INQUIRY_TO. Check that recipient address and provider policy.'
@@ -268,8 +268,8 @@ class Handler(BaseHTTPRequestHandler):
                  '/interactions.js': 'interactions.js',
                  '/assets/site/site.css': 'assets/site/site.css',
                  '/assets/site/site.js': 'assets/site/site.js',
-                 '/assets/site/theme.js': 'assets/site/theme.js',
                  '/assets/site/header-access.js': 'assets/site/header-access.js',
+                 '/assets/site/theme.js': 'assets/site/theme.js',
                  '/assets/favicon.svg': 'assets/favicon.svg'}
         for asset in ('header.png', 'logo.png', 'full-logo.png', 'favicon.png', 'manifest.json'):
             files[f'/assets/brand/{asset}'] = f'assets/brand/{asset}'

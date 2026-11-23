@@ -58,7 +58,7 @@ console.log('All HTML pages include Vercel tracking once; analytics URL is canon
 
 const homepage = read('./public/index.html');
 assert.doesNotMatch(homepage, /noindex|(?:src|href)="[^"#]*\/dev\//);
-assert.match(homepage, /href="\/solution-explained\/"[^>]*>[\s\S]*?Technical solution/);
+assert.match(homepage, /href="\/solution-explained\/"[^>]*>[\s\S]*?View Technical Solution/);
 const solutionPage = read('./public/solution-explained/index.html');
 assert.match(solutionPage, /class="solution-deck"/);
 assert.match(solutionPage, /src="\/assets\/solution-explained\/deck\.js"/);
@@ -68,7 +68,8 @@ for (const [, src] of deckSlides) assert.ok(existsSync(`./public${src}`), `missi
 assert.equal((solutionPage.match(/<ul class="deck-notes"/g) || []).length, 14);
 assert.match(solutionPage, /data-cover="13"/);
 assert.match(homepage, /href="\/solution-explained\/"[^>]*>\s*<img src="\/assets\/solution-explained\/slides\/slide-13\.png"/);
-assert.match(solutionPage, /Illustrative concept and model scenarios only/);
+assert.match(solutionPage, /This concept model shows how site planning can add batteries as existing capacity declines/);
+assert.match(solutionPage, /href="\/#contact">Discuss a site/);
 assert.match(homepage, /id="inquiry-form"/);
 assert.match(homepage, /id="contact"/);
 assert.match(homepage, /src="\/contact.js"/);
