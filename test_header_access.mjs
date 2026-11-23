@@ -44,3 +44,29 @@ handlers.pageshow(); handlers['site-admin-change']();
 const stale = pending.shift(); await reply({admin: false});
 stale.resolve({ok: true, json: async () => ({admin: true})}); await flush(); hidden(true);
 console.log('PASS: contact button, hidden initial markup, admin/visitor/logout, errors, and stale session responses.');
+
+// Light is the fallback even when the OS is dark or preference storage is unavailable.
+const themeScript = read('./public/assets/site/theme.js');
+for (const [saved, storageFails, expected] of [
+  [null, false, 'light'], ['invalid', false, 'light'], [null, true, 'light'],
+  ['light', false, 'light'], ['dark', false, 'dark'], ['system', false, 'dark'],
+]) {
+  const root = { dataset: {}, style: {} }, events = {};
+  runInNewContext(themeScript, {
+    document: { documentElement: root },
+    matchMedia: () => ({ matches: true, addEventListener() {} }),
+    localStorage: { getItem() { if (storageFails) throw Error('blocked'); return saved; }, setItem() {} },
+    CustomEvent: class { constructor(type) { this.type = type; } },
+    window: { dispatchEvent() {}, addEventListener(type, fn) { events[type] = fn; } },
+  });
+  assert.equal(root.dataset.theme, expected);
+  events.storage({ key: 'augment-theme', newValue: null });
+  assert.equal(root.dataset.theme, 'light');
+  assert.equal(root.dataset.themePreference, 'light');
+}
+for (const page of readdirSync(new URL('./public', import.meta.url), { recursive: true }).filter(p => p.endsWith('.html'))) {
+  const html = read('./public/' + page);
+  assert.match(html, /name="site-theme" value="light" checked/, page);
+  assert.doesNotMatch(html, /name="site-theme" value="(?:dark|system)" checked/, page);
+}
+console.log('PASS: every header defaults to light; saved choices remain supported and clearing storage restores light.');
