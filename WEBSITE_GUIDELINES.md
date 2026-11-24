@@ -34,7 +34,7 @@ Apply these rules to new and revised copy. Older pages contain legacy wording; r
 - `scripts/site_header.html` owns the common markup. Never maintain separate copies by hand.
 - `scripts/sync_site_header.py` embeds the header and shared assets in every page, including presentation templates and the 404 page. It adds existing in-page anchor links and development navigation only on development pages. The explicitly featured Technical Solution and Modeling Demo links appear in the main menu on every page; the demo retains its protected `/modeling-demos/` route.
 - Keep model-specific jump navigation in the page body when useful. Secondary controls, including appearance and animation preferences, belong inside the hamburger menu.
-- The header includes a Discuss site contact button. Presentations and Development navigation require a verified admin session.
+- The header includes a Contact button sized to match the menu control. Presentations and Development navigation require a verified admin session.
 - Navigation works without JavaScript through native `details`/`summary`. Escape, outside clicks, and focus leaving the menu close it when JavaScript is available.
 
 ## Appearance and accessibility
