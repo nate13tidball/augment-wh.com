@@ -273,7 +273,7 @@ considering the form operational.
 ## Production deployment
 
 **Vercel serves the production site at `https://aaugment.io/`.** The `augment-wh.com`
-Vercel project deploys `main` from this repository. Its `vercel.json` permanently
+Vercel project deploys `main` from this repository. Its middleware permanently
 redirects both `augment-wh.com` and `www.augment-wh.com` to `aaugment.io`, retaining
 the path and query string. `www.aaugment.io` also redirects to the apex with HTTP 308.
 GoDaddy remains the authoritative DNS provider for `aaugment.io`.

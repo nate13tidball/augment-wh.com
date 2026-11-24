@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const source = readFileSync(new URL('./middleware.js', import.meta.url), 'utf8');
 const { default: middleware, config } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
-assert.deepEqual(config.matcher, ['/dev/:path*', '/modeling-demos/:path*', '/api/analytics/:path*']);
+assert.deepEqual(config.matcher, ['/:path*']);
 process.env.ADMIN_PIN = '9876';
 process.env.ADMIN_SESSION_SECRET = 'test-secret-'.repeat(5);
 // Use the actual Python issuer to check compatibility with the Vercel gate.
@@ -13,7 +13,18 @@ import time
 value = f'admin.{int(time.time()) + LIFETIME}'
 print(f'{COOKIE}={value}.{signature(value)}')
 `], { encoding: 'utf8' }).trim();
-const request = (path, token = '') => middleware(new Request('https://www.augment-wh.com' + path, { headers: { Cookie: token } }));
+const request = (path, token = '', host = 'aaugment.io') => middleware(new Request('https://' + host + path, { headers: { Cookie: token } }));
+for (const host of ['augment-wh.com', 'www.augment-wh.com']) {
+  const response = await request('/solution-explained/?ref=move', '', host);
+  assert.equal(response.status, 308);
+  assert.equal(response.headers.get('location'), 'https://aaugment.io/solution-explained/?ref=move');
+  assert.equal((await request('/dev/', '', host)).headers.get('location'), 'https://aaugment.io/dev/');
+}
+for (const path of ['/', '/solution-explained/', '/assets/brand/logo.png', '/api/inquiry', '/dev-evil']) {
+  const response = await request(path);
+  assert.equal(response.headers.get('x-middleware-next'), '1', path);
+  assert.equal(response.headers.get('cache-control'), null, path);
+}
 const pages = readdirSync(new URL('./public/dev/', import.meta.url), { recursive: true })
   .filter(path => !path.startsWith('login/') && path !== 'login')
   .map(path => '/dev/' + path);

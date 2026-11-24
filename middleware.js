@@ -1,5 +1,5 @@
-// Vercel routing middleware runs before serving static development files.
-export const config = { matcher: ['/dev/:path*', '/modeling-demos/:path*', '/api/analytics/:path*'] };
+// Vercel middleware redirects legacy hosts and protects development files.
+export const config = { matcher: ['/:path*'] };
 const lifetime = 30 * 24 * 60 * 60;
 const privateHeaders = { 'Cache-Control': 'private, no-store', Vary: 'Cookie' };
 
@@ -22,6 +22,17 @@ async function isAdmin(request) {
 
 export default async function middleware(request) {
   const url = new URL(request.url);
+  if (url.hostname === 'augment-wh.com' || url.hostname === 'www.augment-wh.com') {
+    url.protocol = 'https:';
+    url.host = 'aaugment.io';
+    return Response.redirect(url, 308);
+  }
+  const protectedPath = url.pathname === '/dev' || url.pathname.startsWith('/dev/')
+    || url.pathname === '/modeling-demos' || url.pathname.startsWith('/modeling-demos/')
+    || url.pathname === '/api/analytics' || url.pathname.startsWith('/api/analytics/');
+  if (!protectedPath) {
+    return new Response(null, { headers: { 'x-middleware-next': '1' } });
+  }
   const loginPaths = ['/dev/login', '/dev/login/', '/dev/login/index.html', '/dev/login/login.js'];
   if (loginPaths.includes(url.pathname)) {
     return new Response(null, { headers: { 'x-middleware-next': '1', ...privateHeaders } });
