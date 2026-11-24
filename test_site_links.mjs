@@ -57,6 +57,9 @@ for (const filename of readdirSync(new URL('./public/', import.meta.url), { recu
 console.log('All HTML pages include Vercel tracking once; analytics URL is canonical without a trailing slash.');
 
 const homepage = read('./public/index.html');
+const pagesWorkflow = read('./.github/workflows/pages.yml');
+assert.match(pagesWorkflow, /rsync -a --exclude='\/dev\/' public\/ pages-public\//);
+assert.doesNotMatch(pagesWorkflow, /--exclude='\/modeling-demos\/'/);
 assert.doesNotMatch(homepage, /noindex|(?:src|href)="[^"#]*\/dev\//);
 assert.match(homepage, /href="\/solution-explained\/"[^>]*>[\s\S]*?View Technical Solution/);
 const solutionPage = read('./public/solution-explained/index.html');

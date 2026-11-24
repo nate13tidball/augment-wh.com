@@ -46,6 +46,9 @@ class ModelingPageSmoke(unittest.TestCase):
             if url.fragment:
                 self.assertIn(url.fragment, Page(target.read_text()).ids, link)
     def test_concise_neutral_copy_and_contact(self):
+        self.assertIn('<link rel="canonical" href="https://aaugment.io/modeling-demos/">', self.html)
+        self.assertNotIn('noindex', self.html)
+        self.assertNotIn('href="/dev/"', self.html)
         for text in self.page.copy:
             self.assertLessEqual(len(text.split()), 20, text)
             self.assertNotRegex(text, r'(?i)\b(?:you|your|we|our|my)\b')

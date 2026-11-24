@@ -20,7 +20,7 @@ for (const host of ['augment-wh.com', 'www.augment-wh.com']) {
   assert.equal(response.headers.get('location'), 'https://aaugment.io/solution-explained/?ref=move');
   assert.equal((await request('/dev/', '', host)).headers.get('location'), 'https://aaugment.io/dev/');
 }
-for (const path of ['/', '/solution-explained/', '/assets/brand/logo.png', '/api/inquiry', '/dev-evil']) {
+for (const path of ['/', '/solution-explained/', '/modeling-demos', '/modeling-demos/', '/modeling-demos/demo.js', '/modeling-demos/data.json', '/assets/brand/logo.png', '/api/inquiry', '/dev-evil']) {
   const response = await request(path);
   assert.equal(response.headers.get('x-middleware-next'), '1', path);
   assert.equal(response.headers.get('cache-control'), null, path);
@@ -28,7 +28,7 @@ for (const path of ['/', '/solution-explained/', '/assets/brand/logo.png', '/api
 const pages = readdirSync(new URL('./public/dev/', import.meta.url), { recursive: true })
   .filter(path => !path.startsWith('login/') && path !== 'login')
   .map(path => '/dev/' + path);
-for (const path of ['/dev', '/dev/', '/dev/analytics', '/dev/new-page', '/modeling-demos', '/modeling-demos/', '/modeling-demos/demo.js', '/modeling-demos/data.json', ...pages]) {
+for (const path of ['/dev', '/dev/', '/dev/analytics', '/dev/new-page', ...pages]) {
   const denied = await request(path);
   assert.equal(denied.status, 302, path);
   assert.equal(new URL(denied.headers.get('location')).pathname, '/dev/login/');
@@ -48,15 +48,13 @@ assert.equal((await request('/api/analytics', cookie)).headers.get('x-middleware
 process.env.ADMIN_SESSION_SECRET = '';
 assert.equal((await request('/dev/', cookie)).status, 302);
 assert.equal((await request('/dev/login/')).headers.get('x-middleware-next'), '1');
-console.log('Every development file is gated; login remains accessible; Python-issued cookies pass verification.');
+console.log('Public pages and modeling assets bypass the gate; development files remain protected.');
 
 // Login returns to the renamed page while rejecting external destinations.
 const { runInNewContext } = await import('node:vm');
 for (const [next, expected] of [
-  ['/modeling-demos', '/modeling-demos'],
-  ['/modeling-demos/#capacity-recovery', '/modeling-demos/#capacity-recovery'],
   ['/dev/analytics', '/dev/analytics'],
-  ['//evil.example', '/dev/'], ['/modeling-demos-evil/', '/dev/'],
+  ['//evil.example', '/dev/'], ['/modeling-demos/', '/dev/'], ['/modeling-demos-evil/', '/dev/'],
 ]) {
   const link = {};
   runInNewContext(readFileSync(new URL('./public/dev/login/login.js', import.meta.url), 'utf8'), {
@@ -66,4 +64,4 @@ for (const [next, expected] of [
   });
   assert.equal(link.href, expected);
 }
-console.log('Login returns to modeling demos and rejects external destinations.');
+console.log('Login returns only to development pages and rejects external destinations.');

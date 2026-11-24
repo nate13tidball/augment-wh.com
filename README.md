@@ -53,7 +53,7 @@ thesis. Neither route changes the production homepage. Both use the approved
 brand assets and existing `/api/inquiry` form flow. Local static preview can
 show the forms but cannot deliver mail without a configured API backend.
 
-`/modeling-demos/` is the protected Technical modeling demo, linked from the homepage approach section. Its first section
+`/modeling-demos/` is the public Technical modeling demo, linked from the homepage approach section. Its first section
 links the year-selected capacity histogram to the full synthetic cell degradation
 curve. Both views use `state_estimation/outputs/customer_showcase_25_year/chart_source.json`
 from the parent repository, expanded into `public/modeling-demos/data.json` by
@@ -283,7 +283,7 @@ configuration before changing these targets. Canonical and Open Graph URLs use
 `aaugment.io`.
 
 The **Deploy GitHub Pages fallback** workflow publishes a public-only copy of
-`public/` when `main` changes, excluding `/dev/` and `/modeling-demos/`. It is a secondary/legacy deployment path; Vercel is the current
+`public/` when `main` changes, excluding only `/dev/`. It is a secondary/legacy deployment path; Vercel is the current
 canonical host per the project owner. GitHub Pages cannot run the Python backend.
 
 ### Deployment verification and recovery
@@ -387,7 +387,7 @@ Vercel routing middleware in `middleware.js` requires the signed cookie for
 every `/dev` and `/dev/*` request, except the login page and its script. Guests
 redirect to login and return to their requested development page after signing
 in. `/api/analytics` also checks the cookie in the Python handler. Responses use
-private/no-store caching. The main site and presentations remain public.
+private/no-store caching. The main site, modeling demos, and presentations remain public.
 The GitHub Pages fallback excludes `/dev/` because it cannot enforce authentication. The static local server and GitHub Pages cannot run
 the login API. Tests use in-memory HTTP handlers without starting a server.
 

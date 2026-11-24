@@ -7,8 +7,8 @@ for (const page of readdirSync(new URL('./public', import.meta.url), { recursive
   const html = read('./public/' + page);
   const header = html.split('<!-- shared-header:start -->')[1]?.split('<!-- shared-header:end -->')[0];
   assert(header, page);
-  assert.match(header, /class="wh-discuss-site" href="\/#contact">Discuss site /, page);
-  assert.match(header, /href="\/presentations\/" data-admin-only hidden/, page);
+  assert.match(header, /class="wh-discuss-site" href="\/#contact">Contact<\/a>/, page);
+  assert.match(header, /href="\/presentations\/">Presentations<\/a>/, page);
   if (header.includes('aria-label="Development"')) assert.match(header, /aria-label="Development" data-admin-only hidden/, page);
   assert(html.includes('/assets/site/header-access.js'), page);
 }

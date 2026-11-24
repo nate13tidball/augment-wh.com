@@ -28,7 +28,6 @@ export default async function middleware(request) {
     return Response.redirect(url, 308);
   }
   const protectedPath = url.pathname === '/dev' || url.pathname.startsWith('/dev/')
-    || url.pathname === '/modeling-demos' || url.pathname.startsWith('/modeling-demos/')
     || url.pathname === '/api/analytics' || url.pathname.startsWith('/api/analytics/');
   if (!protectedPath) {
     return new Response(null, { headers: { 'x-middleware-next': '1' } });

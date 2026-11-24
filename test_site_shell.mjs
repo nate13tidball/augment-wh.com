@@ -23,7 +23,7 @@ for (const path of pages) {
   assert(header.includes('<a href="/solution-explained/">View Technical Solution</a>'), path);
   assert.equal(header.split('href="/modeling-demos/"').length - 1, 1, path);
   assert(header.includes('View Modeling Demo'), path);
-  if (!path.startsWith('dev/') && !path.startsWith('modeling-demos/')) {
+  if (!path.startsWith('dev/')) {
     for (const [, href] of header.matchAll(/href="(\/dev\/[^"]*)"/g)) assert.equal(href, '/modeling-demos/', path);
   }
   for (const [, id] of header.matchAll(/href="#([^"]+)"/g)) assert(html.includes(`id="${id}"`), `${path}: ${id}`);

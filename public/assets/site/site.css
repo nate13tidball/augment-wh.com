@@ -49,7 +49,7 @@ body > .site-header, .site-masthead > .site-header, .topbar, .field-bar, .memo-b
 /* Adapt both newer and legacy page surfaces without filtering logos, images or video. */
 html[data-theme="dark"] body { background: var(--wh-bg); color: var(--wh-text); }
 html[data-theme="dark"] :is(main, section, article, aside, footer, .site-masthead, .chart-card, .model-details, .chart-header, .year-control, .card, .note, .panel, .stat, .metric, .decision-box, .table-scroll, .motion-toolbar) { background-color: var(--wh-surface); background-image: none; color: var(--wh-text); border-color: var(--wh-border); }
-html[data-theme="dark"] :is(h1, h2, h3, h4, p, dt, dd, li, th, td, label, legend, small, .section-label, .eyebrow, .plot-title, .selected-year-readout, .range-ends, .chart-status, #year-help, .demo-context, .back-link, .kicker, .field-label, .fine-print, .underlink, .text-link, .footer a) { color: var(--wh-text); }
+html[data-theme="dark"] :is(h1, h2, h3, h4, p, dt, dd, li, th, td, label, legend, small, .section-label, .eyebrow, .plot-title, .selected-year-readout, .range-ends, .chart-status, #year-help, .demo-context, .kicker, .field-label, .fine-print, .underlink, .text-link, .footer a) { color: var(--wh-text); }
 html[data-theme="dark"] :is(dl > div, th, td, .plot-panel, .section-label) { border-color: var(--wh-border); }
 html[data-theme="dark"] :is(input, textarea, select, button, .button, .pill, .model-nav a, .year-control label span) { background-color: var(--wh-raised); color: var(--wh-text); border-color: var(--wh-border); }
 html[data-theme="dark"] a { color: var(--wh-accent); }

@@ -50,7 +50,7 @@ def render(path):
                     for href, label in parser.links.items() if href[1:] in parser.ids)
     page_nav = f'<nav aria-label="On this page"><p class="wh-menu-heading">On this page</p>{links}</nav>' if links else ''
     dev_nav = ''
-    if path.relative_to(ROOT / 'public').parts[0] in ('dev', 'modeling-demos'):
+    if path.relative_to(ROOT / 'public').parts[0] == 'dev':
         dev_nav = '<nav aria-label="Development" data-admin-only hidden><p class="wh-menu-heading">Development</p><a href="/dev/">Page tree</a><a href="/dev/analytics">Analytics</a><a href="/dev/login/">Admin account</a></nav>'
     header = HEADER.read_text().replace('{{PAGE_NAV}}', page_nav).replace('{{DEV_NAV}}', dev_nav).rstrip()
     header = '\n'.join(line.rstrip() for line in header.splitlines())

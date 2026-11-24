@@ -4,7 +4,7 @@ const status = document.querySelector('#status');
 const pin = document.querySelector('#pin');
 let busy = false;
 const next = new URLSearchParams(location.search).get('next');
-const destination = next && (next === '/dev' || next.startsWith('/dev/') || next === '/modeling-demos' || next.startsWith('/modeling-demos/'))
+const destination = next && (next === '/dev' || next.startsWith('/dev/'))
   && !/[\\\r\n]/.test(next) ? next : '/dev/';
 document.querySelector('#admin a').href = destination;
 

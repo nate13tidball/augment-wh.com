@@ -32,9 +32,9 @@ Apply these rules to new and revised copy. Older pages contain legacy wording; r
 - Every HTML page shares that header and hamburger at desktop and mobile widths.
 - The header progressively hides on downward scrolling and gradually reveals over 1.6 header heights of upward scrolling. Preserve partial visibility when scrolling stops; do not snap fully open at a direction change. It stays visible near the page top, while the menu is open, and during keyboard interaction. Small scroll movements should not cause flicker. Its height and anchor offsets are defined in `public/assets/site/site.css`.
 - `scripts/site_header.html` owns the common markup. Never maintain separate copies by hand.
-- `scripts/sync_site_header.py` embeds the header and shared assets in every page, including presentation templates and the 404 page. It adds existing in-page anchor links and development navigation only on development pages. The explicitly featured Technical Solution and Modeling Demo links appear in the main menu on every page; the demo retains its protected `/modeling-demos/` route.
+- `scripts/sync_site_header.py` embeds the header and shared assets in every page, including presentation templates and the 404 page. It adds existing in-page anchor links and development navigation only on development pages. The explicitly featured Technical Solution and Modeling Demo links appear in the main menu on every page; `/modeling-demos/` is public.
 - Keep model-specific jump navigation in the page body when useful. Secondary controls, including appearance and animation preferences, belong inside the hamburger menu.
-- The header includes a Contact button sized to match the menu control. Presentations and Development navigation require a verified admin session.
+- The header includes a Contact button sized to match the menu control. Development navigation requires a verified admin session; presentations remain public.
 - Navigation works without JavaScript through native `details`/`summary`. Escape, outside clicks, and focus leaving the menu close it when JavaScript is available.
 
 ## Appearance and accessibility

@@ -1,7 +1,6 @@
 .model-demo-page { background: #f4f5f3; }
 .model-demo-page .site-masthead { background: #e7eee7; }
 .model-demo-page .site-masthead > .site-header { grid-template-columns: minmax(0, 1fr) auto; }
-.back-link { color: var(--charcoal); font-size: 16px; font-weight: 700; }
 .demo-heading { padding-block: 38px 44px; }
 .demo-heading h1 { max-width: 920px; margin: 14px 0 18px; color: var(--charcoal); font-size: clamp(48px, 6.5vw, 82px); }
 .demo-heading > p:not(.eyebrow):not(.demo-context) { max-width: 750px; font-size: clamp(18px, 2vw, 22px); }

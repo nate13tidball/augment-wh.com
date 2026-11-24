@@ -191,7 +191,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # An explicit public-file list prevents traversal and accidental repo exposure.
         path = urlsplit(self.path).path
-        if (path == '/dev' or path.startswith('/dev/') or path == '/modeling-demos' or path.startswith('/modeling-demos/')) and path not in (
+        if (path == '/dev' or path.startswith('/dev/')) and path not in (
             '/dev/login', '/dev/login/', '/dev/login/index.html', '/dev/login/login.js'
         ) and not is_admin(self.headers):
             self.send_response(302)

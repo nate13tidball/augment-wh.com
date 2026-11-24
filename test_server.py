@@ -94,13 +94,25 @@ class InquiryTests(unittest.TestCase):
                 self.assertEqual(response.status, 200)
                 response.read()
                 conn.close()
-            for path in ('/dev/previous-home/', '/modeling-demos', '/modeling-demos/', '/modeling-demos/data.json'):
+            for path in ('/dev/previous-home/', '/dev/analytics'):
                 conn = HTTPConnection('127.0.0.1', app.server_port)
                 conn.request('GET', path)
                 response = conn.getresponse()
                 self.assertEqual(response.status, 302)
                 self.assertEqual(response.getheader('Location'), '/dev/login/')
                 response.read()
+                conn.close()
+            for path, filename in (
+                ('/modeling-demos', 'modeling-demos/index.html'),
+                ('/modeling-demos/', 'modeling-demos/index.html'),
+                ('/modeling-demos/demo.js', 'modeling-demos/demo.js'),
+                ('/modeling-demos/data.json', 'modeling-demos/data.json'),
+            ):
+                conn = HTTPConnection('127.0.0.1', app.server_port)
+                conn.request('GET', path)
+                response = conn.getresponse()
+                self.assertEqual(response.status, 200)
+                self.assertEqual(response.read(), (server.PUBLIC / filename).read_bytes())
                 conn.close()
             with patch.object(server, 'is_admin', return_value=True):
                 for path, filename in (
