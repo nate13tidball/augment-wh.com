@@ -12,7 +12,7 @@ body > .site-header, .site-masthead > .site-header, .topbar, .field-bar, .memo-b
 /* Original index-page design with a 30% shorter masthead and full-size menu target. */
 .wh-header { position: fixed; inset: 0 0 auto; z-index: 1000; background: linear-gradient(180deg, #dfe7df 0%, #e8ece8 62%, #efefef 100%); color: #202220; font: 16px/1.5 Arial, Helvetica, sans-serif; letter-spacing: normal; }
 .wh-header .site-header { width: min(1180px, calc(100% - 64px)); margin-inline: auto; padding-block: 11px; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 16px 32px; }
-.wh-header .brand { display: block; width: min(294px, 100%); }
+.wh-header .brand { display: block; width: min(265px, 100%); }
 .wh-header .brand-link { display: block; }
 .wh-header .brand img { display: block; width: 100%; height: auto; }
 .wh-header .menu { position: relative; justify-self: end; }
@@ -63,7 +63,7 @@ html[data-theme="dark"] .wh-header .menu > summary { background: #edf3ed; color:
 @media (max-width: 680px) {
   :root { --wh-header-height: 93px; }
   .wh-header .site-header { width: calc(100% - 40px); padding-block: 10px; gap: 14px; }
-  .wh-header .site-header .brand { width: min(196px, 100%); }
+  .wh-header .site-header .brand { width: min(178px, 100%); }
   .wh-header .menu > summary { width: 44px; height: 44px; }
 }
 @media print {
