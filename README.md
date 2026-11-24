@@ -225,7 +225,7 @@ Production must include `augment-logo.png` and `augment-full-logo.png`.
 Missing files fail before overwriting deployed assets.
 The sync validates the exact production schema and manifest before copying approved artwork into
 `public/assets/brand/`; HTML references stable filenames.
-The header and footer use the full-name logo with its centered slogan; the favicon uses the compact logo.
+The header and footer use the full-name logo with its centered **Utility Energy Solutions** tagline; the favicon uses the compact logo.
 The website must keep these copied files because the submodule is deployed independently and
 cannot read files from its parent repository. They are deployment outputs, not alternate brand
 sources. `manifest.json` records the parent production-manifest hash and each copied asset hash.
@@ -344,7 +344,7 @@ from the Vercel production deployment.
 
 ## Content status
 
-Confirmed company name: **Augment-wh**, with **Aa** as its compact lettermark.
+Confirmed company name: **aAugment**, with the **aA** mark supplying the first two letters of the full **{mark}ugment** lockup. The full-logo tagline is **Utility Energy Solutions**.
 The website uses the selected brand assets described above. Positioning is based on
 the company's augmentation work and founder expertise in storage controls,
 deployment, commissioning, and lifecycle engineering. The page describes an
@@ -409,7 +409,7 @@ a technical electrical-diagram hero, numbered sections, neutral cards, a dark en
 and a large contact footer. It now includes scroll entrances, word-by-word heading
 reveals, an expanding fixed menu, and animated pilot-scope disclosures reconstructed
 from the public Framer source maps. See [interaction evidence and checks](docs/ouros-interactions.md).
-The page uses Augment-wh's existing content and brand assets. The source reference
+The page uses aAugment's existing content and brand assets. The source reference
 and screenshots remain in a separate design repository.
 
 The inquiry form keeps name, email, optional company, and one inquiry details

@@ -13,8 +13,8 @@
   }).then(companies => {
     const company = companies.find(item => item.slug === slug);
     if (!company) {
-      root.innerHTML = `<section class="error"><p class="eyebrow">Augment-wh presentation demo</p><h1>Company not found</h1><p>This demo URL is not in the company index.</p><a href="${escapeHTML(base)}/">Return to Augment-wh</a></section>`;
-      document.title = 'Company not found | Augment-wh';
+      root.innerHTML = `<section class="error"><p class="eyebrow">aAugment presentation demo</p><h1>Company not found</h1><p>This demo URL is not in the company index.</p><a href="${escapeHTML(base)}/">Return to aAugment</a></section>`;
+      document.title = 'Company not found | aAugment';
       return;
     }
     // Set company-specific custom HTML here when a tailored presentation is ready.
@@ -26,9 +26,9 @@
     const date = new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'long', day: 'numeric'}).format(new Date());
     const initials = company.name.split(/\s+/).map(word => word[0]).slice(0, 2).join('').toUpperCase();
     root.innerHTML = `
-      <header class="top"><a class="augment" href="${escapeHTML(base)}/">Augment-wh</a><span class="demo">Demo presentation</span></header>
+      <header class="top"><a class="augment" href="${escapeHTML(base)}/">aAugment</a><span class="demo">Demo presentation</span></header>
       <div class="identity"><span class="logo"><img data-company-logo src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(company.domain)}&sz=128" alt="${escapeHTML(company.name)} logo"></span><div><p>${escapeHTML(company.type)}</p><h1>${escapeHTML(company.name)}</h1></div></div>
-      <section class="hero"><p class="eyebrow">Capacity and augmentation planning</p><h2>Make the next battery decision with the whole asset in view.</h2><p>A working demo of how Augment-wh connects battery performance, site constraints, and project economics to support long-term storage decisions.</p></section>
+      <section class="hero"><p class="eyebrow">Capacity and augmentation planning</p><h2>Make the next battery decision with the whole asset in view.</h2><p>A working demo of how aAugment connects battery performance, site constraints, and project economics to support long-term storage decisions.</p></section>
       <h2 class="section-title">A clearer path from operating data to an investment decision.</h2>
       <section class="grid" aria-label="Planning approach">
         <article class="card"><span>01 / Understand</span><b>Start with the asset</b><p>Bring operating history, capacity tests, configuration, and warranty context into one baseline.</p></article>
@@ -44,7 +44,7 @@
       mark.textContent = initials;
       event.currentTarget.replaceWith(mark);
     }, {once: true});
-    document.title = `${company.name} | Augment-wh presentation demo`;
+    document.title = `${company.name} | aAugment presentation demo`;
   }).catch(() => {
     root.innerHTML = '<section class="error"><h1>Presentation unavailable</h1><p>Please try again later.</p></section>';
   });

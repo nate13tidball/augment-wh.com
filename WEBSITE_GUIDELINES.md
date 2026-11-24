@@ -4,13 +4,13 @@ The website's shared design and editorial contract applies to public pages, deve
 
 ## North Star
 
-Visitors should understand Augment-wh's work within seconds and have a clear next step. Each page should make it easy for a site owner, partner, or prospective investor to contact the company. Put a direct contact action near the main explanation and again after detailed content. Favor a simple, useful explanation over exhaustive on-page qualifications.
+Visitors should understand aAugment's work within seconds and have a clear next step. Each page should make it easy for a site owner, partner, or prospective investor to contact the company. Put a direct contact action near the main explanation and again after detailed content. Favor a simple, useful explanation over exhaustive on-page qualifications.
 
 ## Voice and perspective
 
-- Default to **third person**. Describe Augment-wh, the service, the model, the asset, or the site owner directly.
+- Default to **third person**. Describe aAugment, the service, the model, the asset, or the site owner directly.
 - Avoid first- and second-person language in ordinary page copy: **I, me, my, we, us, our, you, your**, and their contractions.
-- Prefer “Augment-wh models lifetime capacity” over “We model your battery.” Prefer “Site operating history” over “Your operating history.”
+- Prefer “aAugment models lifetime capacity” over “We model your battery.” Prefer “Site operating history” over “Your operating history.”
 - Use neutral interface labels: “Contact,” “Site assessment,” “Service year,” and “Appearance.” Instructions can name the action without addressing the reader: “Drag to explore.”
 - **Blog posts are the exception:** an identified author may use a personal voice when appropriate to the post. Quoted source material retains its original wording and attribution.
 - Keep ordinary paragraphs and continuous prose blocks to 20 words maximum. Use headings, short lists, and tables for detail.

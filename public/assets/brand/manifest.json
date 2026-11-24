@@ -1,9 +1,9 @@
 {
   "source": "brand/production",
-  "source_manifest_sha256": "9f0485264843bca814caf1b12871dfaabcf637092190479e07ec3f3aa0b17ae5",
+  "source_manifest_sha256": "42d711ef7055329894b36b361329f8a3cdc10e04dc2d33934f1b9ed098f9e83e",
   "header_logo": "full-logo",
   "assets": {
     "logo": "1f2106d439365d6a58da25353434882a5c6caa6cc689cf91a42b911e3d1f78b8",
-    "full-logo": "e9168b5161cc0f4329b84200d39ed835496cc139084e5313ed09ec61f8c4e92b"
+    "full-logo": "6d16b778f18568c86cc56071da6a516d8cf29f0bc3127ed249c5e9e2aa855062"
   }
 }
