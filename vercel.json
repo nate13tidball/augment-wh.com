@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "augment-wh\\.com" }],
+      "destination": "https://aaugment.io/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www\\.augment-wh\\.com" }],
+      "destination": "https://aaugment.io/:path*",
+      "permanent": true
+    }
+  ]
+}

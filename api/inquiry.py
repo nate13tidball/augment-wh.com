@@ -6,7 +6,7 @@ import time
 import server
 
 
-ORIGINS = {'https://augment-wh.com', 'https://www.augment-wh.com'}
+ORIGINS = {'https://aaugment.io', 'https://augment-wh.com', 'https://www.augment-wh.com'}
 
 
 class handler(BaseHTTPRequestHandler):

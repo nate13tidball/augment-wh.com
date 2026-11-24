@@ -272,9 +272,15 @@ considering the form operational.
 
 ## Production deployment
 
-**Vercel is the current production host for augment-wh.com.** The production host is documented as Vercel. The Vercel project and its deployment settings live in the
-Vercel dashboard; this repository currently has no `vercel.json`. Before changing
-deployment behavior, verify the connected Vercel project and its production branch.
+**Vercel serves the production site at `https://aaugment.io/`.** The `augment-wh.com`
+Vercel project deploys `main` from this repository. Its `vercel.json` permanently
+redirects both `augment-wh.com` and `www.augment-wh.com` to `aaugment.io`, retaining
+the path and query string. `www.aaugment.io` also redirects to the apex with HTTP 308.
+GoDaddy remains the authoritative DNS provider for `aaugment.io`.
+The apex currently has A records `216.198.79.1` and `64.29.17.1`; `www` has a
+CNAME to `496265cf197646b4.vercel-dns-017.com`. Check Vercel's current domain
+configuration before changing these targets. Canonical and Open Graph URLs use
+`aaugment.io`.
 
 The **Deploy GitHub Pages fallback** workflow publishes a public-only copy of
 `public/` when `main` changes, excluding `/dev/` and `/modeling-demos/`. It is a secondary/legacy deployment path; Vercel is the current
@@ -363,7 +369,7 @@ The `/dev/` page links to `/dev/login/`. The Vercel Python Function at
 `api/admin.py` validates a PIN on the server and issues a signed admin cookie
 for 30 days. The cookie covers the entire host, persists across tabs and browser
 restarts, and uses Secure, HttpOnly, SameSite=Strict, and the `__Host-` prefix.
-Use the canonical `https://www.augment-wh.com` host consistently: cookies are
+Use the canonical `https://aaugment.io` host consistently: cookies are
 host-specific. Sign out on the login page to clear this browser's cookie.
 
 Set these Production environment variables in Vercel and redeploy:

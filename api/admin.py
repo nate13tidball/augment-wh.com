@@ -56,7 +56,7 @@ class handler(BaseHTTPRequestHandler):
         self.reply(200, {'admin': is_admin(self.headers)})
 
     def do_POST(self):
-        if self.headers.get('Origin') not in ('https://augment-wh.com', 'https://www.augment-wh.com'):
+        if self.headers.get('Origin') not in ('https://aaugment.io', 'https://augment-wh.com', 'https://www.augment-wh.com'):
             return self.reply(403, {'error': 'Please use the website login page.'})
         if not configured():
             return self.reply(503, {'error': 'Admin login needs server configuration.'})

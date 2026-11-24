@@ -282,7 +282,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path != '/api/inquiry':
             return self.reply(404, {'error': 'Not found.'})
-        origins = os.environ.get('INQUIRY_ORIGINS', 'https://augment-wh.com,https://www.augment-wh.com').split(',')
+        origins = os.environ.get('INQUIRY_ORIGINS', 'https://aaugment.io,https://augment-wh.com,https://www.augment-wh.com').split(',')
         if self.headers.get('Origin') not in origins:
             return self.reply(403, {'error': 'Please submit through our website.'})
         if self.headers.get('Content-Type', '').split(';')[0] != 'application/json':

@@ -8,7 +8,7 @@ from api import admin
 
 
 class AdminTests(unittest.TestCase):
-    def request(self, method='GET', data=None, cookie='', origin='https://www.augment-wh.com'):
+    def request(self, method='GET', data=None, cookie='', origin='https://aaugment.io'):
         app = object.__new__(admin.handler)
         body = json.dumps(data).encode() if data is not None else b''
         app.headers = {'Cookie': cookie, 'Origin': origin, 'Content-Type': 'application/json', 'Content-Length': str(len(body))}

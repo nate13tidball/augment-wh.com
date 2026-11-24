@@ -57,7 +57,7 @@ class InquiryTests(unittest.TestCase):
         thread = Thread(target=app.serve_forever, daemon=True)
         thread.start()
         payload = dict(name='Visitor', email='visitor@example.com', kind='General inquiry', message='A test project inquiry.')
-        def request(data=payload, origin='https://augment-wh.com'):
+        def request(data=payload, origin='https://aaugment.io'):
             conn = HTTPConnection('127.0.0.1', app.server_port)
             conn.request('POST', '/api/inquiry', json.dumps(data), {'Content-Type': 'application/json', 'Origin': origin})
             response = conn.getresponse()
