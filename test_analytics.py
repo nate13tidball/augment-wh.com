@@ -39,15 +39,22 @@ class AnalyticsTests(unittest.TestCase):
 
     def test_reports_without_password_and_empty_traffic(self):
         totals = {'visitors': 0, 'pageviews': 0}
-        with patch.dict(os.environ, self.config, clear=True), patch.object(analytics, 'query', side_effect=[totals, []]) as query:
+        with patch.dict(os.environ, self.config, clear=True), patch.object(analytics, 'query', side_effect=[totals, [], [], [], []]) as query:
             status, data = self.request()
         self.assertEqual(status, 200)
         self.assertEqual(data['totals'], totals)
         self.assertEqual(data['pages'], [])
+        self.assertEqual(data['referrers'], [])
+        self.assertEqual(data['countries'], [])
+        self.assertEqual(data['devices'], [])
         self.assertNotIn('token', json.dumps(data))
         self.assertEqual(query.call_args_list[0].args, ('count',))
+        self.assertEqual(query.call_args_list[0].kwargs['filter'], "not startswith(requestPath, '/dev')")
         self.assertEqual(query.call_args_list[1].kwargs['by'], 'requestPath')
         self.assertEqual(query.call_args_list[1].kwargs['limit'], 10)
+        self.assertEqual([call.kwargs['by'] for call in query.call_args_list[1:]],
+                         ['requestPath', 'referrerHostname', 'country', 'deviceType'])
+        self.assertTrue(all(call.kwargs['filter'] == "not startswith(requestPath, '/dev')" for call in query.call_args_list[1:]))
         self.assertEqual((analytics.datetime.fromisoformat(data['until']) - analytics.datetime.fromisoformat(data['since'])).days, 7)
 
     def test_upstream_error_is_not_zero_and_does_not_leak_secrets(self):

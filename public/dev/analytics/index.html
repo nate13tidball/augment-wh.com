@@ -37,11 +37,9 @@
     @media (max-width: 540px) { button { width: 100%; margin-bottom: 8px; } section, details { padding: 16px; } }
   </style>
   <script src="/dev/analytics/analytics.js" defer></script>
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 <!-- shared-site-assets:start -->
+  <link rel="stylesheet" href="/assets/analytics/choice.css">
+  <script defer src="/assets/analytics/choice.js" data-analytics-hosts="aaugment.io,www.aaugment.io" data-analytics-exclude-prefixes="/dev"></script>
   <script src="/assets/site/theme.js"></script>
   <link rel="stylesheet" href="/assets/site/site.css">
   <script defer src="/assets/site/site.js"></script>
@@ -72,6 +70,8 @@
           <label><input type="radio" name="site-theme" value="system"> System</label>
         </fieldset>
         <button type="button" class="wh-motion-toggle" aria-pressed="false">Pause animations</button>
+        <button type="button" class="wh-analytics-settings" data-analytics-settings>Analytics: Choose</button>
+        <a href="/privacy/">Privacy</a>
         <noscript><p>Appearance preferences require JavaScript. Navigation remains available.</p></noscript>
       </div>
     </details>
@@ -81,7 +81,7 @@
 <main>
     <nav aria-label="Development"><a href="/dev/">Page tree</a><a href="/dev/analytics" aria-current="page">Analytics</a></nav>
     <h1>Visitor analytics</h1>
-    <p class="muted">Production traffic from Vercel Web Analytics. Load the latest numbers on demand.</p>
+    <p class="muted">Public-site traffic from Vercel Web Analytics. Development pages are excluded.</p>
     <button id="refresh" type="button">Refresh analytics</button>
     <p id="status" role="status" aria-live="polite">Loading analytics…</p>
     <div id="results" hidden>
@@ -94,13 +94,25 @@
         <h2 id="pages-title">Top pages · last 7 days</h2>
         <p id="period" class="muted"></p>
         <table><thead><tr><th scope="col">Page</th><th scope="col">Views</th><th scope="col">Visitors</th></tr></thead><tbody id="pages"></tbody></table>
-        <p class="muted">Up to 10 pages, with remaining traffic grouped by Vercel as “Others”. Includes development pages when tracked.</p>
+        <p class="muted">Up to 10 pages, with remaining traffic grouped by Vercel as “Others”.</p>
+      </section>
+      <section aria-labelledby="referrers-title">
+        <h2 id="referrers-title">Top referring sites · last 7 days</h2>
+        <table><thead><tr><th scope="col">Referrer</th><th scope="col">Views</th><th scope="col">Visitors</th></tr></thead><tbody id="referrers"></tbody></table>
+      </section>
+      <section aria-labelledby="countries-title">
+        <h2 id="countries-title">Countries · last 7 days</h2>
+        <table><thead><tr><th scope="col">Country</th><th scope="col">Views</th><th scope="col">Visitors</th></tr></thead><tbody id="countries"></tbody></table>
+      </section>
+      <section aria-labelledby="devices-title">
+        <h2 id="devices-title">Devices · last 7 days</h2>
+        <table><thead><tr><th scope="col">Device</th><th scope="col">Views</th><th scope="col">Visitors</th></tr></thead><tbody id="devices"></tbody></table>
       </section>
     </div>
     <details>
       <summary>Connect Vercel Analytics</summary>
       <ol>
-        <li>Vercel Web Analytics tracking is installed across the main site, presentations, and development pages. Collection starts when visitors load these pages with JavaScript enabled.</li>
+        <li>Vercel Web Analytics is available across the site. Collection starts only after a visitor allows analytics.</li>
         <li>In Vercel → Project → Settings → Environment Variables, set <code>ANALYTICS_VERCEL_TOKEN</code> to an access token authorized for this project, and <code>ANALYTICS_PROJECT_ID</code> to its project ID.</li>
         <li>For a team-owned project, also set <code>ANALYTICS_TEAM_ID</code>. Omit it for a personal project.</li>
         <li>Keep the API token server-side and redeploy. This page loads automatically. No historical visits are collected retroactively.</li>

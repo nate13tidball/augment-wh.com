@@ -8,6 +8,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 HEADER = ROOT / 'scripts/site_header.html'
 HEAD = '''<!-- shared-site-assets:start -->
+  <link rel="stylesheet" href="/assets/analytics/choice.css">
+  <script defer src="/assets/analytics/choice.js" data-analytics-hosts="aaugment.io,www.aaugment.io" data-analytics-exclude-prefixes="/dev"></script>
   <script src="/assets/site/theme.js"></script>
   <link rel="stylesheet" href="/assets/site/site.css">
   <script defer src="/assets/site/site.js"></script>

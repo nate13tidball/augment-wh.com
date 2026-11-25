@@ -20,24 +20,29 @@ async function loadAnalytics() {
     if (!response.ok) throw new Error(data.error || 'Could not load analytics.');
     document.querySelector('#visitors').textContent = number(data.totals.visitors);
     document.querySelector('#pageviews').textContent = number(data.totals.pageviews);
-    const pages = document.querySelector('#pages');
-    pages.replaceChildren();
-    for (const page of data.pages) {
-      const row = document.createElement('tr');
-      for (const value of [page.requestPath || 'Others', number(page.pageviews), number(page.visitors)]) {
-        const cell = document.createElement('td');
-        cell.textContent = value;
-        row.append(cell);
+    for (const [id, field] of [
+      ['pages', 'requestPath'], ['referrers', 'referrerHostname'],
+      ['countries', 'country'], ['devices', 'deviceType'],
+    ]) {
+      const body = document.querySelector(`#${id}`);
+      body.replaceChildren();
+      for (const item of data[id]) {
+        const row = document.createElement('tr');
+        for (const value of [item[field] || (id === 'referrers' ? 'Direct or unavailable' : 'Unknown'), number(item.pageviews), number(item.visitors)]) {
+          const cell = document.createElement('td');
+          cell.textContent = value;
+          row.append(cell);
+        }
+        body.append(row);
       }
-      pages.append(row);
-    }
-    if (!data.pages.length) {
-      const row = document.createElement('tr');
-      const cell = document.createElement('td');
-      cell.colSpan = 3;
-      cell.textContent = 'No recorded page views in this period yet.';
-      row.append(cell);
-      pages.append(row);
+      if (!data[id].length) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 3;
+        cell.textContent = 'No recorded data in this period.';
+        row.append(cell);
+        body.append(row);
+      }
     }
     document.querySelector('#period').textContent = `${new Date(data.since).toLocaleString()} – ${new Date(data.until).toLocaleString()}`;
     results.hidden = false;

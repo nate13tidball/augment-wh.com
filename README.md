@@ -432,18 +432,24 @@ Keep private research, prospect data, and credentials out of the public director
 
 ## Development analytics dashboard
 
-`/dev/analytics` displays all-time production visitors/page views and top pages
-from the last seven days using the public [Vercel Web Analytics API](https://vercel.com/docs/analytics/web-analytics-api).
+`/dev/analytics` displays recorded public-site visitors/page views and seven-day
+breakdowns for pages, referring hostnames, countries, and devices using the
+[Vercel Web Analytics API](https://vercel.com/docs/analytics/web-analytics-api).
 The read-only proxy is a standard-library Vercel Python Function at `api/analytics.py`.
 It needs the repository root as Vercel's project root, with `public/` as static
 output, so Vercel discovers `api/`. No deployment settings are changed by this code.
 The local Python server and GitHub Pages serve the dashboard shell but do not run
 this Vercel-only proxy. The UI reports a missing/unavailable API explicitly.
 
-Vercel Web Analytics is enabled for the project. Every public HTML page includes
-the standard HTML tracking script at `/_vercel/insights/script.js`, including the
-main site, presentations, and development pages. No npm packages or build step
-are needed. The canonical dashboard URL is `/dev/analytics`; `/dev/analytics/`
+Vercel Web Analytics is enabled for the project. Every HTML page loads the
+small `public/assets/analytics/choice.js` module and stylesheet. The Vercel
+tracking script loads only after the visitor allows analytics. The preference
+is saved in local storage for 180 days; changing from on to off reloads the page
+to unload the script. Analytics does not collect names or individual journeys.
+The company module excludes `/dev/` pages from new collection, and the report
+filters historical development traffic.
+The public `/privacy/` page explains collection and offers the choice again.
+No npm packages or build step are needed. The canonical dashboard URL is `/dev/analytics`; `/dev/analytics/`
 forwards there in the browser. Set these Production environment variables in
 Vercel, then redeploy:
 
@@ -453,6 +459,19 @@ Vercel, then redeploy:
 
 The dashboard loads automatically and has a refresh button. Admin login is required to view these reports, including direct API requests. The Vercel token stays on the server. The endpoint disables response
 caching and limits queries to the configured project and fixed reports.
+
+To reuse the choice module on another static Vercel site, copy `choice.js` and
+`choice.css` together, then add a stylesheet and a deferred script tag:
+
+```html
+<link rel="stylesheet" href="/assets/analytics/choice.css">
+<script defer src="/assets/analytics/choice.js" data-analytics-hosts="example.com,www.example.com"></script>
+```
+
+Add a `data-analytics-settings` button and a `/privacy/` explanation. Configure
+the site's production hostnames in `data-analytics-hosts`; local previews and
+GitHub Pages do not send analytics. Enable Web Analytics separately in that
+site's Vercel project. The personal site uses identical module files.
 
 Check with `python3 -m unittest -v test_analytics.py` (mocked Vercel, no server or
 real credentials required) and `node test_site_links.mjs`. Live totals require

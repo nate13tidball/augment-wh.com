@@ -45,16 +45,10 @@ for (const pathname of ['/dev/analytics', '/dev/analytics/']) {
 }
 for (const filename of readdirSync(new URL('./public/', import.meta.url), { recursive: true }).filter(path => path.endsWith('.html'))) {
   const html = read(`./public/${filename}`);
-  assert.equal(html.split('src="/_vercel/insights/script.js"').length - 1, 1, `${filename} must track page views exactly once`);
-  const setup = html.match(/<script>\s*(window\.va = [\s\S]*?)<\/script>/)?.[1];
-  assert.ok(setup, `${filename} is missing the Vercel Analytics queue`);
-  const window = {};
-  runInNewContext(setup, { window });
-  window.va('event', { name: 'test' });
-  assert.equal(window.vaq.length, 1);
-  assert.equal(window.vaq[0][0], 'event');
+  assert.equal(html.split('src="/assets/analytics/choice.js"').length - 1, 1, `${filename} needs one analytics choice module`);
+  assert.doesNotMatch(html, /<script[^>]+src="\/_vercel\/insights\/script\.js"/);
 }
-console.log('All HTML pages include Vercel tracking once; analytics URL is canonical without a trailing slash.');
+console.log('All HTML pages gate Vercel tracking behind the shared choice module.');
 
 const homepage = read('./public/index.html');
 const pagesWorkflow = read('./.github/workflows/pages.yml');

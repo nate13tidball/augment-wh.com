@@ -43,9 +43,19 @@ class handler(BaseHTTPRequestHandler):
             return self.reply(503, {'error': 'Not connected yet. Complete the setup steps below, then redeploy.'})
         until = datetime.now(timezone.utc)
         since = until - timedelta(days=7)
+        public_pages = "not startswith(requestPath, '/dev')"
         try:
-            totals = query('count')
-            pages = query('aggregate', since=since.isoformat(), until=until.isoformat(), by='requestPath', limit=10)
+            totals = query('count', filter=public_pages)
+            groups = {
+                'pages': ('requestPath', 10),
+                'referrers': ('referrerHostname', 10),
+                'countries': ('country', 10),
+                'devices': ('deviceType', 5),
+            }
+            breakdowns = {
+                name: query('aggregate', since=since.isoformat(), until=until.isoformat(), by=dimension, limit=limit, filter=public_pages)
+                for name, (dimension, limit) in groups.items()
+            }
         except HTTPError as error:
             message = 'Vercel rejected the request. Check token access, project/team IDs, and that Web Analytics is enabled.'
             if error.code == 429:
@@ -53,4 +63,4 @@ class handler(BaseHTTPRequestHandler):
             return self.reply(502, {'error': message})
         except (URLError, TimeoutError, OSError, ValueError, KeyError):
             return self.reply(502, {'error': 'Could not load analytics from Vercel. Please try again later.'})
-        self.reply(200, {'totals': totals, 'pages': pages, 'since': since.isoformat(), 'until': until.isoformat()})
+        self.reply(200, {'totals': totals, **breakdowns, 'since': since.isoformat(), 'until': until.isoformat()})

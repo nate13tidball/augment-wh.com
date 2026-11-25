@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>Site map</title>
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 <!-- shared-site-assets:start -->
+  <link rel="stylesheet" href="/assets/analytics/choice.css">
+  <script defer src="/assets/analytics/choice.js" data-analytics-hosts="aaugment.io,www.aaugment.io" data-analytics-exclude-prefixes="/dev"></script>
   <script src="/assets/site/theme.js"></script>
   <link rel="stylesheet" href="/assets/site/site.css">
   <script defer src="/assets/site/site.js"></script>
@@ -40,6 +38,8 @@
           <label><input type="radio" name="site-theme" value="system"> System</label>
         </fieldset>
         <button type="button" class="wh-motion-toggle" aria-pressed="false">Pause animations</button>
+        <button type="button" class="wh-analytics-settings" data-analytics-settings>Analytics: Choose</button>
+        <a href="/privacy/">Privacy</a>
         <noscript><p>Appearance preferences require JavaScript. Navigation remains available.</p></noscript>
       </div>
     </details>
