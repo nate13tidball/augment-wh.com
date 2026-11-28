@@ -1,5 +1,10 @@
 # Development Guidelines
 
+For Penpot design work, use [docs/penpot-workflow.md](docs/penpot-workflow.md) and
+`node scripts/penpot.mjs`. Keep the MCP key in device-local configuration, never
+in this repository. Penpot is an editable design copy; review changes before
+applying them to the website's HTML/CSS.
+
 Read [WEBSITE_GUIDELINES.md](WEBSITE_GUIDELINES.md) before editing any page. It defines the shared header, appearance controls, accessibility, and third-person copy rules. Ordinary page copy must avoid first/second person; blog posts may use an author’s personal voice.
 
 - Do not modify the main site or its normal production routes unless Nathan explicitly asks.

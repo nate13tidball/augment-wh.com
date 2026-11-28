@@ -2,6 +2,10 @@
 
 **Website editing entry point:** [WEBSITE_GUIDELINES.md](WEBSITE_GUIDELINES.md) covers shared navigation, dark mode, third-person copy, and verification.
 
+**Editable Penpot copy:** [docs/penpot-workflow.md](docs/penpot-workflow.md)
+documents the connected homepage canvas and the `scripts/penpot.mjs` bridge for
+moving design changes between Penpot and this repository.
+
 Business website for aaugment.io. HTML/CSS with a small inquiry form script
 and Python standard-library SMTP backend. No build step or third-party packages.
 

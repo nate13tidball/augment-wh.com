@@ -5,3 +5,5 @@ node_modules/
 !.env.example
 test-results/
 __pycache__/
+penpot_mcp
+.penpot-token
