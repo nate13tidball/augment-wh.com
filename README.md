@@ -1,8 +1,8 @@
-# Augment Wh
+# aAugment.io
 
 **Website editing entry point:** [WEBSITE_GUIDELINES.md](WEBSITE_GUIDELINES.md) covers shared navigation, dark mode, third-person copy, and verification.
 
-Business website for augment-wh.com. HTML/CSS with a small inquiry form script
+Business website for aaugment.io. HTML/CSS with a small inquiry form script
 and Python standard-library SMTP backend. No build step or third-party packages.
 
 Open `public/index.html` directly in a browser for a local preview.
@@ -218,7 +218,7 @@ Run from the website repository after changing the selection or regenerating log
 ```bash
 python3 scripts/sync_brand.py
 # For a standalone checkout, supply the location of the business repo's brand folder:
-python3 scripts/sync_brand.py --source-root /path/to/Augment-wh/brand/production
+python3 scripts/sync_brand.py --source-root /path/to/aAugment/brand/production
 ```
 
 Production must include `augment-logo.png` and `augment-full-logo.png`.
@@ -293,7 +293,7 @@ After every push, inspect the exact pushed commit rather than only the latest ru
 ```bash
 revision=$(git rev-parse HEAD)
 git ls-remote origin refs/heads/main
-gh api "repos/nate13tidball/augment-wh.com/commits/$revision/status" --jq '.statuses[] | {context,state,description}'
+gh api "repos/nate13tidball/aAugment.io/commits/$revision/status" --jq '.statuses[] | {context,state,description}'
 gh run list --commit "$revision" --json databaseId,workflowName,status,conclusion
 # For an in-progress Pages run, use its returned ID:
 gh run watch RUN_ID --exit-status
@@ -309,7 +309,7 @@ For failed Actions runs, inspect the failed step before editing site code:
 gh run view RUN_ID --log-failed
 # If that produces no log, obtain the job ID and retrieve its full log:
 gh run view RUN_ID --json jobs
-gh api repos/nate13tidball/augment-wh.com/actions/jobs/JOB_ID/logs
+gh api repos/nate13tidball/aAugment.io/actions/jobs/JOB_ID/logs
 ```
 
 An upload can succeed before deployment's artifact lookup sees it. If logs show
