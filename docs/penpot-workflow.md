@@ -9,6 +9,24 @@ cards, controls, and image fills. Its Penpot file ID is
 This copy covers the desktop layout; the site's mobile layout still needs a
 separate Penpot board if mobile design editing is desired.
 
+## Startup homepage proposal
+
+The separate [startup homepage concept](https://design.penpot.app/?screen=workspace&team-id=7d3e61e0-34c6-81f6-8009-037307a478ed&file-id=3db45ae8-1dfd-81ce-8009-0411716b2466&page-id=3db45ae8-1dfd-81ce-8009-0411716b2467)
+is an editable design proposal, not a change to the published website. It has
+desktop (1440 × 2780) and mobile (390 × 2270) boards with separate text, cards,
+buttons, and chart shapes. The file ID is
+`3db45ae8-1dfd-81ce-8009-0411716b2466`; page ID is
+`3db45ae8-1dfd-81ce-8009-0411716b2467`. Board IDs are
+`e8ad8cf9-71d7-80f0-8009-04122d7e41c9` (desktop) and
+`e8ad8cf9-71d7-80f0-8009-0412f40b7152` (mobile).
+
+The concept leads with “More capacity. Same site.” and puts the site contact
+action beside an illustrative capacity-planning view. It then shows site
+assessment, integration design, and deployment planning. The chart is a visual
+concept with no site data or performance claim. The new navigation header
+differs from the current shared-header rule in `WEBSITE_GUIDELINES.md`; decide
+whether to change that rule before implementing this design in HTML/CSS.
+
 This is an assisted round trip. Penpot MCP can read and change the design and
 generate draft HTML/CSS, but it does not continuously synchronize Penpot with
 `public/index.html`. Review layout, copy, behavior, accessibility, and mobile
